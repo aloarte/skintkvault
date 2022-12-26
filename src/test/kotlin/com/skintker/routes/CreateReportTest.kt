@@ -1,7 +1,8 @@
-package com.skintker
+package com.skintker.routes
 
 import com.skintker.constants.ResponseConstants.INVALID_INPUT_RESPONSE
 import com.skintker.constants.ResponseConstants.REPORT_STORED_RESPONSE
+import com.skintker.manager.DatabaseManager
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.plugins.contentnegotiation.*
@@ -11,8 +12,11 @@ import kotlin.test.*
 import io.ktor.server.testing.*
 import com.skintker.plugins.*
 import org.koin.test.KoinTest
+import org.koin.test.inject
 
-class ReportTest:  KoinTest {
+class CreateReportTest:  KoinTest {
+
+    private val mockedDatabase : DatabaseManager by inject()
 
     companion object {
         const val jsonBody = "{\"date\":\"2012-04-23T18:25:43.511Z\",\"irritation\":{\"overallValue\":9,\"zoneValues\":[\"a\",\"b\",\"c\"]},\"additionalData\":{\"stressLevel\":9,\"weather\":{\"humidity\":9,\"temperature\":9},\"travel\":{\"traveled\":true,\"city\":\"Madrid\"},\"alcoholLevel\":\"None\",\"beerTypes\":[\"ba\",\"bb\",\"bc\"]}}"
@@ -24,8 +28,8 @@ class ReportTest:  KoinTest {
     private fun ApplicationTestBuilder.configureClient() = createClient {
         with(this@configureClient) {
             application {
-                configureRouting()
                 configureKoin()
+                configureRouting(mockedDatabase)
             }
             install(ContentNegotiation) { json() }
         }

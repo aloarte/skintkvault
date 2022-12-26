@@ -13,7 +13,7 @@ class DailyLogParseTest {
     }
 
     @Test
-    fun testPutCustomerSuccess() {
+    fun testParseDailyLogJson() {
         val json = Json.decodeFromString<DailyLog>(jsonBody)
         assertEquals(jsonBody,Json.encodeToString(json))
     }

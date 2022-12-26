@@ -1,4 +1,5 @@
 val logbackVersion: String by project
+val mockkVersion: String by project
 val koinVersion: String by project
 val koinKtorVersion: String by project
 val kotlinVersion: String by project
@@ -39,6 +40,9 @@ dependencies {
     testImplementation ("io.insert-koin:koin-test:$koinVersion")
     testImplementation ("io.insert-koin:koin-test-junit4:$koinVersion")
     testImplementation ("io.insert-koin:koin-test-junit5:$koinVersion")
+
+
+    testImplementation ("io.mockk:mockk:$mockkVersion")
 
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
