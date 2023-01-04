@@ -1,6 +1,7 @@
 package com.skintker
 
-import com.skintker.manager.DatabaseManager
+import com.skintker.data.db.DatabaseFactory
+import com.skintker.data.repository.ReportsRepository
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -13,13 +14,13 @@ fun main() {
 }
 
 fun Application.module() {
-    val databaseManager by inject<DatabaseManager>()
+    val reportsRepository by inject<ReportsRepository>()
 
-
+    DatabaseFactory.init()
 //    configureMonitoring()
     configureKoin()
     configureAdministration()
     configureSerialization()
     configureSecurity()
-    configureRouting(databaseManager)
+    configureRouting(reportsRepository)
 }

@@ -1,4 +1,4 @@
-package com.skintker.model
+package com.skintker.data.dto
 
 import kotlinx.serialization.Serializable
 

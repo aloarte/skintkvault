@@ -1,6 +1,6 @@
 package com.skintker
 
-import com.skintker.model.DailyLog
+import com.skintker.data.dto.DailyLog
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

@@ -3,27 +3,18 @@ package com.skintker.routes.report
 import com.skintker.constants.ResponseConstants.GENERIC_ERROR_RESPONSE
 import com.skintker.constants.ResponseConstants.INVALID_INPUT_RESPONSE
 import com.skintker.constants.ResponseConstants.INVALID_TOKEN_RESPONSE
-import com.skintker.constants.ResponseConstants.REPORT_EDITED_RESPONSE
-import com.skintker.constants.ResponseConstants.REPORT_NOT_EDITED_RESPONSE
-import com.skintker.constants.ResponseConstants.REPORT_NOT_STORED_RESPONSE
-import com.skintker.constants.ResponseConstants.REPORT_STORED_RESPONSE
 import com.skintker.data.datasources.LogsDatasource
 import com.skintker.data.datasources.impl.LogsDatasourceImpl
 import com.skintker.exception.TokenException
 import com.skintker.data.repository.ReportsRepository
-import com.skintker.data.dto.DailyLog
-import com.skintker.model.SaveReportStatus
 import io.ktor.http.*
 import io.ktor.serialization.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-const val TOKEN_PATH_PARAM = "token"
-
-fun Route.createReport(reportsRepository: ReportsRepository) {
+fun Route.getReport(reportsRepository: ReportsRepository) {
 
 
     val dao: LogsDatasource = LogsDatasourceImpl()
@@ -32,19 +23,16 @@ fun Route.createReport(reportsRepository: ReportsRepository) {
     /**
      * Put a new report from the given user token and save it on the database
      */
-    put("/report/{$TOKEN_PATH_PARAM}") {
+    get("/report/{$TOKEN_PATH_PARAM}") {
         try {
             val token = call.parameters[TOKEN_PATH_PARAM]
-            val log = call.receive<DailyLog>()
             if (token.isNullOrEmpty()) {
                 throw TokenException()
             }
-            when(reportsRepository.saveReport(token, log)){
-                SaveReportStatus.Saved -> call.respondText(REPORT_STORED_RESPONSE, status = HttpStatusCode.Created)
-                SaveReportStatus.Edited -> call.respondText(REPORT_EDITED_RESPONSE, status = HttpStatusCode.Accepted)
-                SaveReportStatus.SavingFailed -> call.respondText(REPORT_NOT_STORED_RESPONSE, status = HttpStatusCode.BadRequest)
-                SaveReportStatus.EditingFailed -> call.respondText(REPORT_NOT_EDITED_RESPONSE, status = HttpStatusCode.BadRequest)
-            }
+
+            val reports = dao.getAllLogs(token)
+            call.respond(status = HttpStatusCode.OK, reports)
+
 
         } catch (exception: Exception) {
             when (exception) {

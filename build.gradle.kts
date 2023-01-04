@@ -1,3 +1,5 @@
+val exposedVersion: String by project
+val h2Version: String by project
 val logbackVersion: String by project
 val mockkVersion: String by project
 val koinVersion: String by project
@@ -8,7 +10,7 @@ val ktorVersion: String by project
 plugins {
     kotlin("jvm") version "1.7.22"
     id("io.ktor.plugin") version "2.2.1"
-                id("org.jetbrains.kotlin.plugin.serialization") version "1.7.22"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.7.22"
 }
 
 group = "com.skintker"
@@ -41,6 +43,12 @@ dependencies {
     testImplementation ("io.insert-koin:koin-test-junit4:$koinVersion")
     testImplementation ("io.insert-koin:koin-test-junit5:$koinVersion")
 
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("com.h2database:h2:$h2Version")
+
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
 
     testImplementation ("io.mockk:mockk:$mockkVersion")
 

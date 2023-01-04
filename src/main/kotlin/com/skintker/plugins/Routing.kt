@@ -1,14 +1,16 @@
 package com.skintker.plugins
 
-import com.skintker.manager.DatabaseManager
+import com.skintker.data.repository.ReportsRepository
 import com.skintker.routes.home
 import com.skintker.routes.report.createReport
+import com.skintker.routes.report.getReport
+import com.skintker.routes.reports.removeReports
 import com.skintker.routes.reports.retrieveReports
 import io.ktor.server.routing.*
 import io.ktor.server.application.*
 
 fun Application.configureRouting(
-    databaseManager: DatabaseManager
+    reportsRepository: ReportsRepository
 ) {
 
     routing {
@@ -17,7 +19,15 @@ fun Application.configureRouting(
 
     //Everything requested to /report
     routing {
-        createReport(databaseManager)
-        retrieveReports(databaseManager)
+        createReport(reportsRepository)
+        getReport(reportsRepository)
+    }
+
+    routing {
+        route("/reports"){
+            retrieveReports(reportsRepository)
+            removeReports(reportsRepository)
+        }
+
     }
 }

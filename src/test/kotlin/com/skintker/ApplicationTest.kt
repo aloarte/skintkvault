@@ -1,6 +1,6 @@
 package com.skintker
 
-import com.skintker.manager.DatabaseManager
+import com.skintker.data.repository.ReportsRepository
 import io.ktor.http.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -12,7 +12,7 @@ import org.koin.test.inject
 
 class ApplicationTest: KoinTest {
 
-    private val mockedDatabase by inject<DatabaseManager>()
+    private val mockedDatabase by inject<ReportsRepository>()
 
     @Test
     fun testRoot() = testApplication {

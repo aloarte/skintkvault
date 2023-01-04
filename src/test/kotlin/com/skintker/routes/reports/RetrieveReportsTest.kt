@@ -1,7 +1,7 @@
-package com.skintker.routes
+package com.skintker.routes.reports
 
-import com.skintker.manager.DatabaseManager
-import com.skintker.model.DailyLog
+import com.skintker.data.repository.ReportsRepository
+import com.skintker.data.dto.DailyLog
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.plugins.contentnegotiation.*
@@ -10,7 +10,7 @@ import kotlin.test.*
 import io.ktor.server.testing.*
 import com.skintker.plugins.*
 import io.ktor.client.call.*
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -22,7 +22,7 @@ class RetrieveReportsTest:  KoinTest {
           const val token =  "userToken"
     }
 
-    val mockedDatabase = mockk<DatabaseManager>()
+    private val mockedDatabase = mockk<ReportsRepository>()
 
     private fun ApplicationTestBuilder.configureClient() = createClient {
         with(this@configureClient) {
@@ -37,7 +37,7 @@ class RetrieveReportsTest:  KoinTest {
     @Test
     fun testGetLogsSuccessEmptyAnswer() = testApplication {
         val client = configureClient()
-        every { mockedDatabase.getReports(any()) } returns emptyList()
+        coEvery { mockedDatabase.getReports(any()) } returns emptyList()
 
         val response = client.get("/reports/$token")
 
@@ -64,7 +64,7 @@ class RetrieveReportsTest:  KoinTest {
                 ),
                 foodList = listOf("Bread","Milk","Eggs"))
         )
-        every { mockedDatabase.getReports(any()) } returns resultList
+        coEvery { mockedDatabase.getReports(any()) } returns resultList
 
         val response = client.get("/reports/$token")
 
