@@ -1,14 +1,18 @@
 package com.skintker.routes.report
 
-import com.skintker.DailyLogParseTest
+import com.skintker.constants.ResponseCodes.DATABASE_ISSUE
+import com.skintker.constants.ResponseCodes.NO_ERROR
 import com.skintker.constants.ResponseConstants.BAD_INPUT_DATA
 import com.skintker.constants.ResponseConstants.INVALID_INPUT_RESPONSE
+import com.skintker.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
 import com.skintker.constants.ResponseConstants.REPORT_EDITED_RESPONSE
 import com.skintker.constants.ResponseConstants.REPORT_NOT_EDITED_RESPONSE
 import com.skintker.constants.ResponseConstants.REPORT_NOT_STORED_RESPONSE
 import com.skintker.constants.ResponseConstants.REPORT_STORED_RESPONSE
 import com.skintker.data.repository.ReportsRepository
 import com.skintker.data.dto.DailyLog
+import com.skintker.data.responses.ServiceResponse
+import com.skintker.data.validators.UserInfoValidator
 import com.skintker.model.SaveReportStatus
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
@@ -19,6 +23,7 @@ import kotlin.test.*
 import io.ktor.server.testing.*
 import com.skintker.plugins.*
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -28,22 +33,23 @@ class CreateReportTest:  KoinTest {
 
     private val mockedDatabase = mockk<ReportsRepository>()
 
+    private val mockedUserInfoValidator = mockk<UserInfoValidator>()
+
     companion object {
         const val jsonBody = "{\"date\":\"2012-04-23T18:25:43.511Z\",\"irritation\":{\"overallValue\":9,\"zoneValues\":[\"a\",\"b\",\"c\"]},\"additionalData\":{\"stressLevel\":9,\"weather\":{\"humidity\":9,\"temperature\":9},\"travel\":{\"traveled\":true,\"city\":\"Madrid\"},\"alcoholLevel\":\"None\",\"beerTypes\":[\"ba\",\"bb\",\"bc\"]}}"
         const val onlyDateJsonBody = "{\"date\":\"2012-04-23T18:25:43.511Z\"}"
         const val badJson = "{\"dte\":\"2012-04-23T18:25:43.511Z\",\"irritation\":{\"overallValue\":9,\"zoneValues\":[\"a\",\"b\",\"c\"]},\"additionalData\":{\"stressLevel\":9,\"weather\":{\"humidity\":9,\"temperature\":9},\"travel\":{\"traveled\":true,\"city\":\"Madrid\"},\"alcoholLevel\":\"None\",\"beerTypes\":[\"ba\",\"bb\",\"bc\"]}}"
         const val differentJson = "\"date\":\"2012-04-23T18:25:43.511Z\",\"irritation\":{\"overallValue\":9,\"zoneValues\":[\"a\",\"b\",\"c\"]},\"additionalData\":{\"stressLevel\":9,\"weather\":{\"humidity\":9,\"temperature\":9},\"travel\":{\"traveled\":true,\"city\":\"Madrid\"},\"alcoholLevel\":\"None\",\"beerTypes\":[\"ba\",\"bb\",\"bc\"]}}"
-        const val token =  "userToken"
+        const val userId =  "userId"
         val jsonDeserialized = Json.decodeFromString<DailyLog>(jsonBody)
         val onlyDateJsonBodyDeserialized = Json.decodeFromString<DailyLog>(onlyDateJsonBody)
-
     }
 
     private fun ApplicationTestBuilder.configureClient() = createClient {
         with(this@configureClient) {
             application {
                 configureKoin()
-                configureRouting(mockedDatabase)
+                configureRouting(mockedDatabase,mockedUserInfoValidator)
             }
             install(ContentNegotiation) { json() }
         }
@@ -52,109 +58,134 @@ class CreateReportTest:  KoinTest {
     @Test
     fun `test put new report success status`() = testApplication {
         val client = configureClient()
-        coEvery { mockedDatabase.saveReport(token, jsonDeserialized) } returns SaveReportStatus.Saved
+        coEvery { mockedUserInfoValidator.isUserIdInvalid(userId) } returns false
+        coEvery { mockedDatabase.saveReport(userId, jsonDeserialized) } returns SaveReportStatus.Saved
 
-        val response = client.put("/report/$token") {
+        val response = client.put("/report/$userId") {
             contentType(ContentType.Application.Json)
             setBody(jsonBody)
         }
 
-        assertEquals(REPORT_STORED_RESPONSE, response.bodyAsText())
+        coVerify { mockedUserInfoValidator.isUserIdInvalid(userId) }
+        coVerify { mockedDatabase.saveReport(userId, jsonDeserialized) }
         assertEquals(HttpStatusCode.Created, response.status)
+        val expectedResponse = ServiceResponse(NO_ERROR, REPORT_STORED_RESPONSE)
+        assertEquals(expectedResponse, Json.decodeFromString(response.bodyAsText()))
     }
 
     @Test
     fun `test put new report fail status`() = testApplication {
         val client = configureClient()
-        coEvery { mockedDatabase.saveReport(token, jsonDeserialized) } returns SaveReportStatus.SavingFailed
+        coEvery { mockedUserInfoValidator.isUserIdInvalid(userId) } returns false
+        coEvery { mockedDatabase.saveReport(userId, jsonDeserialized) } returns SaveReportStatus.SavingFailed
 
-        val response = client.put("/report/$token") {
+        val response = client.put("/report/$userId") {
             contentType(ContentType.Application.Json)
             setBody(jsonBody)
         }
 
-        assertEquals(REPORT_NOT_STORED_RESPONSE, response.bodyAsText())
-        assertEquals(HttpStatusCode.BadRequest, response.status)
+        coVerify { mockedUserInfoValidator.isUserIdInvalid(userId) }
+        coVerify { mockedDatabase.saveReport(userId, jsonDeserialized) }
+        assertEquals(HttpStatusCode.OK, response.status)
+        val expectedResponse = ServiceResponse(DATABASE_ISSUE, REPORT_NOT_STORED_RESPONSE)
+        assertEquals(expectedResponse, Json.decodeFromString(response.bodyAsText()))
     }
 
     @Test
     fun `test put edited report success status`() = testApplication {
         val client = configureClient()
-        coEvery { mockedDatabase.saveReport(token, jsonDeserialized) } returns SaveReportStatus.Edited
+        coEvery { mockedUserInfoValidator.isUserIdInvalid(userId) } returns false
+        coEvery { mockedDatabase.saveReport(userId, jsonDeserialized) } returns SaveReportStatus.Edited
 
-        val response = client.put("/report/$token") {
+        val response = client.put("/report/$userId") {
             contentType(ContentType.Application.Json)
             setBody(jsonBody)
         }
 
-        assertEquals(REPORT_EDITED_RESPONSE, response.bodyAsText())
-        assertEquals(HttpStatusCode.Accepted, response.status)
+        coVerify { mockedUserInfoValidator.isUserIdInvalid(userId) }
+        coVerify { mockedDatabase.saveReport(userId, jsonDeserialized) }
+        assertEquals(HttpStatusCode.OK, response.status)
+        val expectedResponse = ServiceResponse(NO_ERROR, REPORT_EDITED_RESPONSE)
+        assertEquals(expectedResponse, Json.decodeFromString(response.bodyAsText()))
     }
 
     @Test
     fun `test put edited report fail status`() = testApplication {
         val client = configureClient()
-        coEvery { mockedDatabase.saveReport(token, jsonDeserialized) } returns SaveReportStatus.EditingFailed
+        coEvery { mockedUserInfoValidator.isUserIdInvalid(userId) } returns false
+        coEvery { mockedDatabase.saveReport(userId, jsonDeserialized) } returns SaveReportStatus.EditingFailed
 
-        val response = client.put("/report/$token") {
+        val response = client.put("/report/$userId") {
             contentType(ContentType.Application.Json)
             setBody(jsonBody)
         }
 
-        assertEquals(REPORT_NOT_EDITED_RESPONSE, response.bodyAsText())
-        assertEquals(HttpStatusCode.BadRequest, response.status)
+        coVerify { mockedUserInfoValidator.isUserIdInvalid(userId) }
+        coVerify { mockedDatabase.saveReport(userId, jsonDeserialized) }
+        assertEquals(HttpStatusCode.OK, response.status)
+        val expectedResponse = ServiceResponse(DATABASE_ISSUE, REPORT_NOT_EDITED_RESPONSE)
+        assertEquals(expectedResponse, Json.decodeFromString(response.bodyAsText()))
     }
 
     @Test
     fun `test put report bad input status`() = testApplication {
         val client = configureClient()
-        coEvery { mockedDatabase.saveReport(token, onlyDateJsonBodyDeserialized) } returns SaveReportStatus.BadInput
+        coEvery { mockedUserInfoValidator.isUserIdInvalid(userId) } returns false
+        coEvery { mockedDatabase.saveReport(userId, onlyDateJsonBodyDeserialized) } returns SaveReportStatus.BadInput
 
-        val response = client.put("/report/$token") {
+        val response = client.put("/report/$userId") {
             contentType(ContentType.Application.Json)
             setBody(onlyDateJsonBody)
         }
 
+        coVerify { mockedUserInfoValidator.isUserIdInvalid(userId) }
+        coVerify { mockedDatabase.saveReport(userId, onlyDateJsonBodyDeserialized) }
         assertEquals(BAD_INPUT_DATA, response.bodyAsText())
         assertEquals(HttpStatusCode.BadRequest, response.status)
     }
 
     @Test
-    fun testPutLogParseErrorDifferentJson() = testApplication {
+    fun `test put report parse error different json`() = testApplication {
         val client = configureClient()
+        coEvery { mockedUserInfoValidator.isUserIdInvalid(userId) } returns false
 
-        val response = client.put("/report/$token") {
+        val response = client.put("/report/$userId") {
             contentType(ContentType.Application.Json)
             setBody(differentJson)
         }
 
+        coVerify { mockedUserInfoValidator.isUserIdInvalid(userId) }
         assertEquals(INVALID_INPUT_RESPONSE, response.bodyAsText())
         assertEquals(HttpStatusCode.BadRequest, response.status)
     }
 
     @Test
-    fun testPutLogParseErrorBadJson() = testApplication {
+    fun `test put report parse error bad json`() = testApplication {
         val client = configureClient()
+        coEvery { mockedUserInfoValidator.isUserIdInvalid(userId) } returns false
 
-        val response = client.put("/report/$token") {
+        val response = client.put("/report/$userId") {
             contentType(ContentType.Application.Json)
             setBody(badJson)
         }
 
+        coVerify { mockedUserInfoValidator.isUserIdInvalid(userId) }
         assertEquals(INVALID_INPUT_RESPONSE, response.bodyAsText())
         assertEquals(HttpStatusCode.BadRequest, response.status)
     }
 
-//    @Test
-//    fun testPutLogUnauthorized() = testApplication {
-//        val client = configureClient()
-//
-//        val response = client.put("/report/") {
-//            contentType(ContentType.Application.Json)
-//            setBody(jsonBody)
-//        }
-//
-//        assertEquals(INVALID_TOKEN_RESPONSE, response.bodyAsText())
-//        assertEquals(HttpStatusCode.Unauthorized, response.status)
-//    }
+    @Test
+    fun `test put report bad user id unauthorized response`() = testApplication {
+        val client = configureClient()
+        coEvery { mockedUserInfoValidator.isUserIdInvalid(userId) } returns true
+
+        val response = client.put("/report/$userId") {
+            contentType(ContentType.Application.Json)
+            setBody(jsonBody)
+        }
+
+        coVerify { mockedUserInfoValidator.isUserIdInvalid(userId) }
+        assertEquals(INVALID_USER_ID_RESPONSE, response.bodyAsText())
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
+    }
 }

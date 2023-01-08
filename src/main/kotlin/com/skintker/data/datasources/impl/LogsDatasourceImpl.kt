@@ -14,42 +14,41 @@ class LogsDatasourceImpl : LogsDatasource {
 
     private fun resultRowToArticle(row: ResultRow) = DailyLog(
 //        id = row[Logs.id],
-        date = row[Logs.dayDate],
-        foodList = row[Logs.foodList].split(","),
-    )
+        date = row[Logs.dayDate], foodList = row[Logs.foodList].split(",")
+        //TODO: Retrieve additional properties from a log
 
+    )
 
     override suspend fun getAllLogs(userId: String): List<DailyLog> = dbQuery {
         Logs.select { Logs.userId eq userId }.map(::resultRowToArticle)
     }
 
     override suspend fun getLog(idValues: LogIdValues): DailyLog? = dbQuery {
-        Logs
-            .select { Logs.userId eq idValues.userId and (Logs.dayDate eq idValues.dayDate) }
-            .map(::resultRowToArticle)
+        Logs.select { Logs.userId eq idValues.userId and (Logs.dayDate eq idValues.dayDate) }.map(::resultRowToArticle)
             .singleOrNull()
     }
 
     override suspend fun addNewLog(
-        idValues: LogIdValues,
-        food: List<String>?,
-        irritation: Irritation?,
-        additionalData: AdditionalData?
+        idValues: LogIdValues, food: List<String>?, irritation: Irritation?, additionalData: AdditionalData?
     ): DailyLog? = dbQuery {
         val insertStatement = Logs.insert { insertStatement ->
             insertStatement[userId] = idValues.userId
             insertStatement[dayDate] = idValues.dayDate
             food?.let { insertStatement[foodList] = it.joinToString(",") }
+            irritation?.let {
+                //TODO: Perform irritation insertion
+            }
+            additionalData?.let {
+                //TODO: Perform additionalData insertion
+
+            }
 
         }
         insertStatement.resultedValues?.singleOrNull()?.let(::resultRowToArticle)
     }
 
     override suspend fun editLog(
-        idValues: LogIdValues,
-        food: List<String>?,
-        irritation: Irritation?,
-        additionalData: AdditionalData?
+        idValues: LogIdValues, food: List<String>?, irritation: Irritation?, additionalData: AdditionalData?
     ): Boolean = dbQuery {
         Logs.update({ Logs.userId eq idValues.userId and (Logs.dayDate eq idValues.dayDate) }) { insertStatement ->
             food?.let { insertStatement[foodList] = it.joinToString(",") }

@@ -1,37 +1,35 @@
 package com.skintker.routes.reports
 
+import com.skintker.constants.ResponseCodes
 import com.skintker.constants.ResponseConstants
-import com.skintker.exception.TokenException
 import com.skintker.data.repository.ReportsRepository
+import com.skintker.data.responses.LogListResponse
+import com.skintker.data.responses.ServiceResponse
+import com.skintker.data.validators.UserInfoValidator
+import com.skintker.routes.PathParams.USER_ID_PARAM
+import com.skintker.routes.QueryParams
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-const val TOKEN_PATH_PARAM = "token"
-
-fun Route.getReports(reportsRepository: ReportsRepository) {
+fun Route.getReports(reportsRepository: ReportsRepository, userInfoValidator: UserInfoValidator) {
     /**
      * Get all the reports from a given user token
      */
-    get("/{$TOKEN_PATH_PARAM}") {
-        try {
-            val token = call.parameters[TOKEN_PATH_PARAM]
-            if (token.isNullOrEmpty()) { //TODO: Verify also that is a valid token from a user and return different exceptions
-                throw TokenException()
-            }
-
-            val userReportList = reportsRepository.getReports(token)
-            call.respond(status = HttpStatusCode.OK, userReportList)
-        } catch (exception: Exception) {
-            when (exception) {
-                is TokenException -> call.respondText(
-                    ResponseConstants.INVALID_TOKEN_RESPONSE,
-                    status = HttpStatusCode.Unauthorized
+    get("/reports/{${USER_ID_PARAM}}") {
+        val userId = call.parameters[USER_ID_PARAM]
+        if (userInfoValidator.isUserIdInvalid(userId)) {
+            call.respondText(
+                ResponseConstants.INVALID_USER_ID_RESPONSE, status = HttpStatusCode.Unauthorized
+            )
+        } else {
+            call.respond(
+                status = HttpStatusCode.OK, ServiceResponse(
+                    statusCode = ResponseCodes.NO_ERROR,
+                    content = LogListResponse(reportsRepository.getReports(userId!!))
                 )
-
-                else -> call.respondText(ResponseConstants.GENERIC_ERROR_RESPONSE, status = HttpStatusCode.BadRequest)
-            }
+            )
         }
     }
 }

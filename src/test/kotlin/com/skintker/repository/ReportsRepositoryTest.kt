@@ -14,6 +14,8 @@ import org.junit.Before
 import org.junit.Test
 import org.koin.test.KoinTest
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class ReportsRepositoryTest : KoinTest {
 
@@ -33,6 +35,55 @@ class ReportsRepositoryTest : KoinTest {
     fun setup() {
         sut = ReportsRepositoryImpl(daoFacadeMock)
     }
+
+    @Test
+    fun `test delete report success`() {
+        coEvery { daoFacadeMock.deleteLog(idValues) } returns true
+
+        val status = runBlocking {
+            sut.deleteReport(idValues)
+        }
+
+        coVerify { daoFacadeMock.deleteLog(idValues) }
+        assertTrue(status)
+    }
+
+    @Test
+    fun `test delete report failed`() {
+        coEvery { daoFacadeMock.deleteLog(idValues) } returns false
+
+        val status = runBlocking {
+            sut.deleteReport(idValues)
+        }
+
+        coVerify { daoFacadeMock.deleteLog(idValues) }
+        assertFalse(status)
+    }
+
+    @Test
+    fun `test delete reports success`() {
+        coEvery { daoFacadeMock.deleteAllLogs(USER_ID) } returns true
+
+        val status = runBlocking {
+            sut.deleteReports(USER_ID)
+        }
+
+        coVerify { daoFacadeMock.deleteAllLogs(USER_ID) }
+        assertTrue(status)
+    }
+
+    @Test
+    fun `test delete reports failed`() {
+        coEvery { daoFacadeMock.deleteAllLogs(USER_ID) } returns false
+
+        val status = runBlocking {
+            sut.deleteReports(USER_ID)
+        }
+
+        coVerify { daoFacadeMock.deleteAllLogs(USER_ID) }
+        assertFalse(status)
+    }
+
 
     @Test
     fun `test save report saved success status`() {
@@ -92,21 +143,19 @@ class ReportsRepositoryTest : KoinTest {
 
     @Test
     fun `test save report bad input invalid user id status`() {
-
         val status = runBlocking {
             sut.saveReport("", log)
         }
 
         assertEquals(SaveReportStatus.BadInput, status)
     }
+
     @Test
     fun `test save report bad input no log data status`() {
-
         val status = runBlocking {
             sut.saveReport(USER_ID, DailyLog(date = DATE))
         }
 
         assertEquals(SaveReportStatus.BadInput, status)
     }
-
 }

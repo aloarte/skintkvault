@@ -1,45 +1,49 @@
 package com.skintker.routes.report
 
-import com.skintker.constants.ResponseConstants.GENERIC_ERROR_RESPONSE
-import com.skintker.constants.ResponseConstants.INVALID_INPUT_RESPONSE
-import com.skintker.constants.ResponseConstants.INVALID_TOKEN_RESPONSE
-import com.skintker.data.datasources.LogsDatasource
-import com.skintker.data.datasources.impl.LogsDatasourceImpl
-import com.skintker.exception.TokenException
+import com.skintker.constants.ResponseCodes
+import com.skintker.constants.ResponseConstants
+import com.skintker.constants.ResponseConstants.INVALID_PARAM_RESPONSE
+import com.skintker.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
 import com.skintker.data.repository.ReportsRepository
+import com.skintker.data.responses.ServiceResponse
+import com.skintker.data.validators.UserInfoValidator
+import com.skintker.model.LogIdValues
+import com.skintker.routes.PathParams.USER_ID_PARAM
+import com.skintker.routes.QueryParams.LOG_DATE_PARAM
 import io.ktor.http.*
-import io.ktor.serialization.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.deleteReport(reportsRepository: ReportsRepository) {
+fun Route.deleteReport(reportsRepository: ReportsRepository, userInfoValidator: UserInfoValidator) {
 
     /**
-     * Put a new report from the given user token and save it on the database
+     * Delete the given report from a given user
      */
-    get("/report/{$TOKEN_PATH_PARAM}") {
-        try {
-            val token = call.parameters[TOKEN_PATH_PARAM]
-            if (token.isNullOrEmpty()) {
-                throw TokenException()
+    delete("/report/{${USER_ID_PARAM}}") {
+        val userId = call.parameters[USER_ID_PARAM]
+        if (userInfoValidator.isUserIdInvalid(userId)) {
+            call.respondText(
+                INVALID_USER_ID_RESPONSE,
+                status = HttpStatusCode.Unauthorized
+            )
+        } else {
+            call.request.queryParameters[LOG_DATE_PARAM]?.let { logDate->
+                call.respond(
+                    status = HttpStatusCode.OK,
+                    message = if (reportsRepository.deleteReport(LogIdValues(logDate, userId!!))) {
+                        ServiceResponse(ResponseCodes.NO_ERROR, ResponseConstants.REPORT_DELETED_RESPONSE)
+                    } else {
+                        ServiceResponse(ResponseCodes.DATABASE_ISSUE, ResponseConstants.REPORT_NOT_DELETED_RESPONSE)
+                    }
+                )
+            } ?: run {
+                call.respondText(
+                    INVALID_PARAM_RESPONSE,
+                    status = HttpStatusCode.BadRequest
+                )
             }
 
-            val reports = reportsRepository.deleteReports(token)
-            call.respond(status = HttpStatusCode.OK, reports)
-
-
-        } catch (exception: Exception) {
-            when (exception) {
-                is JsonConvertException,
-                is BadRequestException,
-                is CannotTransformContentToTypeException -> {
-                    call.respondText(INVALID_INPUT_RESPONSE, status = HttpStatusCode.BadRequest)
-                }
-                is TokenException -> call.respondText(INVALID_TOKEN_RESPONSE, status = HttpStatusCode.Unauthorized)
-                else -> call.respondText("$GENERIC_ERROR_RESPONSE   ${exception.message}    ${exception.cause}", status = HttpStatusCode.BadRequest)
-            }
         }
     }
 }

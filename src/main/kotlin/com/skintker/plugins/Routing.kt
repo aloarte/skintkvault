@@ -1,16 +1,19 @@
 package com.skintker.plugins
 
 import com.skintker.data.repository.ReportsRepository
+import com.skintker.data.validators.UserInfoValidator
 import com.skintker.routes.home
 import com.skintker.routes.report.createReport
 import com.skintker.routes.report.deleteReport
-import com.skintker.routes.reports.removeReports
+import com.skintker.routes.reports.deleteReports
 import com.skintker.routes.reports.getReports
 import io.ktor.server.routing.*
 import io.ktor.server.application.*
 
 fun Application.configureRouting(
-    reportsRepository: ReportsRepository
+    reportsRepository: ReportsRepository,
+    userInfoValidator: UserInfoValidator
+
 ) {
 
     routing {
@@ -19,15 +22,13 @@ fun Application.configureRouting(
 
     //Everything requested to /report
     routing {
-        createReport(reportsRepository)
-        deleteReport(reportsRepository)
+        createReport(reportsRepository,userInfoValidator)
+        deleteReport(reportsRepository,userInfoValidator)
     }
 
+    //Everything requested to /reports
     routing {
-        route("/reports"){
-            getReports(reportsRepository)
-            removeReports(reportsRepository)
-        }
-
+        getReports(reportsRepository,userInfoValidator)
+        deleteReports(reportsRepository,userInfoValidator)
     }
 }
