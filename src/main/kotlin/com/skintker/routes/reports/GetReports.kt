@@ -10,7 +10,7 @@ import io.ktor.server.routing.*
 
 const val TOKEN_PATH_PARAM = "token"
 
-fun Route.retrieveReports(reportsRepository: ReportsRepository) {
+fun Route.getReports(reportsRepository: ReportsRepository) {
     /**
      * Get all the reports from a given user token
      */

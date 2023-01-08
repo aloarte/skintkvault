@@ -1,6 +1,7 @@
 package com.skintker.routes.report
 
 import com.skintker.DailyLogParseTest
+import com.skintker.constants.ResponseConstants.BAD_INPUT_DATA
 import com.skintker.constants.ResponseConstants.INVALID_INPUT_RESPONSE
 import com.skintker.constants.ResponseConstants.REPORT_EDITED_RESPONSE
 import com.skintker.constants.ResponseConstants.REPORT_NOT_EDITED_RESPONSE
@@ -29,10 +30,13 @@ class CreateReportTest:  KoinTest {
 
     companion object {
         const val jsonBody = "{\"date\":\"2012-04-23T18:25:43.511Z\",\"irritation\":{\"overallValue\":9,\"zoneValues\":[\"a\",\"b\",\"c\"]},\"additionalData\":{\"stressLevel\":9,\"weather\":{\"humidity\":9,\"temperature\":9},\"travel\":{\"traveled\":true,\"city\":\"Madrid\"},\"alcoholLevel\":\"None\",\"beerTypes\":[\"ba\",\"bb\",\"bc\"]}}"
+        const val onlyDateJsonBody = "{\"date\":\"2012-04-23T18:25:43.511Z\"}"
         const val badJson = "{\"dte\":\"2012-04-23T18:25:43.511Z\",\"irritation\":{\"overallValue\":9,\"zoneValues\":[\"a\",\"b\",\"c\"]},\"additionalData\":{\"stressLevel\":9,\"weather\":{\"humidity\":9,\"temperature\":9},\"travel\":{\"traveled\":true,\"city\":\"Madrid\"},\"alcoholLevel\":\"None\",\"beerTypes\":[\"ba\",\"bb\",\"bc\"]}}"
         const val differentJson = "\"date\":\"2012-04-23T18:25:43.511Z\",\"irritation\":{\"overallValue\":9,\"zoneValues\":[\"a\",\"b\",\"c\"]},\"additionalData\":{\"stressLevel\":9,\"weather\":{\"humidity\":9,\"temperature\":9},\"travel\":{\"traveled\":true,\"city\":\"Madrid\"},\"alcoholLevel\":\"None\",\"beerTypes\":[\"ba\",\"bb\",\"bc\"]}}"
         const val token =  "userToken"
-        val jsonDeserialized = Json.decodeFromString<DailyLog>(DailyLogParseTest.jsonBody)
+        val jsonDeserialized = Json.decodeFromString<DailyLog>(jsonBody)
+        val onlyDateJsonBodyDeserialized = Json.decodeFromString<DailyLog>(onlyDateJsonBody)
+
     }
 
     private fun ApplicationTestBuilder.configureClient() = createClient {
@@ -101,6 +105,19 @@ class CreateReportTest:  KoinTest {
         assertEquals(HttpStatusCode.BadRequest, response.status)
     }
 
+    @Test
+    fun `test put report bad input status`() = testApplication {
+        val client = configureClient()
+        coEvery { mockedDatabase.saveReport(token, onlyDateJsonBodyDeserialized) } returns SaveReportStatus.BadInput
+
+        val response = client.put("/report/$token") {
+            contentType(ContentType.Application.Json)
+            setBody(onlyDateJsonBody)
+        }
+
+        assertEquals(BAD_INPUT_DATA, response.bodyAsText())
+        assertEquals(HttpStatusCode.BadRequest, response.status)
+    }
 
     @Test
     fun testPutLogParseErrorDifferentJson() = testApplication {
@@ -114,8 +131,6 @@ class CreateReportTest:  KoinTest {
         assertEquals(INVALID_INPUT_RESPONSE, response.bodyAsText())
         assertEquals(HttpStatusCode.BadRequest, response.status)
     }
-
-
 
     @Test
     fun testPutLogParseErrorBadJson() = testApplication {

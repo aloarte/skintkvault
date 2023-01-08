@@ -5,6 +5,8 @@ import com.skintker.data.db.logs.Logs
 import com.skintker.data.dto.DailyLog
 import com.skintker.model.LogIdValues
 import com.skintker.data.datasources.LogsDatasource
+import com.skintker.data.dto.AdditionalData
+import com.skintker.data.dto.Irritation
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
@@ -28,18 +30,36 @@ class LogsDatasourceImpl : LogsDatasource {
             .singleOrNull()
     }
 
-    override suspend fun addNewLog(idValues: LogIdValues, food: List<String>): DailyLog? = dbQuery {
-        val insertStatement = Logs.insert {
-            it[userId] = idValues.userId
-            it[dayDate] = idValues.dayDate
-            it[foodList] = food.joinToString(",")
+    override suspend fun addNewLog(
+        idValues: LogIdValues,
+        food: List<String>?,
+        irritation: Irritation?,
+        additionalData: AdditionalData?
+    ): DailyLog? = dbQuery {
+        val insertStatement = Logs.insert { insertStatement ->
+            insertStatement[userId] = idValues.userId
+            insertStatement[dayDate] = idValues.dayDate
+            food?.let { insertStatement[foodList] = it.joinToString(",") }
+
         }
         insertStatement.resultedValues?.singleOrNull()?.let(::resultRowToArticle)
     }
 
-    override suspend fun editLog(idValues: LogIdValues, food: List<String>): Boolean = dbQuery {
-        Logs.update({ Logs.userId eq idValues.userId and (Logs.dayDate eq idValues.dayDate) }) {
-            it[foodList] = food.joinToString(",")
+    override suspend fun editLog(
+        idValues: LogIdValues,
+        food: List<String>?,
+        irritation: Irritation?,
+        additionalData: AdditionalData?
+    ): Boolean = dbQuery {
+        Logs.update({ Logs.userId eq idValues.userId and (Logs.dayDate eq idValues.dayDate) }) { insertStatement ->
+            food?.let { insertStatement[foodList] = it.joinToString(",") }
+            irritation?.let {
+                //TODO: Perform irritation insertion
+            }
+            additionalData?.let {
+                //TODO: Perform additionalData insertion
+
+            }
         } > 0
     }
 

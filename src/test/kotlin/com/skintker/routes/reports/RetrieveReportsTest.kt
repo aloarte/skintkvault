@@ -1,7 +1,10 @@
 package com.skintker.routes.reports
 
+import com.skintker.data.dto.AdditionalData
+import com.skintker.data.dto.AlcoholLevel
 import com.skintker.data.repository.ReportsRepository
 import com.skintker.data.dto.DailyLog
+import com.skintker.data.dto.Irritation
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.plugins.contentnegotiation.*
@@ -52,15 +55,15 @@ class RetrieveReportsTest:  KoinTest {
         val resultList = listOf(
             DailyLog(
                 date= "date",
-                irritation = DailyLog.Irritation(
+                irritation = Irritation(
                     overallValue=3,
                     zoneValues = listOf("Wrist","Chest")
                 ),
-                additionalData = DailyLog.AdditionalData(
+                additionalData = AdditionalData(
                     stressLevel=10,
-                    weather= DailyLog.AdditionalData.Weather(humidity = 5, temperature = 5),
-                    travel = DailyLog.AdditionalData.Travel(false,"Madrid"),
-                    alcoholLevel = DailyLog.AlcoholLevel.FewWine
+                    weather= AdditionalData.Weather(humidity = 5, temperature = 5),
+                    travel = AdditionalData.Travel(false,"Madrid"),
+                    alcoholLevel = AlcoholLevel.FewWine
                 ),
                 foodList = listOf("Bread","Milk","Eggs"))
         )

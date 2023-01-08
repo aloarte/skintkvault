@@ -90,4 +90,23 @@ class ReportsRepositoryTest : KoinTest {
         assertEquals(SaveReportStatus.EditingFailed, status)
     }
 
+    @Test
+    fun `test save report bad input invalid user id status`() {
+
+        val status = runBlocking {
+            sut.saveReport("", log)
+        }
+
+        assertEquals(SaveReportStatus.BadInput, status)
+    }
+    @Test
+    fun `test save report bad input no log data status`() {
+
+        val status = runBlocking {
+            sut.saveReport(USER_ID, DailyLog(date = DATE))
+        }
+
+        assertEquals(SaveReportStatus.BadInput, status)
+    }
+
 }

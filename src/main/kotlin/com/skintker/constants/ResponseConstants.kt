@@ -12,7 +12,7 @@ object ResponseConstants {
     const val REPORT_EDITED_RESPONSE = "Report edited correctly"
     const val REPORT_NOT_STORED_RESPONSE = "Report couldn't be stored"
     const val REPORT_NOT_EDITED_RESPONSE = "Report couldn't be edited"
-
+    const val BAD_INPUT_DATA = "Invalid input data"
 
     /* /REPORTS */
     const val REPORTS_NOT_DELETED_RESPONSE = "Reports couldn't be removed correctly"

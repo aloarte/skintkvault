@@ -1,5 +1,6 @@
 package com.skintker.routes.report
 
+import com.skintker.constants.ResponseConstants.BAD_INPUT_DATA
 import com.skintker.constants.ResponseConstants.GENERIC_ERROR_RESPONSE
 import com.skintker.constants.ResponseConstants.INVALID_INPUT_RESPONSE
 import com.skintker.constants.ResponseConstants.INVALID_TOKEN_RESPONSE
@@ -44,6 +45,7 @@ fun Route.createReport(reportsRepository: ReportsRepository) {
                 SaveReportStatus.Edited -> call.respondText(REPORT_EDITED_RESPONSE, status = HttpStatusCode.Accepted)
                 SaveReportStatus.SavingFailed -> call.respondText(REPORT_NOT_STORED_RESPONSE, status = HttpStatusCode.BadRequest)
                 SaveReportStatus.EditingFailed -> call.respondText(REPORT_NOT_EDITED_RESPONSE, status = HttpStatusCode.BadRequest)
+                SaveReportStatus.BadInput ->  call.respondText(BAD_INPUT_DATA, status = HttpStatusCode.BadRequest)
             }
 
         } catch (exception: Exception) {

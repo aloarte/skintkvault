@@ -14,11 +14,7 @@ import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.getReport(reportsRepository: ReportsRepository) {
-
-
-    val dao: LogsDatasource = LogsDatasourceImpl()
-
+fun Route.deleteReport(reportsRepository: ReportsRepository) {
 
     /**
      * Put a new report from the given user token and save it on the database
@@ -30,7 +26,7 @@ fun Route.getReport(reportsRepository: ReportsRepository) {
                 throw TokenException()
             }
 
-            val reports = dao.getAllLogs(token)
+            val reports = reportsRepository.deleteReports(token)
             call.respond(status = HttpStatusCode.OK, reports)
 
 
