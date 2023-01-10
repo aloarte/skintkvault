@@ -8,7 +8,7 @@ data class AdditionalData(
     val weather: Weather,
     val travel: Travel,
     val alcoholLevel: AlcoholLevel,
-    val beerTypes: List<String>? = emptyList()
+    val beerTypes: List<String> = emptyList()
 ) {
     @Serializable
     data class Weather(val humidity: Int, val temperature: Int)

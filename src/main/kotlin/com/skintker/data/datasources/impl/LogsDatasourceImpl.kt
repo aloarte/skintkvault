@@ -1,8 +1,9 @@
 package com.skintker.data.datasources.impl
 
+import com.skintker.data.datasources.AdditionalDataDatasource
 import com.skintker.data.datasources.IrritationsDatasource
 import com.skintker.data.db.DatabaseFactory.dbQuery
-import com.skintker.data.db.logs.Logs
+import com.skintker.data.db.logs.LogTable
 import com.skintker.data.dto.DailyLog
 import com.skintker.model.LogIdValues
 import com.skintker.data.datasources.LogsDatasource
@@ -12,31 +13,36 @@ import com.skintker.data.dto.AdditionalData
 import com.skintker.data.dto.Irritation
 import org.jetbrains.exposed.sql.*
 
-class LogsDatasourceImpl(private val irritationsDatasource: IrritationsDatasource) : LogsDatasource {
+class LogsDatasourceImpl(
+    private val irritationsDatasource: IrritationsDatasource,
+    private val additionalDataDatasource: AdditionalDataDatasource
+) : LogsDatasource {
 
     override suspend fun getAllLogs(userId: String): List<DailyLog> = dbQuery {
-        Logs.select { Logs.userId eq userId }.map {
+        LogTable.select { LogTable.userId eq userId }.map {
             logEntityToBo(LogsEntity.wrapRow(it))
         }
     }
 
     override suspend fun getLog(idValues: LogIdValues): DailyLog? = dbQuery {
-        Logs.select { (Logs.userId eq idValues.userId) and (Logs.dayDate eq idValues.dayDate) }.singleOrNull()?.let {
+        LogTable.select { (LogTable.userId eq idValues.userId) and (LogTable.dayDate eq idValues.dayDate) }.singleOrNull()?.let {
             logEntityToBo(LogsEntity.wrapRow(it))
         }
     }
 
     override suspend fun addNewLog(
-        idValues: LogIdValues, food: List<String>, irritationData: Irritation, additionalData: AdditionalData
+        idValues: LogIdValues, foodValue: List<String>, irritationValue: Irritation, additionalDataValue: AdditionalData
     ): Int = dbQuery {
 
-        val irritationEntity = irritationsDatasource.addNewIrritation(irritationData)
+        val irritationEntity = irritationsDatasource.addNewIrritation(irritationValue)
+        val additionalDataEntity = additionalDataDatasource.addNewAdditionalData(additionalDataValue)
 
         LogsEntity.new {
             dayDate = idValues.dayDate
             userId = idValues.userId
-            foodList = food.joinToString(",")
+            foodList = foodValue.joinToString(",")
             irritation = irritationEntity
+            additionalData = additionalDataEntity
         }.id.value
 
     }
@@ -47,11 +53,12 @@ class LogsDatasourceImpl(private val irritationsDatasource: IrritationsDatasourc
         irritationValue: Irritation,
         additionalDataValue: AdditionalData
     ): Boolean = dbQuery {
-        Logs.select { (Logs.userId eq idValues.userId) and (Logs.dayDate eq idValues.dayDate) }.singleOrNull()
+        LogTable.select { (LogTable.userId eq idValues.userId) and (LogTable.dayDate eq idValues.dayDate) }.singleOrNull()
             ?.let { resultRow ->
                 LogsEntity.wrapRow(resultRow).apply {
                     foodList = foodValue.joinToString(",")
                     irritationsDatasource.editIrritation(irritation.id.value, irritationValue)?.let { irritation = it }
+                    additionalDataDatasource.editAdditionalData(additionalData.id.value, additionalDataValue)?.let { additionalData = it }
                 }
 
             }
@@ -59,7 +66,7 @@ class LogsDatasourceImpl(private val irritationsDatasource: IrritationsDatasourc
     }
 
     override suspend fun deleteLog(idValues: LogIdValues): Boolean = dbQuery {
-        LogsEntity.find { (Logs.userId eq idValues.userId) and (Logs.dayDate eq idValues.dayDate) }
+        LogsEntity.find { (LogTable.userId eq idValues.userId) and (LogTable.dayDate eq idValues.dayDate) }
             .singleOrNull()?.let {
                 it.delete()
             }
@@ -67,7 +74,7 @@ class LogsDatasourceImpl(private val irritationsDatasource: IrritationsDatasourc
     }
 
     override suspend fun deleteAllLogs(userId: String): Boolean = dbQuery {
-        LogsEntity.find { Logs.userId eq userId }.forEach { it.delete() }
+        LogsEntity.find { LogTable.userId eq userId }.forEach { it.delete() }
         true
     }
 

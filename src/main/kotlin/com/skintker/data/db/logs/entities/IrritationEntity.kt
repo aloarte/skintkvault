@@ -1,15 +1,15 @@
 package com.skintker.data.db.logs.entities
 
 
-import com.skintker.data.db.logs.Irritations
-import com.skintker.data.db.logs.Logs
+import com.skintker.data.db.logs.IrritationTable
+import com.skintker.data.db.logs.LogTable
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
 class IrritationEntity(id: EntityID<Int>):IntEntity(id) {
-    companion object : IntEntityClass<IrritationEntity>(Irritations)
-    var value by Irritations.value
-    var zoneValues by Irritations.zoneValues
-    val logs by LogsEntity referrersOn Logs.irritation
+    companion object : IntEntityClass<IrritationEntity>(IrritationTable)
+    var value by IrritationTable.value
+    var zoneValues by IrritationTable.zoneValues
+    val logs by LogsEntity referrersOn LogTable.irritation
 }

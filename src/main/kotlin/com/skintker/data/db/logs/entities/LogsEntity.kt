@@ -1,14 +1,15 @@
 package com.skintker.data.db.logs.entities
 
-import com.skintker.data.db.logs.Logs
+import com.skintker.data.db.logs.LogTable
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
 class LogsEntity(id: EntityID<Int>):IntEntity(id) {
-    companion object : IntEntityClass<LogsEntity>(Logs)
-    var userId by Logs.userId
-    var dayDate by Logs.dayDate
-    var foodList by Logs.foodList
-    var irritation by IrritationEntity referencedOn Logs.irritation
+    companion object : IntEntityClass<LogsEntity>(LogTable)
+    var userId by LogTable.userId
+    var dayDate by LogTable.dayDate
+    var foodList by LogTable.foodList
+    var irritation by IrritationEntity referencedOn LogTable.irritation
+    var additionalData by AdditionalDataEntity referencedOn LogTable.additionalData
 }
