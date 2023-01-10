@@ -1,6 +1,8 @@
 package com.skintker.di
 
+import com.skintker.data.datasources.IrritationsDatasource
 import com.skintker.data.datasources.LogsDatasource
+import com.skintker.data.datasources.impl.IrritationsDatasourceImpl
 import com.skintker.data.datasources.impl.LogsDatasourceImpl
 import com.skintker.data.repository.ReportsRepository
 import com.skintker.data.repository.impl.ReportsRepositoryImpl
@@ -16,5 +18,7 @@ val repository = module {
 }
 
 val dao = module {
-    factory<LogsDatasource> { LogsDatasourceImpl() }
+    factory<LogsDatasource> { LogsDatasourceImpl(get()) }
+    factory<IrritationsDatasource> { IrritationsDatasourceImpl() }
+
 }

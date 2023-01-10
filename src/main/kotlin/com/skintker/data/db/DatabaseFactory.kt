@@ -1,5 +1,6 @@
 package com.skintker.data.db
 
+import com.skintker.data.db.logs.Irritations
 import com.skintker.data.db.logs.Logs
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.*
@@ -12,7 +13,9 @@ object DatabaseFactory {
         val jdbcURL = "jdbc:h2:file:./build/db"
         val database = Database.connect(jdbcURL, driverClassName)
         transaction(database) {
-            SchemaUtils.create(Logs)
+            SchemaUtils.drop(Logs,Irritations)
+            SchemaUtils.create(Logs,Irritations)
+
         }
 
     }

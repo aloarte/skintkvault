@@ -12,16 +12,16 @@ interface LogsDatasource {
 
     suspend fun addNewLog(
         idValues: LogIdValues,
-        food: List<String>? = null,
-        irritation: Irritation? = null,
-        additionalData: AdditionalData? = null
-    ): DailyLog?
+        foodValue: List<String>,
+        irritationValue: Irritation,
+        additionalDataValue: AdditionalData
+    ): Int
 
     suspend fun editLog(
         idValues: LogIdValues,
-        food: List<String>? = null,
-        irritation: Irritation? = null,
-        additionalData: AdditionalData? = null
+        foodValue: List<String>,
+        irritationValue: Irritation,
+        additionalDataValue: AdditionalData
     ): Boolean
 
     suspend fun deleteLog(idValues: LogIdValues): Boolean

@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Irritation(
     val overallValue: Int,
-    val zoneValues: List<String>?= emptyList()
+    val zoneValues: List<String>
 )
