@@ -1,15 +1,15 @@
 package com.skintker.routes.report
 
-import com.skintker.constants.ResponseCodes.DATABASE_ISSUE
-import com.skintker.constants.ResponseCodes.NO_ERROR
-import com.skintker.constants.ResponseConstants.INVALID_PARAM_RESPONSE
-import com.skintker.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
-import com.skintker.constants.ResponseConstants.REPORT_DELETED_RESPONSE
-import com.skintker.constants.ResponseConstants.REPORT_NOT_DELETED_RESPONSE
-import com.skintker.data.repository.ReportsRepository
-import com.skintker.data.responses.ServiceResponse
+import com.skintker.domain.constants.ResponseCodes.DATABASE_ISSUE
+import com.skintker.domain.constants.ResponseCodes.NO_ERROR
+import com.skintker.domain.constants.ResponseConstants.INVALID_PARAM_RESPONSE
+import com.skintker.domain.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
+import com.skintker.domain.constants.ResponseConstants.REPORT_DELETED_RESPONSE
+import com.skintker.domain.constants.ResponseConstants.REPORT_NOT_DELETED_RESPONSE
+import com.skintker.domain.repository.ReportsRepository
+import com.skintker.domain.model.responses.ServiceResponse
 import com.skintker.data.validators.InputValidator
-import com.skintker.model.LogIdValues
+import com.skintker.domain.model.LogIdValues
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.plugins.contentnegotiation.*

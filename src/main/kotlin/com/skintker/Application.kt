@@ -1,7 +1,7 @@
 package com.skintker
 
 import com.skintker.data.db.DatabaseFactory
-import com.skintker.data.repository.ReportsRepository
+import com.skintker.domain.repository.ReportsRepository
 import com.skintker.data.validators.InputValidator
 import io.ktor.server.application.*
 import com.skintker.plugins.*

@@ -1,4 +1,4 @@
-package com.skintker.constants
+package com.skintker.domain.constants
 
 object ResponseConstants {
     /** ERRORS */

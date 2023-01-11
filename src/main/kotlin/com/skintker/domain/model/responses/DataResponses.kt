@@ -1,4 +1,4 @@
-package com.skintker.data.responses
+package com.skintker.domain.model.responses
 
 import com.skintker.data.dto.DailyLog
 import kotlinx.serialization.Serializable

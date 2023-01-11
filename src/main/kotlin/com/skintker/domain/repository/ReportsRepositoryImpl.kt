@@ -1,10 +1,9 @@
-package com.skintker.data.repository.impl
+package com.skintker.domain.repository
 
 import com.skintker.data.datasources.LogsDatasource
-import com.skintker.data.repository.ReportsRepository
 import com.skintker.data.dto.DailyLog
-import com.skintker.model.LogIdValues
-import com.skintker.model.SaveReportStatus
+import com.skintker.domain.model.LogIdValues
+import com.skintker.domain.model.SaveReportStatus
 
 class ReportsRepositoryImpl(private val logsDao: LogsDatasource) : ReportsRepository {
 

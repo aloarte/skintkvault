@@ -1,14 +1,14 @@
-package com.skintker.repository
+package com.skintker.domain
 
 import com.skintker.data.datasources.LogsDatasource
 import com.skintker.data.dto.AdditionalData
 import com.skintker.data.dto.AlcoholLevel
 import com.skintker.data.dto.DailyLog
 import com.skintker.data.dto.Irritation
-import com.skintker.data.repository.ReportsRepository
-import com.skintker.model.LogIdValues
-import com.skintker.model.SaveReportStatus
-import com.skintker.data.repository.impl.ReportsRepositoryImpl
+import com.skintker.domain.repository.ReportsRepository
+import com.skintker.domain.model.LogIdValues
+import com.skintker.domain.model.SaveReportStatus
+import com.skintker.domain.repository.ReportsRepositoryImpl
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

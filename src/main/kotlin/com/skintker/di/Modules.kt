@@ -6,8 +6,8 @@ import com.skintker.data.datasources.LogsDatasource
 import com.skintker.data.datasources.impl.AdditionalDataDatasourceImpl
 import com.skintker.data.datasources.impl.IrritationsDatasourceImpl
 import com.skintker.data.datasources.impl.LogsDatasourceImpl
-import com.skintker.data.repository.ReportsRepository
-import com.skintker.data.repository.impl.ReportsRepositoryImpl
+import com.skintker.domain.repository.ReportsRepository
+import com.skintker.domain.repository.ReportsRepositoryImpl
 import com.skintker.data.validators.InputValidator
 import org.koin.dsl.module
 

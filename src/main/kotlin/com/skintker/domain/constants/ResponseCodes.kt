@@ -1,4 +1,4 @@
-package com.skintker.constants
+package com.skintker.domain.constants
 
 object ResponseCodes {
     const val NO_ERROR = 0

@@ -1,8 +1,8 @@
-package com.skintker.data.repository
+package com.skintker.domain.repository
 
 import com.skintker.data.dto.DailyLog
-import com.skintker.model.LogIdValues
-import com.skintker.model.SaveReportStatus
+import com.skintker.domain.model.LogIdValues
+import com.skintker.domain.model.SaveReportStatus
 
 interface ReportsRepository {
     suspend fun getReports(userId: String): List<DailyLog>

@@ -1,13 +1,13 @@
 package com.skintker.routes.report
 
-import com.skintker.constants.ResponseCodes
-import com.skintker.constants.ResponseConstants
-import com.skintker.constants.ResponseConstants.INVALID_PARAM_RESPONSE
-import com.skintker.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
-import com.skintker.data.repository.ReportsRepository
-import com.skintker.data.responses.ServiceResponse
+import com.skintker.domain.constants.ResponseCodes
+import com.skintker.domain.constants.ResponseConstants
+import com.skintker.domain.constants.ResponseConstants.INVALID_PARAM_RESPONSE
+import com.skintker.domain.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
+import com.skintker.domain.repository.ReportsRepository
+import com.skintker.domain.model.responses.ServiceResponse
 import com.skintker.data.validators.InputValidator
-import com.skintker.model.LogIdValues
+import com.skintker.domain.model.LogIdValues
 import com.skintker.routes.PathParams.USER_ID_PARAM
 import com.skintker.routes.QueryParams.LOG_DATE_PARAM
 import io.ktor.http.*

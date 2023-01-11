@@ -1,10 +1,10 @@
 package com.skintker.routes.reports
 
-import com.skintker.constants.ResponseCodes
-import com.skintker.constants.ResponseConstants
-import com.skintker.data.repository.ReportsRepository
-import com.skintker.data.responses.LogListResponse
-import com.skintker.data.responses.ServiceResponse
+import com.skintker.domain.constants.ResponseCodes
+import com.skintker.domain.constants.ResponseConstants
+import com.skintker.domain.repository.ReportsRepository
+import com.skintker.domain.model.responses.LogListResponse
+import com.skintker.domain.model.responses.ServiceResponse
 import com.skintker.data.validators.InputValidator
 import com.skintker.routes.PathParams.USER_ID_PARAM
 import io.ktor.http.*

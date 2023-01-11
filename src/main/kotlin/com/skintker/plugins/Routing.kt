@@ -1,6 +1,6 @@
 package com.skintker.plugins
 
-import com.skintker.data.repository.ReportsRepository
+import com.skintker.domain.repository.ReportsRepository
 import com.skintker.data.validators.InputValidator
 import com.skintker.routes.home
 import com.skintker.routes.report.createReport

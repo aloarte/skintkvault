@@ -5,7 +5,7 @@ import com.skintker.data.datasources.IrritationsDatasource
 import com.skintker.data.db.DatabaseFactory.dbQuery
 import com.skintker.data.db.logs.LogTable
 import com.skintker.data.dto.DailyLog
-import com.skintker.model.LogIdValues
+import com.skintker.domain.model.LogIdValues
 import com.skintker.data.datasources.LogsDatasource
 import com.skintker.data.db.logs.entities.EntityParsers.logEntityToBo
 import com.skintker.data.db.logs.entities.LogsEntity

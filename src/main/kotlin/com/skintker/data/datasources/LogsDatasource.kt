@@ -3,7 +3,7 @@ package com.skintker.data.datasources
 import com.skintker.data.dto.AdditionalData
 import com.skintker.data.dto.DailyLog
 import com.skintker.data.dto.Irritation
-import com.skintker.model.LogIdValues
+import com.skintker.domain.model.LogIdValues
 
 interface LogsDatasource {
     suspend fun getAllLogs(userId: String): List<DailyLog>
