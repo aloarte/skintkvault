@@ -8,11 +8,11 @@ import com.skintker.data.datasources.impl.IrritationsDatasourceImpl
 import com.skintker.data.datasources.impl.LogsDatasourceImpl
 import com.skintker.data.repository.ReportsRepository
 import com.skintker.data.repository.impl.ReportsRepositoryImpl
-import com.skintker.data.validators.UserInfoValidator
+import com.skintker.data.validators.InputValidator
 import org.koin.dsl.module
 
 val validators = module {
-    factory { UserInfoValidator () }
+    factory { InputValidator () }
 }
 
 val repository = module {

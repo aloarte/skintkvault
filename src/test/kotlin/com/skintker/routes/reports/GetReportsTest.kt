@@ -9,7 +9,7 @@ import com.skintker.data.dto.DailyLog
 import com.skintker.data.dto.Irritation
 import com.skintker.data.responses.LogListResponse
 import com.skintker.data.responses.ServiceResponse
-import com.skintker.data.validators.UserInfoValidator
+import com.skintker.data.validators.InputValidator
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.plugins.contentnegotiation.*
@@ -50,14 +50,14 @@ class GetReportsTest : KoinTest {
 
     private val mockedDatabase = mockk<ReportsRepository>()
 
-    private val mockedUserInfoValidator = mockk<UserInfoValidator>()
+    private val mockedInputValidator = mockk<InputValidator>()
 
 
     private fun ApplicationTestBuilder.configureClient() = createClient {
         with(this@configureClient) {
             application {
                 configureKoin()
-                configureRouting(mockedDatabase, mockedUserInfoValidator)
+                configureRouting(mockedDatabase, mockedInputValidator)
             }
             install(ContentNegotiation) { json() }
         }
@@ -66,12 +66,12 @@ class GetReportsTest : KoinTest {
     @Test
     fun `test get logs empty answer`() = testApplication {
         val client = configureClient()
-        coEvery { mockedUserInfoValidator.isUserIdInvalid(userId) } returns false
+        coEvery { mockedInputValidator.isUserIdInvalid(userId) } returns false
         coEvery { mockedDatabase.getReports(userId) } returns emptyList()
 
         val response = client.get("/reports/$userId")
 
-        coVerify { mockedUserInfoValidator.isUserIdInvalid(userId) }
+        coVerify { mockedInputValidator.isUserIdInvalid(userId) }
         coVerify { mockedDatabase.getReports(userId) }
         val serviceResponse = Json.decodeFromString<ServiceResponse>(response.body())
         assertEquals(HttpStatusCode.OK, response.status)
@@ -83,13 +83,13 @@ class GetReportsTest : KoinTest {
     @Test
     fun testGetLogsSuccessListWithLogsAnswer() = testApplication {
         val client = configureClient()
-        coEvery { mockedUserInfoValidator.isUserIdInvalid(userId) } returns false
+        coEvery { mockedInputValidator.isUserIdInvalid(userId) } returns false
         coEvery { mockedDatabase.getReports(userId) } returns resultList
 
         val response = client.get("/reports/$userId")
 
 
-        coVerify { mockedUserInfoValidator.isUserIdInvalid(userId) }
+        coVerify { mockedInputValidator.isUserIdInvalid(userId) }
         coVerify { mockedDatabase.getReports(userId) }
         val serviceResponse = Json.decodeFromString<ServiceResponse>(response.body())
         assertEquals(HttpStatusCode.OK, response.status)
@@ -101,11 +101,11 @@ class GetReportsTest : KoinTest {
     @Test
     fun `test get logs unauthorized`() = testApplication {
         val client = configureClient()
-        coEvery { mockedUserInfoValidator.isUserIdInvalid(userId) } returns true
+        coEvery { mockedInputValidator.isUserIdInvalid(userId) } returns true
 
         val response = client.get("/reports/${userId}")
 
-        coVerify { mockedUserInfoValidator.isUserIdInvalid(userId) }
+        coVerify { mockedInputValidator.isUserIdInvalid(userId) }
         assertEquals(ResponseConstants.INVALID_USER_ID_RESPONSE, response.bodyAsText())
         assertEquals(HttpStatusCode.Unauthorized, response.status)
     }

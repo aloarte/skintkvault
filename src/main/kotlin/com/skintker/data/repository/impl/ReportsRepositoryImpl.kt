@@ -21,10 +21,6 @@ class ReportsRepositoryImpl(private val logsDao: LogsDatasource) : ReportsReposi
     }
 
     override suspend fun saveReport(userId: String, report: DailyLog): SaveReportStatus {
-        //If the 3 possible fields to modify in the log are null, return an error
-//        if ((report.foodList == null && report.irritation == null && report.additionalData == null) || userId.isEmpty()) {  //TODO: Improve the userId check
-//            return SaveReportStatus.BadInput
-//        }
         val idValues = LogIdValues(dayDate = report.date, userId = userId)
         //First try to get the log to know if the log must be edited or added
         val result = if (logsDao.getLog(idValues) == null) {

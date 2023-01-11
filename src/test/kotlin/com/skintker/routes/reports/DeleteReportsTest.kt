@@ -7,7 +7,7 @@ import com.skintker.constants.ResponseConstants.REPORTS_DELETED_RESPONSE
 import com.skintker.constants.ResponseConstants.REPORTS_NOT_DELETED_RESPONSE
 import com.skintker.data.repository.ReportsRepository
 import com.skintker.data.responses.ServiceResponse
-import com.skintker.data.validators.UserInfoValidator
+import com.skintker.data.validators.InputValidator
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.plugins.contentnegotiation.*
@@ -31,13 +31,13 @@ class DeleteReportsTest:  KoinTest {
 
     private val mockedDatabase = mockk<ReportsRepository>()
 
-    private val mockedUserInfoValidator = mockk<UserInfoValidator>()
+    private val mockedInputValidator = mockk<InputValidator>()
 
     private fun ApplicationTestBuilder.configureClient() = createClient {
         with(this@configureClient) {
             application {
                 configureKoin()
-                configureRouting(mockedDatabase,mockedUserInfoValidator)
+                configureRouting(mockedDatabase,mockedInputValidator)
             }
             install(ContentNegotiation) { json() }
         }
@@ -46,12 +46,12 @@ class DeleteReportsTest:  KoinTest {
     @Test
     fun `test delete logs success`() = testApplication {
         val client = configureClient()
-        coEvery { mockedUserInfoValidator.isUserIdInvalid(userId) } returns false
+        coEvery { mockedInputValidator.isUserIdInvalid(userId) } returns false
         coEvery { mockedDatabase.deleteReports(userId) } returns true
 
         val response = client.delete("/reports/$userId")
 
-        coVerify { mockedUserInfoValidator.isUserIdInvalid(userId) }
+        coVerify { mockedInputValidator.isUserIdInvalid(userId) }
         coVerify { mockedDatabase.deleteReports(userId) }
         assertEquals(HttpStatusCode.OK, response.status)
         val expectedResponse = ServiceResponse(NO_ERROR, REPORTS_DELETED_RESPONSE)
@@ -61,12 +61,12 @@ class DeleteReportsTest:  KoinTest {
     @Test
     fun `test delete logs failed`()= testApplication {
         val client = configureClient()
-        coEvery { mockedUserInfoValidator.isUserIdInvalid(userId) } returns false
+        coEvery { mockedInputValidator.isUserIdInvalid(userId) } returns false
         coEvery { mockedDatabase.deleteReports(userId) } returns false
 
         val response = client.delete("/reports/$userId")
 
-        coVerify { mockedUserInfoValidator.isUserIdInvalid(userId) }
+        coVerify { mockedInputValidator.isUserIdInvalid(userId) }
         coVerify { mockedDatabase.deleteReports(userId) }
         assertEquals(HttpStatusCode.OK, response.status)
         val expectedResponse = ServiceResponse(DATABASE_ISSUE, REPORTS_NOT_DELETED_RESPONSE)
@@ -76,11 +76,11 @@ class DeleteReportsTest:  KoinTest {
     @Test
     fun `test delete logs unauthorized`() = testApplication {
         val client = configureClient()
-        coEvery { mockedUserInfoValidator.isUserIdInvalid(userId) } returns true
+        coEvery { mockedInputValidator.isUserIdInvalid(userId) } returns true
 
         val response = client.delete("/reports/$userId")
 
-        coVerify { mockedUserInfoValidator.isUserIdInvalid(userId) }
+        coVerify { mockedInputValidator.isUserIdInvalid(userId) }
         assertEquals(INVALID_USER_ID_RESPONSE, response.bodyAsText())
         assertEquals(HttpStatusCode.Unauthorized, response.status)
     }

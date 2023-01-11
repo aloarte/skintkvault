@@ -6,7 +6,7 @@ import com.skintker.constants.ResponseConstants.INVALID_PARAM_RESPONSE
 import com.skintker.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
 import com.skintker.data.repository.ReportsRepository
 import com.skintker.data.responses.ServiceResponse
-import com.skintker.data.validators.UserInfoValidator
+import com.skintker.data.validators.InputValidator
 import com.skintker.model.LogIdValues
 import com.skintker.routes.PathParams.USER_ID_PARAM
 import com.skintker.routes.QueryParams.LOG_DATE_PARAM
@@ -15,14 +15,14 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.deleteReport(reportsRepository: ReportsRepository, userInfoValidator: UserInfoValidator) {
+fun Route.deleteReport(reportsRepository: ReportsRepository, inputValidator: InputValidator) {
 
     /**
      * Delete the given report from a given user
      */
     delete("/report/{${USER_ID_PARAM}}") {
         val userId = call.parameters[USER_ID_PARAM]
-        if (userInfoValidator.isUserIdInvalid(userId)) {
+        if (inputValidator.isUserIdInvalid(userId)) {
             call.respondText(
                 INVALID_USER_ID_RESPONSE,
                 status = HttpStatusCode.Unauthorized

@@ -1,7 +1,7 @@
 package com.skintker.plugins
 
 import com.skintker.data.repository.ReportsRepository
-import com.skintker.data.validators.UserInfoValidator
+import com.skintker.data.validators.InputValidator
 import com.skintker.routes.home
 import com.skintker.routes.report.createReport
 import com.skintker.routes.report.deleteReport
@@ -12,7 +12,7 @@ import io.ktor.server.application.*
 
 fun Application.configureRouting(
     reportsRepository: ReportsRepository,
-    userInfoValidator: UserInfoValidator
+    inputValidator: InputValidator
 
 ) {
 
@@ -22,13 +22,13 @@ fun Application.configureRouting(
 
     //Everything requested to /report
     routing {
-        createReport(reportsRepository,userInfoValidator)
-        deleteReport(reportsRepository,userInfoValidator)
+        createReport(reportsRepository,inputValidator)
+        deleteReport(reportsRepository,inputValidator)
     }
 
     //Everything requested to /reports
     routing {
-        getReports(reportsRepository,userInfoValidator)
-        deleteReports(reportsRepository,userInfoValidator)
+        getReports(reportsRepository,inputValidator)
+        deleteReports(reportsRepository,inputValidator)
     }
 }
