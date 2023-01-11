@@ -2,10 +2,12 @@ package com.skintker.constants
 
 object ResponseConstants {
     /** ERRORS */
-    const val INVALID_INPUT_RESPONSE = "Invalid input. Verify that your input is not malformed."
-    const val INVALID_USER_ID_RESPONSE = "Invalid user id. "
+    const val INVALID_INPUT_RESPONSE = "Invalid input. Verify that your input is not malformed"
+    const val INVALID_USER_ID_RESPONSE = "Invalid user id"
     const val GENERIC_ERROR_RESPONSE = "Something went wrong. Please, contact with the support team"
-    const val INVALID_PARAM_RESPONSE = "Invalid query param."
+    const val DATABASE_ERROR = "Error in the database"
+
+    const val INVALID_PARAM_RESPONSE = "Invalid query param"
 
     /* /REPORT */
     const val REPORT_STORED_RESPONSE = "Report stored correctly"

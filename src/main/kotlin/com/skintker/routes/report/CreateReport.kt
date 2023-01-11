@@ -4,6 +4,7 @@ import com.skintker.constants.ResponseCodes.DATABASE_ISSUE
 import com.skintker.constants.ResponseCodes.INVALID_INPUT
 import com.skintker.constants.ResponseCodes.NO_ERROR
 import com.skintker.constants.ResponseConstants.BAD_INPUT_DATA
+import com.skintker.constants.ResponseConstants.DATABASE_ERROR
 import com.skintker.constants.ResponseConstants.GENERIC_ERROR_RESPONSE
 import com.skintker.constants.ResponseConstants.INVALID_INPUT_RESPONSE
 import com.skintker.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
@@ -24,6 +25,7 @@ import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.jetbrains.exposed.sql.statements.BatchDataInconsistentException
 
 
 fun Route.createReport(reportsRepository: ReportsRepository, inputValidator: InputValidator) {
@@ -39,25 +41,34 @@ fun Route.createReport(reportsRepository: ReportsRepository, inputValidator: Inp
             } else {
                 val log = call.receive<DailyLog>()
                 val errorMessageInvalidLog = inputValidator.isLogInvalid(log)
-                if(errorMessageInvalidLog!=null){
+                if (errorMessageInvalidLog != null) {
                     call.respond(
                         status = HttpStatusCode.OK, message = ServiceResponse(INVALID_INPUT, errorMessageInvalidLog)
                     )
-                }else{
+                } else {
                     when (reportsRepository.saveReport(userId!!, log)) {
                         SaveReportStatus.Saved -> call.respond(
                             status = HttpStatusCode.Created, message = ServiceResponse(NO_ERROR, REPORT_STORED_RESPONSE)
                         )
+
                         SaveReportStatus.Edited -> call.respond(
                             status = HttpStatusCode.OK, message = ServiceResponse(NO_ERROR, REPORT_EDITED_RESPONSE)
                         )
+
                         SaveReportStatus.SavingFailed -> call.respond(
-                            status = HttpStatusCode.OK, message = ServiceResponse(DATABASE_ISSUE, REPORT_NOT_STORED_RESPONSE)
+                            status = HttpStatusCode.OK,
+                            message = ServiceResponse(DATABASE_ISSUE, REPORT_NOT_STORED_RESPONSE)
                         )
+
                         SaveReportStatus.EditingFailed -> call.respond(
-                            status = HttpStatusCode.OK, message = ServiceResponse(DATABASE_ISSUE, REPORT_NOT_EDITED_RESPONSE)
+                            status = HttpStatusCode.OK,
+                            message = ServiceResponse(DATABASE_ISSUE, REPORT_NOT_EDITED_RESPONSE)
                         )
-                        SaveReportStatus.BadInput -> call.respondText(BAD_INPUT_DATA, status = HttpStatusCode.BadRequest)
+
+                        SaveReportStatus.BadInput -> call.respondText(
+                            BAD_INPUT_DATA,
+                            status = HttpStatusCode.BadRequest
+                        )
                     }
                 }
             }
@@ -67,10 +78,14 @@ fun Route.createReport(reportsRepository: ReportsRepository, inputValidator: Inp
                     call.respondText(INVALID_INPUT_RESPONSE, status = HttpStatusCode.BadRequest)
                 }
 
-                else -> call.respondText(
-                    "$GENERIC_ERROR_RESPONSE   ${exception.message}    ${exception.cause}",
-                    status = HttpStatusCode.BadRequest
-                )
+                is BatchDataInconsistentException -> {
+                    call.respond(
+                        status = HttpStatusCode.OK, message = ServiceResponse(DATABASE_ISSUE, DATABASE_ERROR)
+                    )
+                }
+                else -> {
+                    call.respondText(GENERIC_ERROR_RESPONSE, status = HttpStatusCode.BadRequest)
+                }
             }
         }
     }

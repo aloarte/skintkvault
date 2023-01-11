@@ -7,7 +7,7 @@ object AdditionalDataTable : IntIdTable(){
     val weatherHumidity = integer("weatherHumidity")
     val weatherTemperature = integer("weatherTemperature")
     val traveled = bool("traveled")
-    val travelCity = varchar("date",100)
-    val alcoholLevel = varchar("alcoholLevel",15)
-    val beerTypes = varchar("foodList", 2048)
+    val travelCity = varchar("travelCity",20)
+    val alcoholLevel = varchar("alcoholLevel",10)
+    val beerTypes = varchar("beerTypes", 200)
 }
