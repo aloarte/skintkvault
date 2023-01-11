@@ -1,30 +1,24 @@
 package com.skintker.data.datasources.impl
 
 import com.skintker.data.datasources.AdditionalDataDatasource
-import com.skintker.data.datasources.IrritationsDatasource
 import com.skintker.data.db.DatabaseFactory.dbQuery
 import com.skintker.data.db.logs.AdditionalDataTable
-import com.skintker.data.db.logs.IrritationTable
 import com.skintker.data.db.logs.entities.AdditionalDataEntity
 import com.skintker.data.db.logs.entities.EntityParsers.additionalDataEntityToBo
-import com.skintker.data.db.logs.entities.EntityParsers.irritationEntityToBo
-import com.skintker.data.db.logs.entities.IrritationEntity
 import com.skintker.data.dto.AdditionalData
-import com.skintker.data.dto.Irritation
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class AdditionalDataDatasourceImpl : AdditionalDataDatasource {
 
-    override suspend fun deleteAdditionalData(idListValue: List<Int>) {
+    override suspend fun deleteAdditionalData(idListValue: List<Int>) = dbQuery {
         idListValue.forEach { id ->
-            AdditionalDataEntity.find { AdditionalDataTable.id eq id }.singleOrNull()
+            AdditionalDataEntity.find { AdditionalDataTable.id eq id }.singleOrNull()?.delete()
         }
     }
 
     override suspend fun editAdditionalData(
         additionalDataId: Int,
         additionalDataValue: AdditionalData
-    ): AdditionalDataEntity? {
+    ): AdditionalDataEntity? = dbQuery {
         AdditionalDataEntity.find { AdditionalDataTable.id eq additionalDataId }.singleOrNull()?.let {
             it.stressLevel = additionalDataValue.stressLevel
             it.weatherHumidity = additionalDataValue.weather.humidity
@@ -33,19 +27,19 @@ class AdditionalDataDatasourceImpl : AdditionalDataDatasource {
             it.travelCity = additionalDataValue.travel.city
             it.alcoholLevel = additionalDataValue.alcoholLevel.name
             it.beerTypes = additionalDataValue.beerTypes.joinToString(",")
-            return it
-        } ?: return null
+            it
+        }
     }
 
     override suspend fun getAllAdditionalDataValue(value: Int): List<AdditionalData> =
         dbQuery { AdditionalDataEntity.all().sortedBy { it.stressLevel }.map(::additionalDataEntityToBo) }
 
     override suspend fun getAdditionalData(id: Int): AdditionalData? = dbQuery {
-        AdditionalDataEntity.find { IrritationTable.id eq id }.singleOrNull()?.let { additionalDataEntityToBo(it) }
+        AdditionalDataEntity.find { AdditionalDataTable.id eq id }.singleOrNull()?.let { additionalDataEntityToBo(it) }
     }
 
-    override suspend fun addNewAdditionalData(additionalDataValue: AdditionalData): AdditionalDataEntity {
-        return AdditionalDataEntity.new {
+    override suspend fun addNewAdditionalData(additionalDataValue: AdditionalData): AdditionalDataEntity = dbQuery {
+        AdditionalDataEntity.new {
             stressLevel = additionalDataValue.stressLevel
             weatherHumidity = additionalDataValue.weather.humidity
             weatherTemperature = additionalDataValue.weather.temperature

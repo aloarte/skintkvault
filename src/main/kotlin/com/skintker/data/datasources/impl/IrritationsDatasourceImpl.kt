@@ -9,18 +9,18 @@ import com.skintker.data.dto.Irritation
 
 class IrritationsDatasourceImpl : IrritationsDatasource {
 
-    override suspend fun deleteIrritations(idListValue: List<Int>) {
+    override suspend fun deleteIrritations(idListValue: List<Int>) = dbQuery{
         idListValue.forEach { id ->
-            IrritationEntity.find { IrritationTable.id eq id }.singleOrNull()
+            IrritationEntity.find { IrritationTable.id eq id }.singleOrNull()?.delete()
         }
     }
 
-    override suspend fun editIrritation(irritationId: Int, irritationValue: Irritation): IrritationEntity? {
+    override suspend fun editIrritation(irritationId: Int, irritationValue: Irritation): IrritationEntity? = dbQuery {
         IrritationEntity.find { IrritationTable.id eq irritationId }.singleOrNull()?.let {
             it.value = irritationValue.overallValue
             it.zoneValues = irritationValue.zoneValues.joinToString(",")
-            return it
-        } ?: return null
+            it
+        }
     }
 
     override suspend fun getAllIrritationsWithValue(value: Int): List<Irritation> =
@@ -31,8 +31,8 @@ class IrritationsDatasourceImpl : IrritationsDatasource {
         IrritationEntity.find { IrritationTable.id eq id }.singleOrNull()?.let { irritationEntityToBo(it) }
     }
 
-    override suspend fun addNewIrritation(irritationValue: Irritation): IrritationEntity {
-        return IrritationEntity.new {
+    override suspend fun addNewIrritation(irritationValue: Irritation): IrritationEntity = dbQuery {
+        IrritationEntity.new {
             value = irritationValue.overallValue
             zoneValues = irritationValue.zoneValues.joinToString(",")
         }
