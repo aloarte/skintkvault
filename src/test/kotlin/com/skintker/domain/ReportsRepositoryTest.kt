@@ -15,12 +15,11 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
-import org.koin.test.KoinTest
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class ReportsRepositoryTest : KoinTest {
+class ReportsRepositoryTest{
 
     private val daoFacadeMock = mockk<LogsDatasource>()
 
@@ -49,7 +48,7 @@ class ReportsRepositoryTest : KoinTest {
             beerList
         )
 
-        private val log = DailyLog(DATE, irritation, additionalData, foodList)
+        private val log = DailyLog(DATE,foodList, irritation, additionalData)
     }
 
     @Before

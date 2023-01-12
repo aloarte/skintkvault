@@ -1,9 +1,14 @@
-package com.skintker.data
+package com.skintker.data.datasources
 
+import com.skintker.TestConstants.adAlcohol
+import com.skintker.TestConstants.adBeerTypes
+import com.skintker.TestConstants.adStress
+import com.skintker.TestConstants.additionalData
+import com.skintker.TestConstants.additionalDataEdited
+import com.skintker.TestConstants.travel
+import com.skintker.TestConstants.weather
 import com.skintker.data.datasources.impl.AdditionalDataDatasourceImpl
 import com.skintker.data.db.DatabaseFactory
-import com.skintker.data.dto.AdditionalData
-import com.skintker.data.dto.AlcoholLevel
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -11,30 +16,11 @@ import kotlin.test.*
 
 class AdditionalDataDatasourceTest {
 
-    companion object {
-        private const val adStress = 10
-        private const val adWeatherHumidity = 0
-        private const val adWeatherTemperature = 5
-        private const val adTraveled = true
-        private const val adCity = "Madrid"
-        private val adAlcohol = AlcoholLevel.Some
-        private val adBeerTypes = listOf("Ale")
-        private val weather = AdditionalData.Weather(adWeatherHumidity, adWeatherTemperature)
-        private val travel = AdditionalData.Travel(adTraveled, adCity)
-        private val additionalData = AdditionalData(adStress, weather, travel, adAlcohol, adBeerTypes)
-        private val additionalDataEdited = AdditionalData(
-            3,
-            AdditionalData.Weather(1, 2),
-            AdditionalData.Travel(false, ""),
-            AlcoholLevel.FewWine,
-            emptyList()
-        )
-    }
-
-    private val dataSource = AdditionalDataDatasourceImpl()
+    private lateinit var dataSource : AdditionalDataDatasource
 
     @Before
     fun setup() {
+        dataSource = AdditionalDataDatasourceImpl()
         DatabaseFactory.init()
     }
 

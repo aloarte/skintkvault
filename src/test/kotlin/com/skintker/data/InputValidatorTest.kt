@@ -21,6 +21,7 @@ class InputValidatorTest {
     fun `test is log valid success`() {
         val log = DailyLog(
             "31-12-2023",
+            emptyList(),
             Irritation(10, emptyList()),
             AdditionalData(
                 1,
@@ -28,7 +29,7 @@ class InputValidatorTest {
                 AdditionalData.Travel(true,""),
                 AlcoholLevel.None,
                 emptyList()
-            ), emptyList()
+            )
         )
 
         val result = SUT.isLogInvalid(log)
@@ -40,6 +41,7 @@ class InputValidatorTest {
     fun `test is log valid date error`() {
         val log = DailyLog(
             "24-2023",
+            emptyList(),
             Irritation(10, emptyList()),
             AdditionalData(
                 1,
@@ -47,7 +49,7 @@ class InputValidatorTest {
                 AdditionalData.Travel(true,""),
                 AlcoholLevel.None,
                 emptyList()
-            ), emptyList()
+            )
         )
 
         val result = SUT.isLogInvalid(log)
@@ -59,6 +61,7 @@ class InputValidatorTest {
     fun `test is log valid level overallValue error`() {
         val log = DailyLog(
             "31-12-2023",
+            emptyList(),
             Irritation(12, emptyList()),
             AdditionalData(
                 1,
@@ -66,7 +69,7 @@ class InputValidatorTest {
                 AdditionalData.Travel(true,""),
                 AlcoholLevel.None,
                 emptyList()
-            ), emptyList()
+            )
         )
 
         val result = SUT.isLogInvalid(log)
@@ -78,6 +81,7 @@ class InputValidatorTest {
     fun `test is log valid level stressLevel error`() {
         val log = DailyLog(
             "31-12-2023",
+            emptyList(),
             Irritation(10, emptyList()),
             AdditionalData(
                 0,
@@ -85,7 +89,7 @@ class InputValidatorTest {
                 AdditionalData.Travel(true,""),
                 AlcoholLevel.None,
                 emptyList()
-            ), emptyList()
+            )
         )
 
         val result = SUT.isLogInvalid(log)
@@ -97,6 +101,7 @@ class InputValidatorTest {
     fun `test is log valid range humidity error`() {
         val log = DailyLog(
             "31-12-2023",
+            emptyList(),
             Irritation(10, emptyList()),
             AdditionalData(
                 1,
@@ -104,7 +109,7 @@ class InputValidatorTest {
                 AdditionalData.Travel(true,""),
                 AlcoholLevel.None,
                 emptyList()
-            ), emptyList()
+            )
         )
 
         val result = SUT.isLogInvalid(log)
@@ -116,6 +121,7 @@ class InputValidatorTest {
     fun `test is log valid range temperature error`() {
         val log = DailyLog(
             "31-12-2023",
+            emptyList(),
             Irritation(10, emptyList()),
             AdditionalData(
                 1,
@@ -123,7 +129,7 @@ class InputValidatorTest {
                 AdditionalData.Travel(true,""),
                 AlcoholLevel.None,
                 emptyList()
-            ), emptyList()
+            )
         )
 
         val result = SUT.isLogInvalid(log)
