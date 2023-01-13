@@ -205,3 +205,7 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/gradle,kotlin,intellij,git,windows
 /gradle
 /.idea/
+
+
+/firebase
+*.json

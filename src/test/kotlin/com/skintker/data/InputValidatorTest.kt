@@ -1,5 +1,9 @@
 package com.skintker.data
 
+import com.google.firebase.ErrorCode
+import com.google.firebase.FirebaseException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import com.skintker.data.dto.AdditionalData
 import com.skintker.data.dto.AlcoholLevel
 import com.skintker.data.dto.DailyLog
@@ -8,9 +12,12 @@ import com.skintker.data.validators.InputValidator
 import com.skintker.data.validators.InputValidator.Companion.VALIDATION_ERROR_DATE
 import com.skintker.data.validators.InputValidator.Companion.VALIDATION_ERROR_LEVEL
 import com.skintker.data.validators.InputValidator.Companion.VALIDATION_ERROR_SLIDER
+import io.mockk.*
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class InputValidatorTest {
 
@@ -135,5 +142,28 @@ class InputValidatorTest {
         val result = SUT.isLogInvalid(log)
 
         assertEquals(VALIDATION_ERROR_SLIDER,result)
+    }
+
+    @Test
+    fun `test is userId invalid `() {
+        assertTrue(SUT.isUserIdInvalid(""))
+    }
+
+    @Test
+    fun `test is userId valid`() {
+        mockkStatic(FirebaseAuth::class)
+        every { FirebaseAuth.getInstance() } returns mockk(relaxed = true)
+        every { FirebaseAuth.getInstance().getUser(any()) } returns null
+
+        assertFalse(SUT.isUserIdInvalid("ValidFirebaseUser"))
+    }
+
+    @Test
+    fun `test is userId doesn't exist in firebase `() {
+        mockkStatic(FirebaseAuth::class)
+        every { FirebaseAuth.getInstance() } returns mockk(relaxed = true)
+        every { FirebaseAuth.getInstance().getUser(any()) } throws FirebaseAuthException(FirebaseException(ErrorCode.UNAUTHENTICATED,"Exception",Exception()))
+
+        assertTrue(SUT.isUserIdInvalid("InvalidFirebaseUser"))
     }
 }

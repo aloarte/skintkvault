@@ -1,5 +1,7 @@
 package com.skintker.data.validators
 
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import com.skintker.data.dto.DailyLog
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -13,7 +15,18 @@ class InputValidator {
     }
 
     fun isUserIdInvalid(userId: String?): Boolean {
-        return userId.isNullOrEmpty()
+        return if(userId.isNullOrEmpty()){
+            return true
+        }
+        else{
+            try{
+                FirebaseAuth.getInstance().getUser(userId)
+                false
+            }
+            catch (ex: FirebaseAuthException){
+                true
+            }
+        }
     }
 
     fun isLogInvalid(log: DailyLog): String? {
