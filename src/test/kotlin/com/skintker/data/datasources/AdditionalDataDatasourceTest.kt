@@ -7,8 +7,8 @@ import com.skintker.TestConstants.additionalData
 import com.skintker.TestConstants.additionalDataEdited
 import com.skintker.TestConstants.travel
 import com.skintker.TestConstants.weather
+import com.skintker.TestDatabaseFactory
 import com.skintker.data.datasources.impl.AdditionalDataDatasourceImpl
-import com.skintker.data.db.DatabaseFactory
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -21,7 +21,7 @@ class AdditionalDataDatasourceTest {
     @Before
     fun setup() {
         dataSource = AdditionalDataDatasourceImpl()
-        DatabaseFactory.init()
+        TestDatabaseFactory.init()
     }
 
     @Test

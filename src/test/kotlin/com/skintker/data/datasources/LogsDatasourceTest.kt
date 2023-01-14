@@ -18,10 +18,10 @@ import com.skintker.TestConstants.irritationZones2
 import com.skintker.TestConstants.log
 import com.skintker.TestConstants.logEdited
 import com.skintker.TestConstants.userId
+import com.skintker.TestDatabaseFactory
 import com.skintker.data.datasources.impl.AdditionalDataDatasourceImpl
 import com.skintker.data.datasources.impl.IrritationsDatasourceImpl
 import com.skintker.data.datasources.impl.LogsDatasourceImpl
-import com.skintker.data.db.DatabaseFactory
 import com.skintker.data.db.DatabaseFactory.dbQuery
 import com.skintker.data.db.logs.entities.AdditionalDataEntity
 import com.skintker.data.db.logs.entities.IrritationEntity
@@ -44,7 +44,7 @@ class LogsDatasourceTest {
     @Before
     fun setup() {
         logsDataSource = LogsDatasourceImpl(irritationDataSource, additionalDataDataSource)
-        DatabaseFactory.init()
+        TestDatabaseFactory.init()
     }
 
     @Test

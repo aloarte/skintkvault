@@ -4,8 +4,8 @@ import com.skintker.TestConstants.irritation
 import com.skintker.TestConstants.irritationEdited
 import com.skintker.TestConstants.irritationOverallValue
 import com.skintker.TestConstants.irritationZones
+import com.skintker.TestDatabaseFactory
 import com.skintker.data.datasources.impl.IrritationsDatasourceImpl
-import com.skintker.data.db.DatabaseFactory
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -18,7 +18,7 @@ class IrritationsDatasourceTest {
     @Before
     fun setup(){
         dataSource = IrritationsDatasourceImpl()
-        DatabaseFactory.init()
+        TestDatabaseFactory.init()
     }
 
     @Test
