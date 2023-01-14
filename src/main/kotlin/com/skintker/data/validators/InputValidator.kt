@@ -1,12 +1,11 @@
 package com.skintker.data.validators
 
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthException
 import com.skintker.data.dto.DailyLog
+import com.skintker.domain.repository.UserRepository
 import java.text.ParseException
 import java.text.SimpleDateFormat
 
-class InputValidator {
+class InputValidator(private val userRepository: UserRepository) {
 
     companion object {
         const val VALIDATION_ERROR_DATE = "Invalid log data, the date is invalid. Follow the pattern mm-dd-yyyy"
@@ -14,18 +13,12 @@ class InputValidator {
         const val VALIDATION_ERROR_SLIDER = "Invalid log data, the weather values must be between 1-5"
     }
 
-    fun isUserIdInvalid(userId: String?): Boolean {
+    suspend fun isUserIdInvalid(userId: String?): Boolean {
         return if(userId.isNullOrEmpty()){
             return true
         }
         else{
-            try{
-                FirebaseAuth.getInstance().getUser(userId)
-                false
-            }
-            catch (ex: FirebaseAuthException){
-                true
-            }
+            userRepository.isUserValid(userId).not()
         }
     }
 

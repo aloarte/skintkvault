@@ -18,7 +18,7 @@ class IrritationsDatasourceTest {
     @Before
     fun setup(){
         dataSource = IrritationsDatasourceImpl()
-        TestDatabaseFactory.init()
+        TestDatabaseFactory.init(TestDatabaseFactory.DatabaseInitialization.Log)
     }
 
     @Test

@@ -44,7 +44,7 @@ class LogsDatasourceTest {
     @Before
     fun setup() {
         logsDataSource = LogsDatasourceImpl(irritationDataSource, additionalDataDataSource)
-        TestDatabaseFactory.init()
+        TestDatabaseFactory.init(TestDatabaseFactory.DatabaseInitialization.Log)
     }
 
     @Test

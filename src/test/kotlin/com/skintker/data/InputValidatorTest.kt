@@ -1,9 +1,6 @@
 package com.skintker.data
 
-import com.google.firebase.ErrorCode
-import com.google.firebase.FirebaseException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthException
+import com.skintker.TestConstants.userId
 import com.skintker.data.dto.AdditionalData
 import com.skintker.data.dto.AlcoholLevel
 import com.skintker.data.dto.DailyLog
@@ -12,7 +9,10 @@ import com.skintker.data.validators.InputValidator
 import com.skintker.data.validators.InputValidator.Companion.VALIDATION_ERROR_DATE
 import com.skintker.data.validators.InputValidator.Companion.VALIDATION_ERROR_LEVEL
 import com.skintker.data.validators.InputValidator.Companion.VALIDATION_ERROR_SLIDER
+import com.skintker.domain.repository.UserRepository
 import io.mockk.*
+import kotlinx.coroutines.runBlocking
+import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -21,8 +21,14 @@ import kotlin.test.assertTrue
 
 class InputValidatorTest {
 
+    private val userRepository = mockk<UserRepository>()
 
-    private val SUT = InputValidator()
+    private lateinit var validator:InputValidator
+
+    @Before
+    fun setup(){
+        validator = InputValidator(userRepository)
+    }
 
     @Test
     fun `test is log valid success`() {
@@ -39,7 +45,7 @@ class InputValidatorTest {
             )
         )
 
-        val result = SUT.isLogInvalid(log)
+        val result = validator.isLogInvalid(log)
 
         assertNull(result)
     }
@@ -59,7 +65,7 @@ class InputValidatorTest {
             )
         )
 
-        val result = SUT.isLogInvalid(log)
+        val result = validator.isLogInvalid(log)
 
         assertEquals(VALIDATION_ERROR_DATE,result)
     }
@@ -79,7 +85,7 @@ class InputValidatorTest {
             )
         )
 
-        val result = SUT.isLogInvalid(log)
+        val result = validator.isLogInvalid(log)
 
         assertEquals(VALIDATION_ERROR_LEVEL,result)
     }
@@ -99,7 +105,7 @@ class InputValidatorTest {
             )
         )
 
-        val result = SUT.isLogInvalid(log)
+        val result = validator.isLogInvalid(log)
 
         assertEquals(VALIDATION_ERROR_LEVEL,result)
     }
@@ -119,7 +125,7 @@ class InputValidatorTest {
             )
         )
 
-        val result = SUT.isLogInvalid(log)
+        val result = validator.isLogInvalid(log)
 
         assertEquals(VALIDATION_ERROR_SLIDER,result)
     }
@@ -139,31 +145,36 @@ class InputValidatorTest {
             )
         )
 
-        val result = SUT.isLogInvalid(log)
+        val result = validator.isLogInvalid(log)
 
         assertEquals(VALIDATION_ERROR_SLIDER,result)
     }
 
     @Test
-    fun `test is userId invalid `() {
-        assertTrue(SUT.isUserIdInvalid(""))
+    fun `test is userId invalid empty user`() {
+        val result = runBlocking { validator.isUserIdInvalid("") }
+
+        assertTrue(result)
+    }
+
+    @Test
+    fun `test is userId invalid user`() {
+        coEvery {  userRepository.isUserValid(userId)} returns false
+
+        val result = runBlocking { validator.isUserIdInvalid(userId) }
+
+        coVerify { userRepository.isUserValid(userId) }
+        assertTrue(result)
     }
 
     @Test
     fun `test is userId valid`() {
-        mockkStatic(FirebaseAuth::class)
-        every { FirebaseAuth.getInstance() } returns mockk(relaxed = true)
-        every { FirebaseAuth.getInstance().getUser(any()) } returns null
+        coEvery {  userRepository.isUserValid(userId)} returns true
 
-        assertFalse(SUT.isUserIdInvalid("ValidFirebaseUser"))
+        val result = runBlocking { validator.isUserIdInvalid(userId) }
+
+        coVerify { userRepository.isUserValid(userId) }
+        assertFalse(result)
     }
 
-    @Test
-    fun `test is userId doesn't exist in firebase `() {
-        mockkStatic(FirebaseAuth::class)
-        every { FirebaseAuth.getInstance() } returns mockk(relaxed = true)
-        every { FirebaseAuth.getInstance().getUser(any()) } throws FirebaseAuthException(FirebaseException(ErrorCode.UNAUTHENTICATED,"Exception",Exception()))
-
-        assertTrue(SUT.isUserIdInvalid("InvalidFirebaseUser"))
-    }
 }

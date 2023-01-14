@@ -23,7 +23,7 @@ class ReportsRepositoryTest{
 
     private val daoFacadeMock = mockk<LogsDatasource>()
 
-    private lateinit var sut: ReportsRepository
+    private lateinit var repository: ReportsRepository
 
     companion object {
         private const val USER_ID = "USER_1"
@@ -53,7 +53,7 @@ class ReportsRepositoryTest{
 
     @Before
     fun setup() {
-        sut = ReportsRepositoryImpl(daoFacadeMock)
+        repository = ReportsRepositoryImpl(daoFacadeMock)
     }
 
     @Test
@@ -61,7 +61,7 @@ class ReportsRepositoryTest{
         coEvery { daoFacadeMock.deleteLog(idValues) } returns true
 
         val status = runBlocking {
-            sut.deleteReport(idValues)
+            repository.deleteReport(idValues)
         }
 
         coVerify { daoFacadeMock.deleteLog(idValues) }
@@ -73,7 +73,7 @@ class ReportsRepositoryTest{
         coEvery { daoFacadeMock.deleteLog(idValues) } returns false
 
         val status = runBlocking {
-            sut.deleteReport(idValues)
+            repository.deleteReport(idValues)
         }
 
         coVerify { daoFacadeMock.deleteLog(idValues) }
@@ -85,7 +85,7 @@ class ReportsRepositoryTest{
         coEvery { daoFacadeMock.deleteAllLogs(USER_ID) } returns true
 
         val status = runBlocking {
-            sut.deleteReports(USER_ID)
+            repository.deleteReports(USER_ID)
         }
 
         coVerify { daoFacadeMock.deleteAllLogs(USER_ID) }
@@ -97,7 +97,7 @@ class ReportsRepositoryTest{
         coEvery { daoFacadeMock.deleteAllLogs(USER_ID) } returns false
 
         val status = runBlocking {
-            sut.deleteReports(USER_ID)
+            repository.deleteReports(USER_ID)
         }
 
         coVerify { daoFacadeMock.deleteAllLogs(USER_ID) }
@@ -111,7 +111,7 @@ class ReportsRepositoryTest{
         coEvery { daoFacadeMock.addNewLog(idValues, foodList, irritation, additionalData) } returns 1
 
         val status = runBlocking {
-            sut.saveReport(USER_ID, log)
+            repository.saveReport(USER_ID, log)
         }
 
         coEvery { daoFacadeMock.getLog(idValues) }
@@ -125,7 +125,7 @@ class ReportsRepositoryTest{
         coEvery { daoFacadeMock.addNewLog(idValues, foodList, irritation, additionalData) } returns -1
 
         val status = runBlocking {
-            sut.saveReport(USER_ID, log)
+            repository.saveReport(USER_ID, log)
         }
 
         coEvery { daoFacadeMock.getLog(idValues) }
@@ -139,7 +139,7 @@ class ReportsRepositoryTest{
         coEvery { daoFacadeMock.editLog(idValues, foodList, irritation, additionalData) } returns true
 
         val status = runBlocking {
-            sut.saveReport(USER_ID, log)
+            repository.saveReport(USER_ID, log)
         }
 
         coEvery { daoFacadeMock.getLog(idValues) }
@@ -153,7 +153,7 @@ class ReportsRepositoryTest{
         coEvery { daoFacadeMock.editLog(idValues, foodList, irritation, additionalData) } returns false
 
         val status = runBlocking {
-            sut.saveReport(USER_ID, log)
+            repository.saveReport(USER_ID, log)
         }
 
         coEvery { daoFacadeMock.getLog(idValues) }

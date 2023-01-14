@@ -21,7 +21,7 @@ class AdditionalDataDatasourceTest {
     @Before
     fun setup() {
         dataSource = AdditionalDataDatasourceImpl()
-        TestDatabaseFactory.init()
+        TestDatabaseFactory.init(TestDatabaseFactory.DatabaseInitialization.Log)
     }
 
     @Test
