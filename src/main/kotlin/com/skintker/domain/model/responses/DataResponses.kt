@@ -1,6 +1,7 @@
 package com.skintker.domain.model.responses
 
 import com.skintker.data.dto.logs.DailyLog
+import com.skintker.data.dto.stats.StatsDto
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -8,9 +9,9 @@ sealed class DataResponses
 
 
 @Serializable
-sealed class LogResponse() : DataResponses()
+class LogListResponse(var logList: List<DailyLog>) : DataResponses()
 
 @Serializable
-class LogListResponse(var logList: List<DailyLog>) : LogResponse()
+class StatsResponse(var stats: StatsDto) : DataResponses()
 
 

@@ -1,4 +1,4 @@
-package com.skintker
+package com.skintker.data.dto
 
 import com.skintker.data.dto.logs.DailyLog
 import kotlinx.serialization.decodeFromString

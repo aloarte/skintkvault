@@ -1,67 +1,43 @@
 package com.skintker.routes.report
 
+import com.skintker.RoutesKoinTest
+import com.skintker.TestConstants
+import com.skintker.TestConstants.idValues
+import com.skintker.TestConstants.jsonBodyLog
+import com.skintker.TestConstants.userId
 import com.skintker.domain.constants.ResponseCodes.DATABASE_ISSUE
 import com.skintker.domain.constants.ResponseCodes.NO_ERROR
 import com.skintker.domain.constants.ResponseConstants.INVALID_PARAM_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.REPORT_DELETED_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.REPORT_NOT_DELETED_RESPONSE
-import com.skintker.domain.repository.ReportsRepository
 import com.skintker.domain.model.responses.ServiceResponse
-import com.skintker.data.validators.InputValidator
-import com.skintker.domain.model.LogIdValues
 import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlin.test.*
 import io.ktor.server.testing.*
-import com.skintker.plugins.*
 import com.skintker.routes.QueryParams.LOG_DATE_PARAM
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.mockk
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import org.koin.test.KoinTest
 
-class DeleteReportTest:  KoinTest {
-
-    private val mockedDatabase = mockk<ReportsRepository>()
-
-    private val mockedInputValidator = mockk<InputValidator>()
-
-    companion object {
-        const val jsonBody = "{\"date\":\"2012-04-23T18:25:43.511Z\",\"irritation\":{\"overallValue\":9,\"zoneValues\":[\"a\",\"b\",\"c\"]},\"additionalData\":{\"stressLevel\":9,\"weather\":{\"humidity\":9,\"temperature\":9},\"travel\":{\"traveled\":true,\"city\":\"Madrid\"},\"alcoholLevel\":\"None\",\"beerTypes\":[\"ba\",\"bb\",\"bc\"]}}"
-        const val userId =  "userId"
-        const val logDate = "08-01-2023"
-        val idValues = LogIdValues(logDate, userId)
-    }
-
-    private fun ApplicationTestBuilder.configureClient() = createClient {
-        with(this@configureClient) {
-            application {
-                configureKoin()
-                configureRouting(mockedDatabase,mockedInputValidator)
-            }
-            install(ContentNegotiation) { json() }
-        }
-    }
+class DeleteReportTest : RoutesKoinTest() {
 
     @Test
     fun `test delete report success`() = testApplication {
         val client = configureClient()
         coEvery { mockedInputValidator.isUserIdInvalid(userId) } returns false
-        coEvery { mockedDatabase.deleteReport(idValues) } returns true
+        coEvery { mockedReportsRepository.deleteReport(idValues) } returns true
 
-        val response = client.delete("/report/$userId?$LOG_DATE_PARAM=$logDate") {
+        val response = client.delete("/report/$userId?$LOG_DATE_PARAM=${TestConstants.date}") {
             contentType(ContentType.Application.Json)
-            setBody(jsonBody)
+            setBody(jsonBodyLog)
         }
 
         coVerify { mockedInputValidator.isUserIdInvalid(userId) }
-        coVerify {  mockedDatabase.deleteReport(idValues) }
+        coVerify { mockedReportsRepository.deleteReport(idValues) }
         assertEquals(HttpStatusCode.OK, response.status)
         val expectedResponse = ServiceResponse(NO_ERROR, REPORT_DELETED_RESPONSE)
         assertEquals(expectedResponse, Json.decodeFromString(response.bodyAsText()))
@@ -71,15 +47,15 @@ class DeleteReportTest:  KoinTest {
     fun `test delete report error`() = testApplication {
         val client = configureClient()
         coEvery { mockedInputValidator.isUserIdInvalid(userId) } returns false
-        coEvery { mockedDatabase.deleteReport(idValues) } returns false
+        coEvery { mockedReportsRepository.deleteReport(idValues) } returns false
 
-        val response = client.delete("/report/$userId?$LOG_DATE_PARAM=$logDate") {
+        val response = client.delete("/report/$userId?$LOG_DATE_PARAM=${TestConstants.date}") {
             contentType(ContentType.Application.Json)
-            setBody(jsonBody)
+            setBody(jsonBodyLog)
         }
 
         coVerify { mockedInputValidator.isUserIdInvalid(userId) }
-        coVerify {  mockedDatabase.deleteReport(idValues) }
+        coVerify { mockedReportsRepository.deleteReport(idValues) }
         assertEquals(HttpStatusCode.OK, response.status)
         val expectedResponse = ServiceResponse(DATABASE_ISSUE, REPORT_NOT_DELETED_RESPONSE)
         assertEquals(expectedResponse, Json.decodeFromString(response.bodyAsText()))
@@ -104,7 +80,7 @@ class DeleteReportTest:  KoinTest {
 
         val response = client.delete("/report/$userId") {
             contentType(ContentType.Application.Json)
-            setBody(jsonBody)
+            setBody(jsonBodyLog)
         }
 
         coVerify { mockedInputValidator.isUserIdInvalid(userId) }

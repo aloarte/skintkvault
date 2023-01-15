@@ -10,7 +10,6 @@ import com.skintker.data.getMaxValue
 
 class StatsDataProcessor {
 
-
     /**
      * Parse the given map of <string item , times> returning the list of the most repeated items
      * that get over the given threshold.

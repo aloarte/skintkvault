@@ -6,8 +6,15 @@ import com.skintker.data.dto.logs.DailyLog
 import com.skintker.data.dto.logs.Irritation
 import com.skintker.data.dto.stats.*
 import com.skintker.domain.model.LogIdValues
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 
 object TestConstants {
+    const val jsonBodyLog =
+        "{\"date\":\"2012-05-41\",\"irritation\":{\"overallValue\":7,\"zoneValues\":[\"wrist\"]},\"additionalData\":{\"stressLevel\":10,\"weather\":{\"humidity\":7,\"temperature\":1},\"travel\":{\"traveled\":false,\"city\":\"Madrid\"},\"alcoholLevel\":\"FewWine\",\"beerTypes\":[\"Ale\"]},\"foodList\":[\"food1\",\"food2\"]}"
+    val jsonDeserializedLog = Json.decodeFromString<DailyLog>(jsonBodyLog)
+
+
     //Irritation values
     const val irritationOverallValue = 8
     val irritationZones = listOf("IrritationZone")

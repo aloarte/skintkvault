@@ -1,0 +1,11 @@
+package com.skintker.data
+
+const val IRRITATION_THRESHOLD = 8
+const val STRESS_THRESHOLD = 7
+const val FOOD_AMOUNT_THRESHOLD = 0.7f
+const val ZONES_AMOUNT_THRESHOLD = 0.7f
+const val HUMIDITY_AMOUNT_THRESHOLD = 0.7f
+const val TEMPERATURE_AMOUNT_THRESHOLD = 0.7f
+const val TRAVEL_AMOUNT_THRESHOLD = 0.7f
+const val STRESS_AMOUNT_THRESHOLD = 0.7f
+const val BEERS_AMOUNT_THRESHOLD = 0.7f

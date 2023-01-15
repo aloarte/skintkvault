@@ -1,4 +1,4 @@
-package com.skintker
+package com.skintker.data.dto
 
 import com.skintker.data.dto.stats.StatsDto
 import kotlinx.serialization.decodeFromString

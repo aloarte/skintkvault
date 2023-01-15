@@ -1,24 +1,16 @@
 package com.skintker.data.datasources.impl
 
+import com.skintker.data.*
 import com.skintker.data.datasources.StatsDatasource
 import com.skintker.data.dto.logs.AlcoholLevel
 import com.skintker.data.dto.logs.DailyLog
 import com.skintker.data.dto.stats.*
-import com.skintker.data.increaseValue
 import com.skintker.data.processors.StatsDataProcessor
 
 class StatsDatasourceImpl(private val statsProcessor: StatsDataProcessor) : StatsDatasource {
 
     companion object {
         const val MIN_LOGS = 10
-        private const val STRESS_THRESHOLD = 7
-        private const val FOOD_AMOUNT_THRESHOLD = 0.7f
-        private const val ZONES_AMOUNT_THRESHOLD = 0.7f
-        private const val HUMIDITY_AMOUNT_THRESHOLD = 0.7f
-        private const val TEMPERATURE_AMOUNT_THRESHOLD = 0.7f
-        private const val TRAVEL_AMOUNT_THRESHOLD = 0.7f
-        private const val STRESS_AMOUNT_THRESHOLD = 0.7f
-        private const val BEERS_AMOUNT_THRESHOLD = 0.7f
     }
 
     override fun calculateStats(logList: List<DailyLog>): StatsDto {
@@ -54,6 +46,7 @@ class StatsDatasourceImpl(private val statsProcessor: StatsDataProcessor) : Stat
             }
         }
 
+        //TODO: Return the number of relevant logs
         return StatsDto(
             enoughData = logList.size >= MIN_LOGS,
             dietaryCauses = statsProcessor.getFromItemList(foodMap, FOOD_AMOUNT_THRESHOLD),
