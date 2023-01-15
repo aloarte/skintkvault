@@ -3,18 +3,20 @@ package com.skintker.di
 import com.google.firebase.auth.FirebaseAuth
 import com.skintker.data.datasources.*
 import com.skintker.data.datasources.impl.*
-import com.skintker.data.processors.StatsDataProcessor
+import com.skintker.data.components.StatsDataProcessor
 import com.skintker.domain.repository.ReportsRepository
 import com.skintker.domain.repository.impl.ReportsRepositoryImpl
-import com.skintker.data.validators.InputValidator
+import com.skintker.data.components.InputValidator
+import com.skintker.data.components.PaginationManager
 import com.skintker.domain.repository.StatsRepository
 import com.skintker.domain.repository.UserRepository
 import com.skintker.domain.repository.impl.StatsRepositoryImpl
 import com.skintker.domain.repository.impl.UserRepositoryImpl
 import org.koin.dsl.module
 
-val supporters = module {
+val components = module {
     factory { InputValidator(get()) }
+    factory { PaginationManager() }
     factory { StatsDataProcessor() }
 }
 

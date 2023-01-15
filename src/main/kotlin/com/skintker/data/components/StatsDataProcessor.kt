@@ -1,4 +1,4 @@
-package com.skintker.data.processors
+package com.skintker.data.components
 
 import com.skintker.data.dto.logs.AlcoholLevel
 import com.skintker.data.dto.stats.StatsAlcohol

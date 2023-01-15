@@ -12,7 +12,7 @@ import com.skintker.TestConstants.statsTemperature
 import com.skintker.TestConstants.statsTravel
 import com.skintker.TestConstants.zonesMap
 import com.skintker.data.datasources.impl.StatsDatasourceImpl
-import com.skintker.data.processors.StatsDataProcessor
+import com.skintker.data.components.StatsDataProcessor
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

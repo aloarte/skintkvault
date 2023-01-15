@@ -1,4 +1,4 @@
-package com.skintker.data.validators
+package com.skintker.data.components
 
 import com.skintker.data.dto.logs.DailyLog
 import com.skintker.domain.repository.UserRepository
@@ -14,10 +14,9 @@ class InputValidator(private val userRepository: UserRepository) {
     }
 
     suspend fun isUserIdInvalid(userId: String?): Boolean {
-        return if(userId.isNullOrEmpty()){
+        return if (userId.isNullOrEmpty()) {
             return true
-        }
-        else{
+        } else {
             userRepository.isUserValid(userId).not()
         }
     }
@@ -51,5 +50,25 @@ class InputValidator(private val userRepository: UserRepository) {
 
     //A slider must be between 1 an 5
     private fun isNumSliderValid(numLevel: Int) = numLevel in 1..5
+    fun arePaginationIndexesInvalid(limit: String?, offset: String?, listSize: Int): Boolean {
+        return try {
+            val parsedOffset = offset?.toInt()
+            val parsedLimit = limit?.toInt()
+
+            //Verify that are whole numbers
+            if (parsedOffset != null && parsedOffset >= 0 && parsedLimit != null && parsedLimit > 0) {
+                val maxPaginatedIndex = parsedOffset + parsedLimit
+                if (maxPaginatedIndex < listSize) {
+                    false
+                } else {
+                    parsedOffset>listSize
+                }
+            } else {
+                true
+            }
+        } catch (ex: NumberFormatException) {
+            true
+        }
+    }
 
 }

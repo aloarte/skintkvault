@@ -1,11 +1,10 @@
-package com.skintker.data
+package com.skintker.data.components
 
 import com.skintker.data.dto.logs.AlcoholLevel
 import com.skintker.data.dto.stats.StatsAlcohol
 import com.skintker.data.dto.stats.StatsStress
 import com.skintker.data.dto.stats.StatsTravel
 import com.skintker.data.dto.stats.StatsWeather
-import com.skintker.data.processors.StatsDataProcessor
 import org.junit.Assert
 import org.junit.Test
 

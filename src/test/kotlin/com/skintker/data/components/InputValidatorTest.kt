@@ -1,14 +1,13 @@
-package com.skintker.data
+package com.skintker.data.components
 
 import com.skintker.TestConstants.userId
 import com.skintker.data.dto.logs.AdditionalData
 import com.skintker.data.dto.logs.AlcoholLevel
 import com.skintker.data.dto.logs.DailyLog
 import com.skintker.data.dto.logs.Irritation
-import com.skintker.data.validators.InputValidator
-import com.skintker.data.validators.InputValidator.Companion.VALIDATION_ERROR_DATE
-import com.skintker.data.validators.InputValidator.Companion.VALIDATION_ERROR_LEVEL
-import com.skintker.data.validators.InputValidator.Companion.VALIDATION_ERROR_SLIDER
+import com.skintker.data.components.InputValidator.Companion.VALIDATION_ERROR_DATE
+import com.skintker.data.components.InputValidator.Companion.VALIDATION_ERROR_LEVEL
+import com.skintker.data.components.InputValidator.Companion.VALIDATION_ERROR_SLIDER
 import com.skintker.domain.repository.UserRepository
 import io.mockk.*
 import kotlinx.coroutines.runBlocking
@@ -23,7 +22,7 @@ class InputValidatorTest {
 
     private val userRepository = mockk<UserRepository>()
 
-    private lateinit var validator:InputValidator
+    private lateinit var validator: InputValidator
 
     @Before
     fun setup(){
@@ -176,5 +175,26 @@ class InputValidatorTest {
         coVerify { userRepository.isUserValid(userId) }
         assertFalse(result)
     }
+
+
+    @Test
+    fun `test are pagination index valid, invalid inputs`(){
+        assertTrue(validator.arePaginationIndexesInvalid("","",20))
+        assertTrue(validator.arePaginationIndexesInvalid("-1","",20))
+        assertTrue(validator.arePaginationIndexesInvalid("","-1",20))
+        assertTrue(validator.arePaginationIndexesInvalid("Text","",20))
+        assertTrue(validator.arePaginationIndexesInvalid("","Text",20))
+        assertTrue(validator.arePaginationIndexesInvalid("0","0",20))
+        assertTrue(validator.arePaginationIndexesInvalid("100","25",23))
+
+    }
+    @Test
+    fun `test are pagination index valid, valid inputs`(){
+        assertFalse(validator.arePaginationIndexesInvalid("20","0",23))
+        assertFalse(validator.arePaginationIndexesInvalid("20","20",23))
+        assertFalse(validator.arePaginationIndexesInvalid("100","0",23))
+
+    }
+
 
 }

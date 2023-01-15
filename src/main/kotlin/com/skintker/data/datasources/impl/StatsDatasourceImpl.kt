@@ -5,7 +5,7 @@ import com.skintker.data.datasources.StatsDatasource
 import com.skintker.data.dto.logs.AlcoholLevel
 import com.skintker.data.dto.logs.DailyLog
 import com.skintker.data.dto.stats.*
-import com.skintker.data.processors.StatsDataProcessor
+import com.skintker.data.components.StatsDataProcessor
 
 class StatsDatasourceImpl(private val statsProcessor: StatsDataProcessor) : StatsDatasource {
 

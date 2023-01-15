@@ -54,6 +54,10 @@ object TestConstants {
     //Log data
     const val date = "31-12-2022"
     const val date2 = "01-01-2023"
+    const val date3 = "02-01-2023"
+    const val date4 = "03-01-2023"
+    const val date5 = "04-01-2023"
+    const val date6 = "05-01-2023"
 
     const val userId = "userId"
     val foodList = listOf("meat", "fish")
@@ -62,6 +66,15 @@ object TestConstants {
     val log = DailyLog(date, foodList, irritation, additionalData)
     val log2 = DailyLog(date2, foodList2, irritationEdited, additionalDataEdited)
     val logList = listOf(log, log2)
+    val bigLogList = listOf(
+        log,
+        log2,
+        log.copy(date = date3),
+        log.copy(date = date4),
+        log.copy(date = date5),
+        log.copy(date = date6)
+    )
+
     val logEdited = DailyLog(date, foodList2, irritationEdited, additionalDataEdited)
 
 

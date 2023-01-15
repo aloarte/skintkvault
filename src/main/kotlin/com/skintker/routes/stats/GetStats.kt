@@ -4,7 +4,7 @@ import com.skintker.data.IRRITATION_THRESHOLD
 import com.skintker.domain.constants.ResponseCodes
 import com.skintker.domain.constants.ResponseConstants
 import com.skintker.domain.model.responses.ServiceResponse
-import com.skintker.data.validators.InputValidator
+import com.skintker.data.components.InputValidator
 import com.skintker.domain.model.responses.StatsResponse
 import com.skintker.domain.repository.StatsRepository
 import com.skintker.routes.PathParams.USER_ID_PARAM

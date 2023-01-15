@@ -4,7 +4,8 @@ import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.skintker.data.db.DatabaseFactory
-import com.skintker.data.validators.InputValidator
+import com.skintker.data.components.InputValidator
+import com.skintker.data.components.PaginationManager
 import com.skintker.domain.repository.ReportsRepository
 import com.skintker.domain.repository.StatsRepository
 import com.skintker.plugins.*
@@ -23,6 +24,7 @@ fun Application.module() {
     val statsRepository by inject<StatsRepository>()
     val reportsRepository by inject<ReportsRepository>()
     val inputValidator by inject<InputValidator>()
+    val paginationManager by inject<PaginationManager>()
 
     val options = FirebaseOptions.builder()
         .setCredentials(GoogleCredentials.getApplicationDefault())
@@ -37,5 +39,5 @@ fun Application.module() {
     configureAdministration()
     configureSerialization()
     configureSecurity()
-    configureRouting(statsRepository,reportsRepository,inputValidator)
+    configureRouting(inputValidator,paginationManager,statsRepository,reportsRepository)
 }

@@ -9,7 +9,10 @@ sealed class DataResponses
 
 
 @Serializable
-class LogListResponse(var logList: List<DailyLog>) : DataResponses()
+class LogListResponse(
+    var logList: List<DailyLog>,
+    var count:Int
+) : DataResponses()
 
 @Serializable
 class StatsResponse(var stats: StatsDto) : DataResponses()

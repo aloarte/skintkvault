@@ -15,7 +15,7 @@ import com.skintker.domain.constants.ResponseConstants.REPORT_STORED_RESPONSE
 import com.skintker.domain.repository.ReportsRepository
 import com.skintker.data.dto.logs.DailyLog
 import com.skintker.domain.model.responses.ServiceResponse
-import com.skintker.data.validators.InputValidator
+import com.skintker.data.components.InputValidator
 import com.skintker.domain.model.SaveReportStatus
 import com.skintker.routes.PathParams.USER_ID_PARAM
 import io.ktor.http.*

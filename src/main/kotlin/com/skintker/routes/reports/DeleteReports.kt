@@ -7,7 +7,7 @@ import com.skintker.domain.constants.ResponseConstants.REPORTS_DELETED_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.REPORTS_NOT_DELETED_RESPONSE
 import com.skintker.domain.repository.ReportsRepository
 import com.skintker.domain.model.responses.ServiceResponse
-import com.skintker.data.validators.InputValidator
+import com.skintker.data.components.InputValidator
 import com.skintker.routes.PathParams.USER_ID_PARAM
 import io.ktor.http.*
 import io.ktor.server.application.*
