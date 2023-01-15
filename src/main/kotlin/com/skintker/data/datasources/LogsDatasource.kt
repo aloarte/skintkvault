@@ -1,8 +1,8 @@
 package com.skintker.data.datasources
 
-import com.skintker.data.dto.AdditionalData
-import com.skintker.data.dto.DailyLog
-import com.skintker.data.dto.Irritation
+import com.skintker.data.dto.logs.AdditionalData
+import com.skintker.data.dto.logs.DailyLog
+import com.skintker.data.dto.logs.Irritation
 import com.skintker.domain.model.LogIdValues
 
 interface LogsDatasource {

@@ -5,7 +5,7 @@ import com.skintker.data.db.DatabaseFactory.dbQuery
 import com.skintker.data.db.logs.AdditionalDataTable
 import com.skintker.data.db.logs.entities.AdditionalDataEntity
 import com.skintker.data.db.logs.entities.EntityParsers.additionalDataEntityToBo
-import com.skintker.data.dto.AdditionalData
+import com.skintker.data.dto.logs.AdditionalData
 
 class AdditionalDataDatasourceImpl : AdditionalDataDatasource {
 

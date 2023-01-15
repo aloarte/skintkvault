@@ -7,7 +7,7 @@ import com.google.firebase.auth.FirebaseAuthException
 import com.skintker.TestConstants.userId
 import com.skintker.data.datasources.UserDatasource
 import com.skintker.domain.repository.UserRepository
-import com.skintker.domain.repository.UserRepositoryImpl
+import com.skintker.domain.repository.impl.UserRepositoryImpl
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

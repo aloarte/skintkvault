@@ -1,10 +1,10 @@
 package com.skintker.data
 
 import com.skintker.TestConstants.userId
-import com.skintker.data.dto.AdditionalData
-import com.skintker.data.dto.AlcoholLevel
-import com.skintker.data.dto.DailyLog
-import com.skintker.data.dto.Irritation
+import com.skintker.data.dto.logs.AdditionalData
+import com.skintker.data.dto.logs.AlcoholLevel
+import com.skintker.data.dto.logs.DailyLog
+import com.skintker.data.dto.logs.Irritation
 import com.skintker.data.validators.InputValidator
 import com.skintker.data.validators.InputValidator.Companion.VALIDATION_ERROR_DATE
 import com.skintker.data.validators.InputValidator.Companion.VALIDATION_ERROR_LEVEL

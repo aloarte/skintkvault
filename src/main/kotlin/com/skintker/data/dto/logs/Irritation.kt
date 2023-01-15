@@ -1,4 +1,4 @@
-package com.skintker.data.dto
+package com.skintker.data.dto.logs
 
 import kotlinx.serialization.Serializable
 

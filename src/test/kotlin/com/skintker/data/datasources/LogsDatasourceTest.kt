@@ -159,7 +159,7 @@ class LogsDatasourceTest {
     }
 
     @Test
-    fun `test get all log from user  with value`() {
+    fun `test get all log from user with value`() {
         mockInsert()
 
         val result = runBlocking {
@@ -173,6 +173,22 @@ class LogsDatasourceTest {
         assertEquals(2, result.size)
 
     }
+
+    @Test
+    fun `test get all logs value `() {
+        mockInsert()
+
+        val result = runBlocking {
+            logsDataSource.addNewLog(idValues, foodList, irritation, additionalData)
+            logsDataSource.addNewLog(idValues, foodList, irritation, additionalData)
+            logsDataSource.getAllLogs(userId)
+        }
+
+        verifyMockInsert()
+        assertTrue(result.isNotEmpty())
+        assertEquals(2, result.size)
+    }
+
 
     private fun mockInsert() {
         runBlocking {

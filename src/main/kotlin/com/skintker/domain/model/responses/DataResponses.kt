@@ -1,6 +1,6 @@
 package com.skintker.domain.model.responses
 
-import com.skintker.data.dto.DailyLog
+import com.skintker.data.dto.logs.DailyLog
 import kotlinx.serialization.Serializable
 
 @Serializable

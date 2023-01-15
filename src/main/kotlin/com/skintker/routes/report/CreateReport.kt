@@ -13,7 +13,7 @@ import com.skintker.domain.constants.ResponseConstants.REPORT_NOT_EDITED_RESPONS
 import com.skintker.domain.constants.ResponseConstants.REPORT_NOT_STORED_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.REPORT_STORED_RESPONSE
 import com.skintker.domain.repository.ReportsRepository
-import com.skintker.data.dto.DailyLog
+import com.skintker.data.dto.logs.DailyLog
 import com.skintker.domain.model.responses.ServiceResponse
 import com.skintker.data.validators.InputValidator
 import com.skintker.domain.model.SaveReportStatus

@@ -1,4 +1,4 @@
-package com.skintker.data.dto
+package com.skintker.data.dto.logs
 
 import kotlinx.serialization.Serializable
 
@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 data class DailyLog(
     val date: String,
     val foodList: List<String>,
-    val irritation: Irritation ,
+    val irritation: Irritation,
     val additionalData: AdditionalData
 )

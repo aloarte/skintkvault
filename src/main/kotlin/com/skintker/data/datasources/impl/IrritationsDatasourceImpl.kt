@@ -5,7 +5,7 @@ import com.skintker.data.db.DatabaseFactory.dbQuery
 import com.skintker.data.db.logs.IrritationTable
 import com.skintker.data.db.logs.entities.EntityParsers.irritationEntityToBo
 import com.skintker.data.db.logs.entities.IrritationEntity
-import com.skintker.data.dto.Irritation
+import com.skintker.data.dto.logs.Irritation
 
 class IrritationsDatasourceImpl : IrritationsDatasource {
 

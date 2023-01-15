@@ -1,10 +1,9 @@
 package com.skintker.data.db.logs.entities
 
-import com.skintker.data.db.logs.AdditionalDataTable
-import com.skintker.data.dto.AdditionalData
-import com.skintker.data.dto.AlcoholLevel
-import com.skintker.data.dto.DailyLog
-import com.skintker.data.dto.Irritation
+import com.skintker.data.dto.logs.AdditionalData
+import com.skintker.data.dto.logs.AlcoholLevel
+import com.skintker.data.dto.logs.DailyLog
+import com.skintker.data.dto.logs.Irritation
 
 object EntityParsers {
 

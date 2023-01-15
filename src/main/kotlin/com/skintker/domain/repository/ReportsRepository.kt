@@ -1,6 +1,6 @@
 package com.skintker.domain.repository
 
-import com.skintker.data.dto.DailyLog
+import com.skintker.data.dto.logs.DailyLog
 import com.skintker.domain.model.LogIdValues
 import com.skintker.domain.model.SaveReportStatus
 

@@ -1,19 +1,20 @@
 package com.skintker
 
-import com.skintker.data.dto.AdditionalData
-import com.skintker.data.dto.AlcoholLevel
-import com.skintker.data.dto.DailyLog
-import com.skintker.data.dto.Irritation
+import com.skintker.data.dto.logs.AdditionalData
+import com.skintker.data.dto.logs.AlcoholLevel
+import com.skintker.data.dto.logs.DailyLog
+import com.skintker.data.dto.logs.Irritation
+import com.skintker.data.dto.stats.*
 import com.skintker.domain.model.LogIdValues
 
 object TestConstants {
     //Irritation values
-    const val irritationOverallValue = 10
+    const val irritationOverallValue = 8
     val irritationZones = listOf("IrritationZone")
     val irritation = Irritation(irritationOverallValue, irritationZones)
     const val irritationOverallValue2 = 5
-    val irritationZones2 = listOf("IrritationZone2","IrritationZone5")
-    val irritationEdited = Irritation(irritationOverallValue2,irritationZones2)
+    val irritationZones2 = listOf("IrritationZone", "IrritationZone2")
+    val irritationEdited = Irritation(irritationOverallValue2, irritationZones2)
 
     //AdditionalData values
     const val adStress = 10
@@ -45,12 +46,46 @@ object TestConstants {
 
     //Log data
     const val date = "31-12-2022"
-    const val userId= "userId"
-    val foodList = listOf("meat","fish")
-    val foodList2 = listOf("strawberry","fish","banana")
+    const val date2 = "01-01-2023"
+
+    const val userId = "userId"
+    val foodList = listOf("meat", "fish")
+    val foodList2 = listOf("strawberry", "fish", "banana")
     val idValues = LogIdValues(dayDate = date, userId = userId)
     val log = DailyLog(date, foodList, irritation, additionalData)
+    val log2 = DailyLog(date2, foodList2, irritationEdited, additionalDataEdited)
+    val logList = listOf(log, log2)
     val logEdited = DailyLog(date, foodList2, irritationEdited, additionalDataEdited)
+
+
+    //Stats
+
+    val emptyStats = StatsDto()
+    val statsAlcohol = StatsAlcohol(true, adBeerTypes.first())
+    val statsStress = StatsStress(false, adStress)
+    val statsTravel = StatsTravel(true, adCity)
+    val statsTemperature = StatsWeather.StatsTemperature(false, adWeatherHumidity)
+    val statsHumidity = StatsWeather.StatsHumidity(false, adWeatherTemperature)
+    val stats = StatsDto(
+        enoughData = false,
+        dietaryCauses = foodList,
+        mostAffectedZones = irritationZones,
+        alcohol = statsAlcohol,
+        stress = statsStress,
+        travel = statsTravel,
+        weather = StatsWeather(statsTemperature, statsHumidity)
+    )
+
+    val foodMap = mapOf(
+        "meat" to 1,
+        "strawberry" to 1,
+        "fish" to 2,
+        "banana" to 1
+    )
+    val zonesMap = mapOf(
+        "IrritationZone" to 2,
+        "IrritationZone2" to 1
+    )
 
 
 }

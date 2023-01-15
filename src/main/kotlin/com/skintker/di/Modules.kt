@@ -10,10 +10,10 @@ import com.skintker.data.datasources.impl.IrritationsDatasourceImpl
 import com.skintker.data.datasources.impl.LogsDatasourceImpl
 import com.skintker.data.datasources.impl.UserDatasourceImpl
 import com.skintker.domain.repository.ReportsRepository
-import com.skintker.domain.repository.ReportsRepositoryImpl
+import com.skintker.domain.repository.impl.ReportsRepositoryImpl
 import com.skintker.data.validators.InputValidator
 import com.skintker.domain.repository.UserRepository
-import com.skintker.domain.repository.UserRepositoryImpl
+import com.skintker.domain.repository.impl.UserRepositoryImpl
 import org.koin.dsl.module
 
 val validators = module {

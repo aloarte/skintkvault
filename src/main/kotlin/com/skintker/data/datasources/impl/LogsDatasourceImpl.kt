@@ -4,13 +4,13 @@ import com.skintker.data.datasources.AdditionalDataDatasource
 import com.skintker.data.datasources.IrritationsDatasource
 import com.skintker.data.db.DatabaseFactory.dbQuery
 import com.skintker.data.db.logs.LogTable
-import com.skintker.data.dto.DailyLog
+import com.skintker.data.dto.logs.DailyLog
 import com.skintker.domain.model.LogIdValues
 import com.skintker.data.datasources.LogsDatasource
 import com.skintker.data.db.logs.entities.EntityParsers.logEntityToBo
 import com.skintker.data.db.logs.entities.LogsEntity
-import com.skintker.data.dto.AdditionalData
-import com.skintker.data.dto.Irritation
+import com.skintker.data.dto.logs.AdditionalData
+import com.skintker.data.dto.logs.Irritation
 import org.jetbrains.exposed.sql.*
 
 class LogsDatasourceImpl(
@@ -67,9 +67,8 @@ class LogsDatasourceImpl(
 
     override suspend fun deleteLog(idValues: LogIdValues): Boolean = dbQuery {
         LogsEntity.find { (LogTable.userId eq idValues.userId) and (LogTable.dayDate eq idValues.dayDate) }
-            .singleOrNull()?.let {
-                it.delete()
-            }
+            .singleOrNull()?.delete()
+
         true
     }
 

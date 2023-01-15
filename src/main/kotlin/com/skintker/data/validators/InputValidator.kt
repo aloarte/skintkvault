@@ -1,6 +1,6 @@
 package com.skintker.data.validators
 
-import com.skintker.data.dto.DailyLog
+import com.skintker.data.dto.logs.DailyLog
 import com.skintker.domain.repository.UserRepository
 import java.text.ParseException
 import java.text.SimpleDateFormat
