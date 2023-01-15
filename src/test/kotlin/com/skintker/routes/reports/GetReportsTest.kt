@@ -23,7 +23,6 @@ class GetReportsTest : RoutesKoinTest() {
     companion object{
         private const val offset = "2"
         private const val limit = "4"
-
     }
 
     @Test
@@ -59,6 +58,7 @@ class GetReportsTest : RoutesKoinTest() {
         assertEquals(NO_ERROR, serviceResponse.statusCode)
         assertNull(serviceResponse.statusMessage)
         assertEquals(logList, (serviceResponse.content as LogListResponse).logList)
+        assertEquals(logList.size, (serviceResponse.content as LogListResponse).count)
     }
 
     @Test
@@ -81,6 +81,7 @@ class GetReportsTest : RoutesKoinTest() {
         assertEquals(NO_ERROR, serviceResponse.statusCode)
         assertNull(serviceResponse.statusMessage)
         assertEquals(logList, (serviceResponse.content as LogListResponse).logList)
+        assertEquals(logList.size, (serviceResponse.content as LogListResponse).count)
     }
 
     @Test

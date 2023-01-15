@@ -46,9 +46,9 @@ class StatsDatasourceImpl(private val statsProcessor: StatsDataProcessor) : Stat
             }
         }
 
-        //TODO: Return the number of relevant logs
         return StatsDto(
             enoughData = logList.size >= MIN_LOGS,
+            relevantLogs = logList.size,
             dietaryCauses = statsProcessor.getFromItemList(foodMap, FOOD_AMOUNT_THRESHOLD),
             mostAffectedZones = statsProcessor.getFromItemList(zonesMap, ZONES_AMOUNT_THRESHOLD),
             alcohol = statsProcessor.getFromAlcohol(beerTypeMap, alcoholTypeMap, BEERS_AMOUNT_THRESHOLD),

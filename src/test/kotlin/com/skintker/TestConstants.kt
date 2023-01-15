@@ -87,6 +87,7 @@ object TestConstants {
     val statsTemperature = StatsWeather.StatsTemperature(false, adWeatherHumidity)
     val statsHumidity = StatsWeather.StatsHumidity(false, adWeatherTemperature)
     val stats = StatsDto(
+        relevantLogs = 2,
         enoughData = false,
         dietaryCauses = foodList,
         mostAffectedZones = irritationZones,
