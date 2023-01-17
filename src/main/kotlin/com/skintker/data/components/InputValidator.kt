@@ -50,6 +50,7 @@ class InputValidator(private val userRepository: UserRepository) {
 
     //A slider must be between 1 an 5
     private fun isNumSliderValid(numLevel: Int) = numLevel in 1..5
+
     fun arePaginationIndexesInvalid(limit: String?, offset: String?, listSize: Int): Boolean {
         return try {
             val parsedOffset = offset?.toInt()
