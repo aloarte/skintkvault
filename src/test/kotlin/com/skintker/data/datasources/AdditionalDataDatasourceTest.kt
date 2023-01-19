@@ -1,14 +1,10 @@
 package com.skintker.data.datasources
 
-import com.skintker.TestConstants.adAlcohol
-import com.skintker.TestConstants.adBeerTypes
-import com.skintker.TestConstants.adStress
 import com.skintker.TestConstants.additionalData
 import com.skintker.TestConstants.additionalDataEdited
-import com.skintker.TestConstants.travel
-import com.skintker.TestConstants.weather
 import com.skintker.TestDatabaseFactory
 import com.skintker.data.datasources.impl.AdditionalDataDatasourceImpl
+import com.skintker.data.db.logs.entities.EntityParsers.additionalDataEntityToBo
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -27,13 +23,7 @@ class AdditionalDataDatasourceTest {
     @Test
     fun `test add new additional data`() {
         val result = runBlocking { dataSource.addNewAdditionalData(additionalData) }
-        assertEquals(adStress, result.stressLevel)
-        assertEquals(weather.humidity, result.weatherHumidity)
-        assertEquals(weather.temperature, result.weatherTemperature)
-        assertEquals(travel.traveled, result.traveled)
-        assertEquals(travel.city, result.travelCity)
-        assertEquals(adAlcohol.name, result.alcoholLevel)
-        assertEquals(adBeerTypes.joinToString(","), result.beerTypes)
+        assertEquals(additionalData, additionalDataEntityToBo(result))
     }
 
     @Test
