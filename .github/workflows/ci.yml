@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [ "main", "e2e_tests"]
+    branches: [ "main", "feature/e2e_tests"]
   pull_request:
     branches: [ "main" ]
 
