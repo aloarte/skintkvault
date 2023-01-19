@@ -28,7 +28,7 @@ jobs:
         uses : gradle/gradle-build-action@v2
       - name: Build app
         run: ./gradlew build --scan
-      - uses: actions/up`load-artifact@v2
+      - uses: actions/upload-artifact@v2
         with:
           name: build
           path: build
