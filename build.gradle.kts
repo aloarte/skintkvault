@@ -6,11 +6,14 @@ val koinVersion: String by project
 val koinKtorVersion: String by project
 val kotlinVersion: String by project
 val ktorVersion: String by project
+val spekVersion: String by project
 
 plugins {
     kotlin("jvm") version "1.7.22"
     id("io.ktor.plugin") version "2.2.1"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.7.22"
+    id("org.unbroken-dome.test-sets") version "4.0.0"
+
 }
 
 group = "com.skintker"
@@ -24,6 +27,7 @@ application {
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
 }
 
 dependencies {
@@ -58,12 +62,41 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("com.h2database:h2:$h2Version")
 
+    //Spek
+    testImplementation ("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
+    testRuntimeOnly ("org.spekframework.spek2:spek-runner-junit5:$spekVersion")
+
+    // spek requires kotlin-reflect, can be omitted if already in the classpath
+    testRuntimeOnly ("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
+
     //Firebase
     implementation ("com.google.firebase:firebase-admin:9.1.1")
 
     //Testing dependencies
     testImplementation ("io.mockk:mockk:$mockkVersion")
+    testImplementation("io.ktor:ktor-server-host-common:$ktorVersion")
+    testImplementation("io.ktor:ktor-client-core:$ktorVersion")
+    testImplementation("io.ktor:ktor-client-cio:$ktorVersion")
 
+}
 
+sourceSets {
+    create("integrationTest") {
+        kotlin {
+            compileClasspath += main.get().output + configurations.testRuntimeClasspath
+            runtimeClasspath += output + compileClasspath
+        }
+    }
+}
 
+val integrationTest = task<Test>("integrationTest") {
+    description = "Runs the integration tests"
+    group = "verification"
+    testClassesDirs = sourceSets["integrationTest"].output.classesDirs
+    classpath = sourceSets["integrationTest"].runtimeClasspath
+    mustRunAfter(tasks["test"])
+}
+
+tasks.check {
+    dependsOn(integrationTest)
 }

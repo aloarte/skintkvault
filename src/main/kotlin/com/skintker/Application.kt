@@ -16,11 +16,11 @@ import org.koin.ktor.ext.inject
 
 
 fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
+    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::initModuleProd)
         .start(wait = true)
 }
 
-fun Application.module() {
+fun Application.initModuleProd(){
     val statsRepository by inject<StatsRepository>()
     val reportsRepository by inject<ReportsRepository>()
     val inputValidator by inject<InputValidator>()
@@ -33,7 +33,29 @@ fun Application.module() {
     FirebaseApp.initializeApp(options)
 
 
-    DatabaseFactory.init()
+    DatabaseFactory.init(false)
+//    configureMonitoring()
+    configureKoin()
+    configureAdministration()
+    configureSerialization()
+    configureSecurity()
+    configureRouting(inputValidator,paginationManager,statsRepository,reportsRepository)
+}
+
+fun Application.initModuleTest() {
+    val statsRepository by inject<StatsRepository>()
+    val reportsRepository by inject<ReportsRepository>()
+    val inputValidator by inject<InputValidator>()
+    val paginationManager by inject<PaginationManager>()
+
+    val options = FirebaseOptions.builder()
+        .setCredentials(GoogleCredentials.getApplicationDefault())
+        .build()
+
+    FirebaseApp.initializeApp(options)
+
+
+    DatabaseFactory.init(true)
 //    configureMonitoring()
     configureKoin()
     configureAdministration()

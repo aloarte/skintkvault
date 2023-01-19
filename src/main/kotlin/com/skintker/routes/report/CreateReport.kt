@@ -25,6 +25,7 @@ import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.statements.BatchDataInconsistentException
 
 
@@ -78,7 +79,7 @@ fun Route.createReport(reportsRepository: ReportsRepository, inputValidator: Inp
                     call.respondText(INVALID_INPUT_RESPONSE, status = HttpStatusCode.BadRequest)
                 }
 
-                is BatchDataInconsistentException -> {
+                is BatchDataInconsistentException, is ExposedSQLException -> {
                     call.respond(
                         status = HttpStatusCode.OK, message = ServiceResponse(DATABASE_ISSUE, DATABASE_ERROR)
                     )
