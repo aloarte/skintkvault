@@ -13,6 +13,7 @@ plugins {
     id("io.ktor.plugin") version "2.2.1"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.7.22"
     id("org.unbroken-dome.test-sets") version "4.0.0"
+//    id ("org.jlleitschuh.gradle.ktlint") version "7.1.0"
 
 }
 
@@ -45,9 +46,10 @@ dependencies {
     implementation("io.ktor:ktor-server-auth-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("io.ktor:ktor-server-freemarker:$ktorVersion")
+    implementation("io.ktor:ktor-server-html-builder:$ktorVersion")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
     testImplementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-
     //Koin
     implementation ("io.insert-koin:koin-ktor:$koinKtorVersion")
     implementation ("io.insert-koin:koin-logger-slf4j:$koinKtorVersion")
@@ -61,6 +63,13 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("com.h2database:h2:$h2Version")
+
+    //Logs
+    implementation("org.slf4j:slf4j-api:2.0.6")
+    implementation("ch.qos.logback:logback-classic:1.3.5")
+
+    //Klint
+//    implementation ("org.jlleitschuh.gradle:ktlint-gradle:7.1.0")
 
     //Spek
     testImplementation ("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")

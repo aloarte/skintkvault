@@ -1,26 +1,20 @@
 package com.skintker.plugins
 
-import io.ktor.server.metrics.dropwizard.*
-import com.codahale.metrics.*
 import io.ktor.server.plugins.callloging.*
-import org.slf4j.event.*
 import io.ktor.server.request.*
 import io.ktor.server.application.*
-import io.ktor.server.response.*
-import java.util.concurrent.TimeUnit
 
-//fun Application.configureMonitoring() {
-//    install(DropwizardMetrics) {
-//      Slf4jReporter.forRegistry(registry)
-//        .outputTo(this@module.log)
-//        .convertRatesTo(TimeUnit.SECONDS)
-//        .convertDurationsTo(TimeUnit.MILLISECONDS)
-//        .build()
-//        .start(10, TimeUnit.SECONDS)
-//    }
+fun Application.configureMonitoring() {
+    install(CallLogging) {
+        format { call ->
+            val status = call.response.status()
+            val httpMethod = call.request.httpMethod.value
+            val userAgent = call.request.headers["User-Agent"]
+            "Status: $status, HTTP method: $httpMethod, User agent: $userAgent"
+        }
+    }
 //    install(CallLogging) {
 //        level = Level.INFO
 //        filter { call -> call.request.path().startsWith("/") }
 //    }
-//
-//}
+}

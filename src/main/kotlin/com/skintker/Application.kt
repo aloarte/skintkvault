@@ -14,7 +14,6 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import org.koin.ktor.ext.inject
 
-
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::initModuleProd)
         .start(wait = true)
@@ -32,13 +31,11 @@ fun Application.initModuleProd(){
 
     FirebaseApp.initializeApp(options)
 
-
     DatabaseFactory.init(false)
-//    configureMonitoring()
+    configureMonitoring()
     configureKoin()
     configureAdministration()
     configureSerialization()
-    configureSecurity()
     configureRouting(inputValidator,paginationManager,statsRepository,reportsRepository)
 }
 
@@ -54,12 +51,10 @@ fun Application.initModuleTest() {
 
     FirebaseApp.initializeApp(options)
 
-
     DatabaseFactory.init(true)
-//    configureMonitoring()
+    configureMonitoring()
     configureKoin()
     configureAdministration()
     configureSerialization()
-    configureSecurity()
     configureRouting(inputValidator,paginationManager,statsRepository,reportsRepository)
 }

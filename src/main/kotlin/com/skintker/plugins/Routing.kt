@@ -4,11 +4,11 @@ import com.skintker.domain.repository.ReportsRepository
 import com.skintker.data.components.InputValidator
 import com.skintker.data.components.PaginationManager
 import com.skintker.domain.repository.StatsRepository
-import com.skintker.routes.home
 import com.skintker.routes.report.createReport
 import com.skintker.routes.report.deleteReport
 import com.skintker.routes.reports.deleteReports
 import com.skintker.routes.reports.getReports
+import com.skintker.routes.staticContent
 import com.skintker.routes.stats.getStats
 import io.ktor.server.routing.*
 import io.ktor.server.application.*
@@ -22,7 +22,7 @@ fun Application.configureRouting(
 ) {
 
     routing {
-        home()
+        staticContent()
     }
 
     //Everything requested to /report
