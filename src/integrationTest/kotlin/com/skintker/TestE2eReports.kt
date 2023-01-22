@@ -7,10 +7,10 @@ import com.skintker.TestConstantsE2E.reportPath
 import com.skintker.TestConstantsE2E.reportsPath
 import com.skintker.TestConstantsE2E.serverUrl
 import com.skintker.data.dto.logs.DailyLog
-import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
-import kotlinx.coroutines.*
+import io.ktor.server.application.Application
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
+import io.ktor.server.netty.NettyApplicationEngine
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -25,8 +25,7 @@ import org.junit.Assert
 import org.spekframework.spek2.Spek
 import java.nio.charset.StandardCharsets
 
-@DelicateCoroutinesApi
-@ExperimentalCoroutinesApi
+
 object TestE2eReports : Spek({
 
     lateinit var server: NettyApplicationEngine

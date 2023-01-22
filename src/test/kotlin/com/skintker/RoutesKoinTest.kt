@@ -6,9 +6,9 @@ import com.skintker.domain.repository.ReportsRepository
 import com.skintker.domain.repository.StatsRepository
 import com.skintker.plugins.configureKoin
 import com.skintker.plugins.configureRouting
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.testing.*
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.testing.ApplicationTestBuilder
 import io.mockk.mockk
 import org.koin.test.KoinTest
 

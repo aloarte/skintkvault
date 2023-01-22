@@ -9,7 +9,9 @@ import com.skintker.data.components.InputValidator.Companion.VALIDATION_ERROR_DA
 import com.skintker.data.components.InputValidator.Companion.VALIDATION_ERROR_LEVEL
 import com.skintker.data.components.InputValidator.Companion.VALIDATION_ERROR_SLIDER
 import com.skintker.domain.repository.UserRepository
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test

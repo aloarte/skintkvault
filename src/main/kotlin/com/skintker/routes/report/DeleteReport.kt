@@ -10,10 +10,12 @@ import com.skintker.data.components.InputValidator
 import com.skintker.domain.model.LogIdValues
 import com.skintker.routes.PathParams.USER_ID_PARAM
 import com.skintker.routes.QueryParams.LOG_DATE_PARAM
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.call
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.delete
 
 fun Route.deleteReport(reportsRepository: ReportsRepository, inputValidator: InputValidator) {
 

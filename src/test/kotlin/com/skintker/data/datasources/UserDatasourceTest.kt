@@ -5,9 +5,10 @@ import com.skintker.TestConstants.userId
 import com.skintker.TestDatabaseFactory
 import com.skintker.data.datasources.impl.UserDatasourceImpl
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.*
 
 class UserDatasourceTest {
 

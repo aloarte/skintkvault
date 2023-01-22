@@ -15,15 +15,19 @@ import com.skintker.domain.constants.ResponseConstants.REPORT_NOT_STORED_RESPONS
 import com.skintker.domain.constants.ResponseConstants.REPORT_STORED_RESPONSE
 import com.skintker.domain.model.responses.ServiceResponse
 import com.skintker.domain.model.SaveReportStatus
-import io.ktor.http.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import kotlin.test.*
-import io.ktor.server.testing.*
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
+import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.coVerify
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import org.junit.Test
+import kotlin.test.assertEquals
 
 class CreateReportTest : RoutesKoinTest() {
 

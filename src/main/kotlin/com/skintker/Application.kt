@@ -8,10 +8,15 @@ import com.skintker.data.components.InputValidator
 import com.skintker.data.components.PaginationManager
 import com.skintker.domain.repository.ReportsRepository
 import com.skintker.domain.repository.StatsRepository
-import com.skintker.plugins.*
-import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
+import com.skintker.plugins.configureAdministration
+import com.skintker.plugins.configureFreeMarker
+import com.skintker.plugins.configureKoin
+import com.skintker.plugins.configureMonitoring
+import com.skintker.plugins.configureRouting
+import com.skintker.plugins.configureSerialization
+import io.ktor.server.application.Application
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
 import org.koin.ktor.ext.inject
 
 fun main() {

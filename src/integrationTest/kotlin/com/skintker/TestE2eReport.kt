@@ -6,9 +6,10 @@ import com.skintker.TestConstantsE2E.log
 import com.skintker.TestConstantsE2E.reportPath
 import com.skintker.TestConstantsE2E.serverUrl
 import com.skintker.routes.QueryParams.LOG_DATE_PARAM
-import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
+import io.ktor.server.application.Application
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.NettyApplicationEngine
+import io.ktor.server.netty.Netty
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.apache.http.client.methods.HttpDelete

@@ -11,7 +11,8 @@ import com.skintker.data.db.logs.entities.EntityParsers.logEntityToBo
 import com.skintker.data.db.logs.entities.LogsEntity
 import com.skintker.data.dto.logs.AdditionalData
 import com.skintker.data.dto.logs.Irritation
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.select
 
 class LogsDatasourceImpl(
     private val irritationsDatasource: IrritationsDatasource,

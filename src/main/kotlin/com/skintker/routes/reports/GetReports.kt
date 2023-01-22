@@ -9,15 +9,17 @@ import com.skintker.domain.model.responses.ServiceResponse
 import com.skintker.data.components.InputValidator
 import com.skintker.routes.PathParams.USER_ID_PARAM
 import com.skintker.routes.QueryParams
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.call
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.get
 
 fun Route.getReports(
     reportsRepository: ReportsRepository,
     inputValidator: InputValidator,
-    paginator: PaginationManager
+    paginationManager: PaginationManager
 ) {
     /**
      * Get all the reports from a given user token
@@ -37,7 +39,7 @@ fun Route.getReports(
                     call.respondText(ResponseConstants.BAD_INPUT_DATA, status = HttpStatusCode.BadRequest)
                     return@get
                 }
-                paginator.getPageFromLogs(paramLimit, paramOffset, logList)
+                paginationManager.getPageFromLogs(paramLimit, paramOffset, logList)
             } else {
                 logList
             }

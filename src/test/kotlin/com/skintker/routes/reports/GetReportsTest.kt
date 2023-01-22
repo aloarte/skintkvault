@@ -7,16 +7,18 @@ import com.skintker.domain.constants.ResponseCodes.NO_ERROR
 import com.skintker.domain.constants.ResponseConstants
 import com.skintker.domain.model.responses.LogListResponse
 import com.skintker.domain.model.responses.ServiceResponse
-import io.ktor.http.*
-import io.ktor.client.request.*
-import kotlin.test.*
-import io.ktor.server.testing.*
-import io.ktor.client.call.*
-import io.ktor.client.statement.*
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.coVerify
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class GetReportsTest : RoutesKoinTest() {
 

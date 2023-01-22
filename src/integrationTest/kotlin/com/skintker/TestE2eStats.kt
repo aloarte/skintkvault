@@ -6,9 +6,10 @@ import com.skintker.TestConstantsE2E.reportPath
 import com.skintker.TestConstantsE2E.serverUrl
 import com.skintker.TestConstantsE2E.stats
 import com.skintker.TestConstantsE2E.statsPath
-import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
+import io.ktor.server.application.Application
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
+import io.ktor.server.netty.NettyApplicationEngine
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

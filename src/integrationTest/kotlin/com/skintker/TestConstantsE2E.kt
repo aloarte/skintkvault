@@ -4,7 +4,11 @@ import com.skintker.data.dto.logs.AdditionalData
 import com.skintker.data.dto.logs.AlcoholLevel
 import com.skintker.data.dto.logs.DailyLog
 import com.skintker.data.dto.logs.Irritation
-import com.skintker.data.dto.stats.*
+import com.skintker.data.dto.stats.StatsAlcohol
+import com.skintker.data.dto.stats.StatsDto
+import com.skintker.data.dto.stats.StatsStress
+import com.skintker.data.dto.stats.StatsTravel
+import com.skintker.data.dto.stats.StatsWeather
 
 object TestConstantsE2E {
 

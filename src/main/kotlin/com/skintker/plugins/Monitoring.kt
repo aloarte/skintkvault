@@ -1,8 +1,12 @@
 package com.skintker.plugins
 
-import io.ktor.server.plugins.callloging.*
-import io.ktor.server.request.*
-import io.ktor.server.application.*
+
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.plugins.callloging.CallLogging
+import io.ktor.server.request.httpMethod
+import io.ktor.server.request.path
+import io.ktor.server.request.queryString
 import org.slf4j.event.Level
 
 fun Application.configureMonitoring() {

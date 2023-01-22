@@ -18,13 +18,16 @@ import com.skintker.domain.model.responses.ServiceResponse
 import com.skintker.data.components.InputValidator
 import com.skintker.domain.model.SaveReportStatus
 import com.skintker.routes.PathParams.USER_ID_PARAM
-import io.ktor.http.*
-import io.ktor.serialization.*
-import io.ktor.server.application.*
-import io.ktor.server.plugins.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.JsonConvertException
+import io.ktor.server.application.call
+import io.ktor.server.plugins.BadRequestException
+import io.ktor.server.plugins.CannotTransformContentToTypeException
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.put
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.statements.BatchDataInconsistentException
 
