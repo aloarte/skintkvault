@@ -1,7 +1,8 @@
 package com.skintker.data.db.logs
 
+import com.skintker.data.Constants.DDBB_SIZE_USER_ID
 import org.jetbrains.exposed.dao.id.IntIdTable
 
 object UserTable : IntIdTable(){
-    val userId = varchar("userId",30)
+    val userId = varchar("userId", DDBB_SIZE_USER_ID)
 }
