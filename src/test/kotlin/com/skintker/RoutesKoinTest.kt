@@ -27,7 +27,12 @@ abstract class RoutesKoinTest : KoinTest {
         with(this@configureClient) {
             application {
                 configureKoin()
-                configureRouting(mockedInputValidator,mockedPaginationManager,mockedStatsRepository,mockedReportsRepository)
+                configureRouting(
+                    mockedInputValidator,
+                    mockedPaginationManager,
+                    mockedStatsRepository,
+                    mockedReportsRepository
+                )
             }
             install(ContentNegotiation) { json() }
         }

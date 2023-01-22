@@ -38,7 +38,7 @@ class StatsDataProcessor {
      */
     fun getFromStress(
         stressMap: Map<Int, Int>,
-        stressThreshold: Int,   //What tells if anything is stressful. If the value is higher to this threshold, it's relevant to consider
+        stressThreshold: Int,   //If the value is higher to this threshold, it's relevant to consider
         relevantAmountThreshold: Float // Proportion of relevant stressful repetitions
     ): StatsStress {
         if (stressMap.isEmpty()) {
@@ -142,7 +142,9 @@ class StatsDataProcessor {
 
         return StatsAlcohol(
             isPossible = alcoholRepetitions >= totalRepetitions * relevantAmountThreshold,
-            beerType = if (alcoholLevelMap.getMaxValue() == AlcoholLevel.Few || alcoholLevelMap.getMaxValue() == AlcoholLevel.Few) {
+            beerType = if (
+                alcoholLevelMap.getMaxValue() == AlcoholLevel.Few || alcoholLevelMap.getMaxValue() == AlcoholLevel.Some
+            ) {
                 beerTypesMap.getMaxValue()
             } else {
                 null

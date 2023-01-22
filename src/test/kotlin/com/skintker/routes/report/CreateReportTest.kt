@@ -28,11 +28,64 @@ import kotlinx.serialization.json.Json
 class CreateReportTest : RoutesKoinTest() {
 
     companion object {
-          const val onlyDateJsonBody = "{\"date\":\"2012-04-23T18:25:43.511Z\"}"
+        const val onlyDateJsonBody = "{\"date\":\"2012-04-23T18:25:43.511Z\"}"
         const val badJson =
-            "{\"dte\":\"2012-04-23T18:25:43.511Z\",\"irritation\":{\"overallValue\":9,\"zoneValues\":[\"a\",\"b\",\"c\"]},\"additionalData\":{\"stressLevel\":9,\"weather\":{\"humidity\":9,\"temperature\":9},\"travel\":{\"traveled\":true,\"city\":\"Madrid\"},\"alcoholLevel\":\"None\",\"beerTypes\":[\"ba\",\"bb\",\"bc\"]}}"
+            "{\n" +
+                    "  \"dte\": \"2012-04-23T18:25:43.511Z\",\n" +
+                    "  \"irritation\": {\n" +
+                    "    \"overallValue\": 9,\n" +
+                    "    \"zoneValues\": [\n" +
+                    "      \"a\",\n" +
+                    "      \"b\",\n" +
+                    "      \"c\"\n" +
+                    "    ]\n" +
+                    "  },\n" +
+                    "  \"additionalData\": {\n" +
+                    "    \"stressLevel\": 9,\n" +
+                    "    \"weather\": {\n" +
+                    "      \"humidity\": 9,\n" +
+                    "      \"temperature\": 9\n" +
+                    "    },\n" +
+                    "    \"travel\": {\n" +
+                    "      \"traveled\": true,\n" +
+                    "      \"city\": \"Madrid\"\n" +
+                    "    },\n" +
+                    "    \"alcoholLevel\": \"None\",\n" +
+                    "    \"beerTypes\": [\n" +
+                    "      \"ba\",\n" +
+                    "      \"bb\",\n" +
+                    "      \"bc\"\n" +
+                    "    ]\n" +
+                    "  }\n" +
+                    "}"
         const val differentJson =
-            "\"date\":\"2012-04-23T18:25:43.511Z\",\"irritation\":{\"overallValue\":9,\"zoneValues\":[\"a\",\"b\",\"c\"]},\"additionalData\":{\"stressLevel\":9,\"weather\":{\"humidity\":9,\"temperature\":9},\"travel\":{\"traveled\":true,\"city\":\"Madrid\"},\"alcoholLevel\":\"None\",\"beerTypes\":[\"ba\",\"bb\",\"bc\"]}}"
+            "  \"date\": \"2012-04-23T18:25:43.511Z\",\n" +
+                    "  \"irritation\": {\n" +
+                    "    \"overallValue\": 9,\n" +
+                    "    \"zoneValues\": [\n" +
+                    "      \"a\",\n" +
+                    "      \"b\",\n" +
+                    "      \"c\"\n" +
+                    "    ]\n" +
+                    "  },\n" +
+                    "  \"additionalData\": {\n" +
+                    "    \"stressLevel\": 9,\n" +
+                    "    \"weather\": {\n" +
+                    "      \"humidity\": 9,\n" +
+                    "      \"temperature\": 9\n" +
+                    "    },\n" +
+                    "    \"travel\": {\n" +
+                    "      \"traveled\": true,\n" +
+                    "      \"city\": \"Madrid\"\n" +
+                    "    },\n" +
+                    "    \"alcoholLevel\": \"None\",\n" +
+                    "    \"beerTypes\": [\n" +
+                    "      \"ba\",\n" +
+                    "      \"bb\",\n" +
+                    "      \"bc\"\n" +
+                    "    ]\n" +
+                    "  }\n" +
+                    "}"
     }
 
 
@@ -59,7 +112,9 @@ class CreateReportTest : RoutesKoinTest() {
     fun `test put new report fail status`() = testApplication {
         val client = configureClient()
         mockInputValidatorEvery(TestDataInput.GoodInput)
-        coEvery { mockedReportsRepository.saveReport(userId, jsonDeserializedLog) } returns SaveReportStatus.SavingFailed
+        coEvery {
+            mockedReportsRepository.saveReport(userId, jsonDeserializedLog)
+        } returns SaveReportStatus.SavingFailed
 
         val response = client.put("/report/$userId") {
             contentType(ContentType.Application.Json)
@@ -95,7 +150,9 @@ class CreateReportTest : RoutesKoinTest() {
     fun `test put edited report fail status`() = testApplication {
         val client = configureClient()
         mockInputValidatorEvery(TestDataInput.GoodInput)
-        coEvery { mockedReportsRepository.saveReport(userId, jsonDeserializedLog) } returns SaveReportStatus.EditingFailed
+        coEvery {
+            mockedReportsRepository.saveReport(userId, jsonDeserializedLog)
+        } returns SaveReportStatus.EditingFailed
 
         val response = client.put("/report/$userId") {
             contentType(ContentType.Application.Json)
@@ -173,7 +230,6 @@ class CreateReportTest : RoutesKoinTest() {
     }
 
 
-
     private enum class TestDataInput {
         GoodInput, InvalidLog, InvalidUser
     }
@@ -201,6 +257,7 @@ class CreateReportTest : RoutesKoinTest() {
             TestDataInput.InvalidUser -> {
                 coVerify { mockedInputValidator.isUserIdInvalid(any()) }
             }
+
             else -> {
                 coVerify { mockedInputValidator.isUserIdInvalid(any()) }
                 coVerify { mockedInputValidator.isLogInvalid(any()) }

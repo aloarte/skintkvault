@@ -63,7 +63,8 @@ class UserRepositoryTest{
     @Test
     fun `test is user valid user doesn't exist in firebase`() {
         coEvery { daoFacadeMock.getUser(userId) } returns false
-        coEvery { firebaseMock.getUser(userId) } throws FirebaseAuthException(FirebaseException(ErrorCode.UNAUTHENTICATED,"a",Exception()))
+        coEvery { firebaseMock.getUser(userId) } throws
+                FirebaseAuthException(FirebaseException(ErrorCode.UNAUTHENTICATED,"a",Exception()))
 
         val status = runBlocking {
             repository.isUserValid(userId = userId)

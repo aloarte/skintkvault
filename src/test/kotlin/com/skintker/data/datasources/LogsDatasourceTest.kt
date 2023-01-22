@@ -116,7 +116,7 @@ class LogsDatasourceTest {
         }
 
         verifyMockInsert()
-        assertEquals(emptyList(),result)
+        assertEquals(emptyList(), result)
     }
 
     @Test
@@ -126,7 +126,7 @@ class LogsDatasourceTest {
             logsDataSource.getAllLogs(userId)
         }
 
-        assertEquals(emptyList(),result)
+        assertEquals(emptyList(), result)
     }
 
     @Test
@@ -192,29 +192,53 @@ class LogsDatasourceTest {
 
     private fun mockInsert() {
         runBlocking {
-            coEvery { irritationDataSource.addNewIrritation(irritation) } returns createIrritationEntity(true)
-            coEvery { additionalDataDataSource.addNewAdditionalData(additionalData) } returns createAdditionalDataEntity(true)
+            coEvery {
+                irritationDataSource.addNewIrritation(irritation)
+            } returns createIrritationEntity(true)
+            coEvery {
+                additionalDataDataSource.addNewAdditionalData(additionalData)
+            } returns createAdditionalDataEntity(true)
         }
     }
 
-    private suspend fun createIrritationEntity(added:Boolean) = dbQuery {  IrritationEntity.new {
-        value = if(added)irritationOverallValue else irritationOverallValue2
-        zoneValues = if(added) irritationZones.joinToString(",") else irritationZones2.joinToString(",")
-    } }
-    private suspend fun createAdditionalDataEntity(added:Boolean) = dbQuery{AdditionalDataEntity.new {
-        stressLevel =  if(added)adStress else adStress2
-        weatherHumidity =  if(added) TestConstants.weather.humidity else TestConstants.weather2.humidity
-        weatherTemperature =  if(added)TestConstants.weather.temperature else TestConstants.weather2.temperature
-        traveled =  if(added)TestConstants.travel.traveled else TestConstants.travel2.traveled
-        travelCity =  if(added)TestConstants.travel.city else TestConstants.travel2.city
-        alcoholLevel =  if(added)TestConstants.adAlcohol.name else adAlcohol2.name
-        beerTypes =  if(added)TestConstants.adBeerTypes.joinToString(",") else TestConstants.adBeerTypes2.joinToString(",")
-    }}
+    private suspend fun createIrritationEntity(added: Boolean) = dbQuery {
+        IrritationEntity.new {
+            value = if (added) irritationOverallValue else irritationOverallValue2
+            zoneValues = if (added) {
+                irritationZones.joinToString(",")
+            } else {
+                irritationZones2.joinToString(",")
+            }
+        }
+    }
+
+    private suspend fun createAdditionalDataEntity(added: Boolean) = dbQuery {
+        AdditionalDataEntity.new {
+            stressLevel = if (added) adStress else adStress2
+            weatherHumidity = if (added) TestConstants.weather.humidity else TestConstants.weather2.humidity
+            weatherTemperature = if (added) TestConstants.weather.temperature else TestConstants.weather2.temperature
+            traveled = if (added) TestConstants.travel.traveled else TestConstants.travel2.traveled
+            travelCity = if (added) TestConstants.travel.city else TestConstants.travel2.city
+            alcoholLevel = if (added) TestConstants.adAlcohol.name else adAlcohol2.name
+            beerTypes = if (added) {
+                TestConstants.adBeerTypes.joinToString(",")
+            } else {
+                TestConstants.adBeerTypes2.joinToString(",")
+            }
+        }
+    }
 
     private fun mockEdit() {
         runBlocking {
-            coEvery { irritationDataSource.editIrritation(any(), irritationEdited) } returns createIrritationEntity(false)
-            coEvery { additionalDataDataSource.editAdditionalData(any(),additionalDataEdited) } returns createAdditionalDataEntity(false)
+            coEvery { irritationDataSource.editIrritation(any(), irritationEdited) } returns createIrritationEntity(
+                false
+            )
+            coEvery {
+                additionalDataDataSource.editAdditionalData(
+                    any(),
+                    additionalDataEdited
+                )
+            } returns createAdditionalDataEntity(false)
         }
     }
 
@@ -225,8 +249,8 @@ class LogsDatasourceTest {
     }
 
     private fun verifyMockEdit() {
-        coVerify { irritationDataSource.editIrritation(any(),irritationEdited) }
-        coVerify { additionalDataDataSource.editAdditionalData(any(),additionalDataEdited) }
+        coVerify { irritationDataSource.editIrritation(any(), irritationEdited) }
+        coVerify { additionalDataDataSource.editAdditionalData(any(), additionalDataEdited) }
     }
 
 
