@@ -3,9 +3,11 @@ package com.skintker
 import com.skintker.TestConstantsE2E.date
 import com.skintker.TestConstantsE2E.fbUserId
 import com.skintker.TestConstantsE2E.log
+import com.skintker.TestConstantsE2E.port
 import com.skintker.TestConstantsE2E.reportPath
 import com.skintker.TestConstantsE2E.serverUrl
 import com.skintker.routes.QueryParams.LOG_DATE_PARAM
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.NettyApplicationEngine
@@ -31,7 +33,7 @@ object TestE2eReport : Spek({
         println("> E2E Test configuration")
         server = embeddedServer(
             Netty,
-            port = 8080,
+            port = port,
             host = "0.0.0.0",
             module = Application::initModuleTest
         ).start(wait = false)
@@ -50,7 +52,7 @@ object TestE2eReport : Spek({
 
             val response = client.execute(httpPut)
 
-            Assert.assertEquals(201, response.statusLine.statusCode.toLong())
+            Assert.assertEquals(HttpStatusCode.Created.value, response.statusLine.statusCode)
         }
 
         test("Test E2E /report edit log") {
@@ -62,7 +64,7 @@ object TestE2eReport : Spek({
 
             val response = client.execute(httpPut)
 
-            Assert.assertEquals(200, response.statusLine.statusCode.toLong())
+            Assert.assertEquals(HttpStatusCode.OK.value, response.statusLine.statusCode)
         }
 
         test("Test E2E /report delete log") {
@@ -72,7 +74,7 @@ object TestE2eReport : Spek({
                     .build()
             }
             val response = client.execute(httpDelete)
-            Assert.assertEquals(200, response.statusLine.statusCode.toLong())
+            Assert.assertEquals(HttpStatusCode.OK.value, response.statusLine.statusCode)
         }
 
         test("Test E2E /report add the previous deleted report") {
@@ -84,13 +86,13 @@ object TestE2eReport : Spek({
 
             val response = client.execute(httpPut)
 
-            Assert.assertEquals(201, response.statusLine.statusCode.toLong())
+            Assert.assertEquals(HttpStatusCode.Created.value, response.statusLine.statusCode)
         }
 
     }
 
     afterGroup {
         println("< E2E Test cleanup")
-        server.stop(1000, 10000)
+        server.stop(TestConstantsE2E.closingTimeGracePeriod, TestConstantsE2E.serverStopTimeout)
     }
 })

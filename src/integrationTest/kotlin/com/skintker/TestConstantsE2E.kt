@@ -16,6 +16,9 @@ object TestConstantsE2E {
     const val reportPath = "report"
     const val reportsPath = "reports"
     const val statsPath = "stats"
+    const val port = 8080
+    const val closingTimeGracePeriod = 1000L
+    const val serverStopTimeout = 10000L
 
     const val fbUserId = "TUMLO0AIkUSwAI9KDMfDc0v7T4P2"
 
@@ -69,7 +72,7 @@ object TestConstantsE2E {
         enoughData = false,
         dietaryCauses = emptyList(),
         mostAffectedZones = listOf("IrritationZone"),
-        alcohol = StatsAlcohol(true),
+        alcohol = StatsAlcohol(true,"Ale"),
         stress = StatsStress(true,10),
         travel = StatsTravel(true,"Madrid"),
         weather = StatsWeather(StatsWeather.StatsTemperature(true, 5), StatsWeather.StatsHumidity(true,1))

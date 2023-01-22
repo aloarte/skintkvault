@@ -12,7 +12,7 @@ import io.ktor.server.testing.ApplicationTestBuilder
 import io.mockk.mockk
 import org.koin.test.KoinTest
 
-abstract class RoutesKoinTest : KoinTest {
+open class RoutesKoinTest : KoinTest {
 
     val mockedInputValidator = mockk<InputValidator>()
 
