@@ -14,6 +14,16 @@ jobs:
         with:
           access_token: ${{github.token}}
 
+#  detekt:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: "checkout"
+#        uses: actions/checkout@v2
+#
+#      - name: "detekt"
+#        uses: natiginfo/action-detekt-all@1.22.0
+
   build:
     runs-on: ubuntu-latest
     steps:

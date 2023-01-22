@@ -13,8 +13,7 @@ plugins {
     id("io.ktor.plugin") version "2.2.1"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.7.22"
     id("org.unbroken-dome.test-sets") version "4.0.0"
-//    id ("org.jlleitschuh.gradle.ktlint") version "7.1.0"
-
+//    id("io.gitlab.arturbosch.detekt") version("1.22.0")
 }
 
 group = "com.skintker"
@@ -67,9 +66,6 @@ dependencies {
     //Logs
     implementation("org.slf4j:slf4j-api:2.0.6")
     implementation("ch.qos.logback:logback-classic:1.3.5")
-
-    //Klint
-//    implementation ("org.jlleitschuh.gradle:ktlint-gradle:7.1.0")
 
     //Spek
     testImplementation ("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
