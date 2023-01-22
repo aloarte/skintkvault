@@ -73,9 +73,9 @@ object TestConstantsE2E {
         dietaryCauses = emptyList(),
         mostAffectedZones = listOf("IrritationZone"),
         alcohol = StatsAlcohol(true,"Ale"),
-        stress = StatsStress(true,10),
+        stress = StatsStress(true,adStress),
         travel = StatsTravel(true,"Madrid"),
-        weather = StatsWeather(StatsWeather.StatsTemperature(true, 5), StatsWeather.StatsHumidity(true,1))
+        weather = StatsWeather(StatsWeather.StatsTemperature(true, adWeatherTemperature), StatsWeather.StatsHumidity(true,adWeatherHumidity))
     )
 
 }
