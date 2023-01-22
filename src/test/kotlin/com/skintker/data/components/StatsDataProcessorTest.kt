@@ -10,7 +10,7 @@ import org.junit.Test
 
 class StatsDataProcessorTest {
 
-    private var processor = StatsDataProcessor()
+    private val processor = StatsDataProcessor()
 
     @Test
     fun `get possible causes item list`() {

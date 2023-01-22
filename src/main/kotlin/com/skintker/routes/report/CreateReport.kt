@@ -5,7 +5,6 @@ import com.skintker.domain.constants.ResponseCodes.INVALID_INPUT
 import com.skintker.domain.constants.ResponseCodes.NO_ERROR
 import com.skintker.domain.constants.ResponseConstants.BAD_INPUT_DATA
 import com.skintker.domain.constants.ResponseConstants.DATABASE_ERROR
-import com.skintker.domain.constants.ResponseConstants.GENERIC_ERROR_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.INVALID_INPUT_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.REPORT_EDITED_RESPONSE
@@ -76,21 +75,23 @@ fun Route.createReport(reportsRepository: ReportsRepository, inputValidator: Inp
                     }
                 }
             }
-        } catch (exception: Exception) {
-            when (exception) {
-                is JsonConvertException, is BadRequestException, is CannotTransformContentToTypeException -> {
-                    call.respondText(INVALID_INPUT_RESPONSE, status = HttpStatusCode.BadRequest)
-                }
+        } catch (exception: JsonConvertException) {
+            call.respondText(INVALID_INPUT_RESPONSE, status = HttpStatusCode.BadRequest)
 
-                is BatchDataInconsistentException, is ExposedSQLException -> {
-                    call.respond(
-                        status = HttpStatusCode.OK, message = ServiceResponse(DATABASE_ISSUE, DATABASE_ERROR)
-                    )
-                }
-                else -> {
-                    call.respondText(GENERIC_ERROR_RESPONSE, status = HttpStatusCode.BadRequest)
-                }
-            }
+        } catch (exception: BadRequestException) {
+            call.respondText(INVALID_INPUT_RESPONSE, status = HttpStatusCode.BadRequest)
+
+        } catch (exception: CannotTransformContentToTypeException) {
+            call.respondText(INVALID_INPUT_RESPONSE, status = HttpStatusCode.BadRequest)
+
+        } catch (exception: BatchDataInconsistentException) {
+            call.respond(
+                status = HttpStatusCode.OK, message = ServiceResponse(DATABASE_ISSUE, DATABASE_ERROR)
+            )
+        } catch (exception: ExposedSQLException) {
+            call.respond(
+                status = HttpStatusCode.OK, message = ServiceResponse(DATABASE_ISSUE, DATABASE_ERROR)
+            )
         }
     }
 }
