@@ -253,5 +253,4 @@ class LogsDatasourceTest {
         coVerify { additionalDataDataSource.editAdditionalData(any(), additionalDataEdited) }
     }
 
-
 }

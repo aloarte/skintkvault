@@ -16,5 +16,4 @@ class StatsRepositoryImpl(private val logsDatasource: LogsDatasource, private va
         }
     }
 
-
 }

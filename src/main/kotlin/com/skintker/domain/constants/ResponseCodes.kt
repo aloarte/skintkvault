@@ -5,6 +5,4 @@ object ResponseCodes {
     const val GENERIC_ERROR= -1
     const val INVALID_INPUT = -2
     const val DATABASE_ISSUE = -3
-
-
 }
