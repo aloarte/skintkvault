@@ -33,7 +33,8 @@ class StatsRepositoryTest{
     @Test
     fun `test calculate user stats only one is above threshold`() {
         coEvery { logsDatasource.getAllLogs(userId) } returns logList
-        coEvery { statsDatasource.calculateStats(listOf(log)) } returns stats  //The input only will be the first log because its threshold is > 7
+        //The input only will be the first log because its threshold is > 7
+        coEvery { statsDatasource.calculateStats(listOf(log)) } returns stats
 
         val result = runBlocking {
             repository.calculateUserStats(userId = userId, statsThreshold = 7)
@@ -47,7 +48,8 @@ class StatsRepositoryTest{
     @Test
     fun `test calculate user stats both above threshold`() {
         coEvery { logsDatasource.getAllLogs(userId) } returns logList
-        coEvery { statsDatasource.calculateStats(logList) } returns stats  //The input will return both logs because its thresholds are > 5
+        //The input will return both logs because its thresholds are > 5
+        coEvery { statsDatasource.calculateStats(logList) } returns stats
 
         val result = runBlocking {
             repository.calculateUserStats(userId = userId, statsThreshold = 5)

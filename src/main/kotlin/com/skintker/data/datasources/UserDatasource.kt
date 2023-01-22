@@ -8,6 +8,4 @@ interface UserDatasource {
 
     suspend fun deleteUser(id: String)
 
-
-
 }

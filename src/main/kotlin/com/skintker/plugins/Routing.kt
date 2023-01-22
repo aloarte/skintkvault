@@ -12,8 +12,8 @@ import com.skintker.routes.reports.getReports
 import com.skintker.routes.getHome
 import com.skintker.routes.staticContent
 import com.skintker.routes.stats.getStats
-import io.ktor.server.routing.*
-import io.ktor.server.application.*
+import io.ktor.server.application.Application
+import io.ktor.server.routing.routing
 
 fun Application.configureRouting(
     inputValidator: InputValidator,

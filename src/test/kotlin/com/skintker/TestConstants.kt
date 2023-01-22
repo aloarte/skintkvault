@@ -4,14 +4,79 @@ import com.skintker.data.dto.logs.AdditionalData
 import com.skintker.data.dto.logs.AlcoholLevel
 import com.skintker.data.dto.logs.DailyLog
 import com.skintker.data.dto.logs.Irritation
-import com.skintker.data.dto.stats.*
+import com.skintker.data.dto.stats.StatsAlcohol
+import com.skintker.data.dto.stats.StatsDto
+import com.skintker.data.dto.stats.StatsStress
+import com.skintker.data.dto.stats.StatsTravel
+import com.skintker.data.dto.stats.StatsWeather
 import com.skintker.domain.model.LogIdValues
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 object TestConstants {
     const val jsonBodyLog =
-        "{\"date\":\"2012-05-41\",\"irritation\":{\"overallValue\":7,\"zoneValues\":[\"wrist\"]},\"additionalData\":{\"stressLevel\":10,\"weather\":{\"humidity\":7,\"temperature\":1},\"travel\":{\"traveled\":false,\"city\":\"Madrid\"},\"alcoholLevel\":\"FewWine\",\"beerTypes\":[\"Ale\"]},\"foodList\":[\"food1\",\"food2\"]}"
+        "{\n" +
+                "  \"date\": \"31-12-2022\",\n" +
+                "  \"irritation\": {\n" +
+                "    \"overallValue\": 8,\n" +
+                "    \"zoneValues\": [\n" +
+                "      \"IrritationZone\"\n" +
+                "    ]\n" +
+                "  },\n" +
+                "  \"additionalData\": {\n" +
+                "    \"stressLevel\": 10,\n" +
+                "    \"weather\": {\n" +
+                "      \"humidity\": 0,\n" +
+                "      \"temperature\": 5\n" +
+                "    },\n" +
+                "    \"travel\": {\n" +
+                "      \"traveled\": true,\n" +
+                "      \"city\": \"Madrid\"\n" +
+                "    },\n" +
+                "    \"alcoholLevel\": \"Some\",\n" +
+                "    \"beerTypes\": [\n" +
+                "      \"Ale\"\n" +
+                "    ]\n" +
+                "  },\n" +
+                "  \"foodList\": [\n" +
+                "    \"meat\",\n" +
+                "    \"fish\"\n" +
+                "  ]\n" +
+                "}"
+
+    const val jsonStats = "{\n" +
+            "  \"enoughData\": false,\n" +
+            "  \"relevantLogs\": 2,\n" +
+            "  \"dietaryCauses\": [\n" +
+            "    \"meat\",\n" +
+            "    \"fish\"\n" +
+            "  ],\n" +
+            "  \"mostAffectedZones\": [\n" +
+            "    \"IrritationZone\"\n" +
+            "  ],\n" +
+            "  \"alcohol\": {\n" +
+            "    \"isPossible\": true,\n" +
+            "    \"beerType\": \"Ale\"\n" +
+            "  },\n" +
+            "  \"stress\": {\n" +
+            "    \"isPossible\": false,\n" +
+            "    \"level\": 10\n" +
+            "  },\n" +
+            "  \"travel\": {\n" +
+            "    \"isPossible\": true,\n" +
+            "    \"city\": \"Madrid\"\n" +
+            "  },\n" +
+            "  \"weather\": {\n" +
+            "    \"temperature\": {\n" +
+            "      \"isPossible\": false,\n" +
+            "      \"level\": 0\n" +
+            "    },\n" +
+            "    \"humidity\": {\n" +
+            "      \"isPossible\": false,\n" +
+            "      \"level\": 5\n" +
+            "    }\n" +
+            "  }\n" +
+            "}"
     val jsonDeserializedLog = Json.decodeFromString<DailyLog>(jsonBodyLog)
 
 
@@ -107,6 +172,5 @@ object TestConstants {
         "IrritationZone" to 2,
         "IrritationZone2" to 1
     )
-
 
 }

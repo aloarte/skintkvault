@@ -1,5 +1,9 @@
 package com.skintker.data.components
 
+import com.skintker.data.Constants.LEVEL_MAX
+import com.skintker.data.Constants.LEVEL_MIN
+import com.skintker.data.Constants.SLIDER_MAX
+import com.skintker.data.Constants.SLIDER_MIN
 import com.skintker.data.dto.logs.DailyLog
 import com.skintker.domain.repository.UserRepository
 import java.text.ParseException
@@ -21,18 +25,15 @@ class InputValidator(private val userRepository: UserRepository) {
         }
     }
 
-    fun isLogInvalid(log: DailyLog): String? {
-        if (!isDateValid(log.date)) {
-            return VALIDATION_ERROR_DATE
-        }
-        if (!isNumLevelValid(log.irritation.overallValue) || !isNumLevelValid(log.additionalData.stressLevel)) {
-            return VALIDATION_ERROR_LEVEL
-        }
-        if (!isNumSliderValid(log.additionalData.weather.temperature) || !isNumSliderValid(log.additionalData.weather.humidity)) {
-            return VALIDATION_ERROR_SLIDER
-        }
-        return null
+    fun isLogInvalid(log: DailyLog) = when {
+        isDateValid(log.date).not() -> VALIDATION_ERROR_DATE
+        isNumLevelValid(log.irritation.overallValue).not() -> VALIDATION_ERROR_LEVEL
+        isNumLevelValid(log.additionalData.stressLevel).not() -> VALIDATION_ERROR_LEVEL
+        isNumSliderValid(log.additionalData.weather.temperature).not() -> VALIDATION_ERROR_SLIDER
+        isNumSliderValid(log.additionalData.weather.humidity).not() -> VALIDATION_ERROR_SLIDER
+        else -> null
     }
+
 
     private fun isDateValid(date: String): Boolean {
         if (!date.matches("[0-3]\\d-[01]\\d-\\d{4}".toRegex())) return false
@@ -46,10 +47,10 @@ class InputValidator(private val userRepository: UserRepository) {
     }
 
     //A level must be between 1 an 10
-    private fun isNumLevelValid(numLevel: Int) = numLevel in 1..10
+    private fun isNumLevelValid(numLevel: Int) = numLevel in LEVEL_MIN..LEVEL_MAX
 
     //A slider must be between 1 an 5
-    private fun isNumSliderValid(numLevel: Int) = numLevel in 1..5
+    private fun isNumSliderValid(numLevel: Int) = numLevel in SLIDER_MIN..SLIDER_MAX
 
     fun arePaginationIndexesInvalid(limit: String?, offset: String?, listSize: Int): Boolean {
         return try {
@@ -57,12 +58,12 @@ class InputValidator(private val userRepository: UserRepository) {
             val parsedLimit = limit?.toInt()
 
             //Verify that are whole numbers
-            if (parsedOffset != null && parsedOffset >= 0 && parsedLimit != null && parsedLimit > 0) {
-                val maxPaginatedIndex = parsedOffset + parsedLimit
+            if (isOffsetValid(parsedOffset) && isLimitValid(parsedLimit)) {
+                val maxPaginatedIndex = parsedOffset!! + parsedLimit!!
                 if (maxPaginatedIndex < listSize) {
                     false
                 } else {
-                    parsedOffset>listSize
+                    parsedOffset > listSize
                 }
             } else {
                 true
@@ -71,5 +72,9 @@ class InputValidator(private val userRepository: UserRepository) {
             true
         }
     }
+
+    private fun isOffsetValid(index: Int?) = index != null && index >= 0
+
+    private fun isLimitValid(index: Int?) = index != null && index > 0
 
 }

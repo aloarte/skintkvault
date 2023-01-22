@@ -14,18 +14,21 @@ jobs:
         with:
           access_token: ${{github.token}}
 
-#  detekt:
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: "checkout"
-#        uses: actions/checkout@v2
-#
-#      - name: "detekt"
-#        uses: natiginfo/action-detekt-all@1.22.0
+  detekt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "checkout"
+        uses: actions/checkout@v2
+
+      - name: "detekt"
+        uses: natiginfo/action-detekt-all@1.22.0
 
   build:
+    needs: [avoid_redundancy,detekt]
+
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -40,6 +43,7 @@ jobs:
         run: ./gradlew build --scan
 
   test:
+    needs: [ avoid_redundancy,detekt ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

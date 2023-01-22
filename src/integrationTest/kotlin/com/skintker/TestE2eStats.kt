@@ -1,14 +1,19 @@
 package com.skintker
 
+import com.skintker.TestConstantsE2E.closingTimeGracePeriod
 import com.skintker.TestConstantsE2E.fbUserId
 import com.skintker.TestConstantsE2E.log
+import com.skintker.TestConstantsE2E.port
 import com.skintker.TestConstantsE2E.reportPath
+import com.skintker.TestConstantsE2E.serverStopTimeout
 import com.skintker.TestConstantsE2E.serverUrl
 import com.skintker.TestConstantsE2E.stats
 import com.skintker.TestConstantsE2E.statsPath
-import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.Application
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
+import io.ktor.server.netty.NettyApplicationEngine
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -32,7 +37,7 @@ object TestE2eStats : Spek({
         println("> E2E Test configuration")
         server = embeddedServer(
             Netty,
-            port = 8080,
+            port = port,
             host = "0.0.0.0",
             module = Application::initModuleTest
         ).start(wait = false)
@@ -51,7 +56,7 @@ object TestE2eStats : Spek({
 
             val response = client.execute(httpPut)
 
-            Assert.assertEquals(201, response.statusLine.statusCode.toLong())
+            Assert.assertEquals(HttpStatusCode.Created.value, response.statusLine.statusCode)
         }
 
         test("Test E2E /stats get stats") {
@@ -59,7 +64,7 @@ object TestE2eStats : Spek({
 
             val response = client.execute(httpGet)
 
-            Assert.assertEquals(200, response.statusLine.statusCode.toLong())
+            Assert.assertEquals(HttpStatusCode.OK.value, response.statusLine.statusCode)
             with(
                 Json.decodeFromString<GetStatsDto>(
                     EntityUtils.toString(
@@ -69,13 +74,15 @@ object TestE2eStats : Spek({
                 )
             ) {
                 Assert.assertEquals(0, statusCode)
-                        Assert.assertEquals(stats, content.stats)
+                println(stats)
+                println(content.stats)
+                Assert.assertEquals(stats, content.stats)
             }
         }
     }
 
     afterGroup {
         println("< E2E Test cleanup")
-        server.stop(1000, 10000)
+        server.stop(closingTimeGracePeriod, serverStopTimeout)
     }
 })

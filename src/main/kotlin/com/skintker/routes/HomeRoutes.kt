@@ -1,10 +1,15 @@
 package com.skintker.routes
 
-import io.ktor.server.application.*
-import io.ktor.server.freemarker.*
-import io.ktor.server.http.content.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.server.application.call
+import io.ktor.server.freemarker.FreeMarkerContent
+import io.ktor.server.http.content.resource
+import io.ktor.server.http.content.resources
+import io.ktor.server.http.content.static
+import io.ktor.server.http.content.staticBasePackage
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondRedirect
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.get
 
 fun Route.staticContent() {
 

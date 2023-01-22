@@ -4,7 +4,11 @@ import com.skintker.data.dto.logs.AdditionalData
 import com.skintker.data.dto.logs.AlcoholLevel
 import com.skintker.data.dto.logs.DailyLog
 import com.skintker.data.dto.logs.Irritation
-import com.skintker.data.dto.stats.*
+import com.skintker.data.dto.stats.StatsAlcohol
+import com.skintker.data.dto.stats.StatsDto
+import com.skintker.data.dto.stats.StatsStress
+import com.skintker.data.dto.stats.StatsTravel
+import com.skintker.data.dto.stats.StatsWeather
 
 object TestConstantsE2E {
 
@@ -12,6 +16,9 @@ object TestConstantsE2E {
     const val reportPath = "report"
     const val reportsPath = "reports"
     const val statsPath = "stats"
+    const val port = 8080
+    const val closingTimeGracePeriod = 1000L
+    const val serverStopTimeout = 10000L
 
     const val fbUserId = "TUMLO0AIkUSwAI9KDMfDc0v7T4P2"
 
@@ -65,10 +72,12 @@ object TestConstantsE2E {
         enoughData = false,
         dietaryCauses = emptyList(),
         mostAffectedZones = listOf("IrritationZone"),
-        alcohol = StatsAlcohol(true),
-        stress = StatsStress(true,10),
+        alcohol = StatsAlcohol(true,"Ale"),
+        stress = StatsStress(true,adStress),
         travel = StatsTravel(true,"Madrid"),
-        weather = StatsWeather(StatsWeather.StatsTemperature(true, 5), StatsWeather.StatsHumidity(true,1))
+        weather = StatsWeather(
+            StatsWeather.StatsTemperature(true, adWeatherTemperature),
+            StatsWeather.StatsHumidity(true,adWeatherHumidity))
     )
 
 }

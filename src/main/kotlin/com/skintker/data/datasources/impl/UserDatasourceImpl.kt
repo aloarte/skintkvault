@@ -4,7 +4,7 @@ import com.skintker.data.db.DatabaseFactory.dbQuery
 import com.skintker.data.datasources.UserDatasource
 import com.skintker.data.db.logs.UserTable
 import com.skintker.data.db.logs.entities.UserEntity
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.select
 
 class UserDatasourceImpl : UserDatasource {
 
@@ -25,3 +25,4 @@ class UserDatasourceImpl : UserDatasource {
     }
 
 }
+

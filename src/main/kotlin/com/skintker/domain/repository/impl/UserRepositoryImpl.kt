@@ -4,9 +4,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.skintker.data.datasources.UserDatasource
 import com.skintker.domain.repository.UserRepository
+import org.slf4j.LoggerFactory
 
 class UserRepositoryImpl(private val userDatasource: UserDatasource, private val firebaseAuth: FirebaseAuth) :
     UserRepository {
+    private fun getLogger() = LoggerFactory.getLogger(UserRepositoryImpl::class.java)
+
     override suspend fun isUserValid(userId: String): Boolean {
         return if(userDatasource.getUser(userId)){
             true
@@ -18,6 +21,7 @@ class UserRepositoryImpl(private val userDatasource: UserDatasource, private val
                 true
             }
             catch (ex: FirebaseAuthException){
+                getLogger().error("Exception with user $userId: ${ex.message}")
                 false
             }
         }

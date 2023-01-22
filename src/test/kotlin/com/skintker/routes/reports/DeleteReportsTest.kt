@@ -8,15 +8,16 @@ import com.skintker.domain.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.REPORTS_DELETED_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.REPORTS_NOT_DELETED_RESPONSE
 import com.skintker.domain.model.responses.ServiceResponse
-import io.ktor.http.*
-import io.ktor.client.request.*
-import kotlin.test.*
-import io.ktor.server.testing.*
-import io.ktor.client.statement.*
+import io.ktor.client.request.delete
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.coVerify
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import org.junit.Test
+import kotlin.test.assertEquals
 
 class DeleteReportsTest : RoutesKoinTest() {
 

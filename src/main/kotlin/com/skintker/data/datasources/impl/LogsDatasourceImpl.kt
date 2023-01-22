@@ -11,7 +11,8 @@ import com.skintker.data.db.logs.entities.EntityParsers.logEntityToBo
 import com.skintker.data.db.logs.entities.LogsEntity
 import com.skintker.data.dto.logs.AdditionalData
 import com.skintker.data.dto.logs.Irritation
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.select
 
 class LogsDatasourceImpl(
     private val irritationsDatasource: IrritationsDatasource,
@@ -19,15 +20,19 @@ class LogsDatasourceImpl(
 ) : LogsDatasource {
 
     override suspend fun getAllLogs(userId: String): List<DailyLog> = dbQuery {
-        LogTable.select { LogTable.userId eq userId }.map {
-            logEntityToBo(LogsEntity.wrapRow(it))
-        }
+        LogTable
+            .select { LogTable.userId eq userId }
+            .map {
+                logEntityToBo(LogsEntity.wrapRow(it))
+            }
     }
 
     override suspend fun getLog(idValues: LogIdValues): DailyLog? = dbQuery {
-        LogTable.select { (LogTable.userId eq idValues.userId) and (LogTable.dayDate eq idValues.dayDate) }.singleOrNull()?.let {
-            logEntityToBo(LogsEntity.wrapRow(it))
-        }
+        LogTable
+            .select { (LogTable.userId eq idValues.userId) and (LogTable.dayDate eq idValues.dayDate) }
+            .singleOrNull()?.let {
+                logEntityToBo(LogsEntity.wrapRow(it))
+            }
     }
 
     override suspend fun addNewLog(
@@ -53,12 +58,17 @@ class LogsDatasourceImpl(
         irritationValue: Irritation,
         additionalDataValue: AdditionalData
     ): Boolean = dbQuery {
-        LogTable.select { (LogTable.userId eq idValues.userId) and (LogTable.dayDate eq idValues.dayDate) }.singleOrNull()
-            ?.let { resultRow ->
+        LogTable
+            .select { (LogTable.userId eq idValues.userId) and (LogTable.dayDate eq idValues.dayDate) }
+            .singleOrNull()?.let { resultRow ->
                 LogsEntity.wrapRow(resultRow).apply {
                     foodList = foodValue.joinToString(",")
-                    irritationsDatasource.editIrritation(irritation.id.value, irritationValue)?.let { irritation = it }
-                    additionalDataDatasource.editAdditionalData(additionalData.id.value, additionalDataValue)?.let { additionalData = it }
+                    irritationsDatasource.editIrritation(irritation.id.value, irritationValue)?.let {
+                        irritation = it
+                    }
+                    additionalDataDatasource.editAdditionalData(additionalData.id.value, additionalDataValue)?.let {
+                        additionalData = it
+                    }
                 }
 
             }
@@ -68,12 +78,12 @@ class LogsDatasourceImpl(
     override suspend fun deleteLog(idValues: LogIdValues): Boolean = dbQuery {
         LogsEntity.find { (LogTable.userId eq idValues.userId) and (LogTable.dayDate eq idValues.dayDate) }
             .singleOrNull()?.delete()
-
         true
     }
 
     override suspend fun deleteAllLogs(userId: String): Boolean = dbQuery {
-        LogsEntity.find { LogTable.userId eq userId }.forEach { it.delete() }
+        LogsEntity.find { LogTable.userId eq userId }
+            .forEach { it.delete() }
         true
     }
 

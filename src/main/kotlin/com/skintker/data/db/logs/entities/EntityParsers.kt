@@ -29,6 +29,4 @@ object EntityParsers {
         ), alcoholLevel = AlcoholLevel.valueOf(entity.alcoholLevel),
         beerTypes = entity.beerTypes.split(",")
     )
-
-
 }

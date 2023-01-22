@@ -1,11 +1,20 @@
 package com.skintker.data.datasources.impl
 
-import com.skintker.data.*
+import com.skintker.data.BEERS_AMOUNT_THRESHOLD
+import com.skintker.data.FOOD_AMOUNT_THRESHOLD
+import com.skintker.data.HUMIDITY_AMOUNT_THRESHOLD
+import com.skintker.data.STRESS_AMOUNT_THRESHOLD
+import com.skintker.data.STRESS_THRESHOLD
+import com.skintker.data.TEMPERATURE_AMOUNT_THRESHOLD
+import com.skintker.data.TRAVEL_AMOUNT_THRESHOLD
+import com.skintker.data.ZONES_AMOUNT_THRESHOLD
 import com.skintker.data.datasources.StatsDatasource
 import com.skintker.data.dto.logs.AlcoholLevel
 import com.skintker.data.dto.logs.DailyLog
-import com.skintker.data.dto.stats.*
 import com.skintker.data.components.StatsDataProcessor
+import com.skintker.data.dto.stats.StatsDto
+import com.skintker.data.dto.stats.StatsWeather
+import com.skintker.data.increaseValue
 
 class StatsDatasourceImpl(private val statsProcessor: StatsDataProcessor) : StatsDatasource {
 

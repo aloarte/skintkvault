@@ -1,16 +1,20 @@
 package com.skintker
 
+import com.skintker.TestConstantsE2E.closingTimeGracePeriod
 import com.skintker.TestConstantsE2E.fbUserId
 import com.skintker.TestConstantsE2E.log
 import com.skintker.TestConstantsE2E.log2
+import com.skintker.TestConstantsE2E.port
 import com.skintker.TestConstantsE2E.reportPath
 import com.skintker.TestConstantsE2E.reportsPath
+import com.skintker.TestConstantsE2E.serverStopTimeout
 import com.skintker.TestConstantsE2E.serverUrl
 import com.skintker.data.dto.logs.DailyLog
-import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
-import kotlinx.coroutines.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.Application
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
+import io.ktor.server.netty.NettyApplicationEngine
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -25,8 +29,7 @@ import org.junit.Assert
 import org.spekframework.spek2.Spek
 import java.nio.charset.StandardCharsets
 
-@DelicateCoroutinesApi
-@ExperimentalCoroutinesApi
+
 object TestE2eReports : Spek({
 
     lateinit var server: NettyApplicationEngine
@@ -37,7 +40,7 @@ object TestE2eReports : Spek({
         println("> E2E Test configuration")
         server = embeddedServer(
             Netty,
-            port = 8080,
+            port = port,
             host = "0.0.0.0",
             module = Application::initModuleTest
         ).start(wait = false)
@@ -62,8 +65,8 @@ object TestE2eReports : Spek({
             val responseAdd1 = client.execute(httpPut)
             val responseAdd2 = client.execute(httpPut2)
 
-            Assert.assertEquals(201, responseAdd1.statusLine.statusCode.toLong())
-            Assert.assertEquals(201, responseAdd2.statusLine.statusCode.toLong())
+            Assert.assertEquals(HttpStatusCode.Created.value, responseAdd1.statusLine.statusCode)
+            Assert.assertEquals(HttpStatusCode.Created.value, responseAdd2.statusLine.statusCode)
         }
 
         test("Test E2E /reports get all logs") {
@@ -71,7 +74,7 @@ object TestE2eReports : Spek({
 
             val response = client.execute(httpGet)
 
-            Assert.assertEquals(200, response.statusLine.statusCode.toLong())
+            Assert.assertEquals(HttpStatusCode.OK.value, response.statusLine.statusCode)
             with(
                 Json.decodeFromString<GetAllReportsDto>(
                     EntityUtils.toString(
@@ -89,7 +92,7 @@ object TestE2eReports : Spek({
         test("Test E2E /reports delete all logs") {
             val httpDelete = HttpDelete("${serverUrl}/${reportsPath}/${fbUserId}")
             val response = client.execute(httpDelete)
-            Assert.assertEquals(200, response.statusLine.statusCode.toLong())
+            Assert.assertEquals(HttpStatusCode.OK.value, response.statusLine.statusCode)
         }
 
         test("Test E2E /reports get all logs after deletion") {
@@ -97,7 +100,7 @@ object TestE2eReports : Spek({
 
             val response = client.execute(httpGet)
 
-            Assert.assertEquals(200, response.statusLine.statusCode.toLong())
+            Assert.assertEquals(HttpStatusCode.OK.value, response.statusLine.statusCode)
             with(
                 Json.decodeFromString<GetAllReportsDto>(
                     EntityUtils.toString(
@@ -115,6 +118,6 @@ object TestE2eReports : Spek({
 
     afterGroup {
         println("< E2E Test cleanup")
-        server.stop(1000, 10000)
+        server.stop(closingTimeGracePeriod, serverStopTimeout)
     }
 })

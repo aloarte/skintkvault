@@ -4,7 +4,8 @@ import com.skintker.data.db.logs.AdditionalDataTable
 import com.skintker.data.db.logs.IrritationTable
 import com.skintker.data.db.logs.LogTable
 import com.skintker.data.db.logs.UserTable
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object TestDatabaseFactory {
