@@ -75,7 +75,9 @@ object TestConstantsE2E {
         alcohol = StatsAlcohol(true,"Ale"),
         stress = StatsStress(true,adStress),
         travel = StatsTravel(true,"Madrid"),
-        weather = StatsWeather(StatsWeather.StatsTemperature(true, adWeatherTemperature), StatsWeather.StatsHumidity(true,adWeatherHumidity))
+        weather = StatsWeather(
+            StatsWeather.StatsTemperature(true, adWeatherTemperature),
+            StatsWeather.StatsHumidity(true,adWeatherHumidity))
     )
 
 }
