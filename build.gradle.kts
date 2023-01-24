@@ -30,6 +30,22 @@ repositories {
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
 }
 
+ktor {
+    docker {
+        jreVersion.set(io.ktor.plugin.features.JreVersion.JRE_17)
+        localImageName.set("skintkvault-docker-image")
+        imageTag.set("$version")
+
+//        externalRegistry.set(
+//            io.ktor.plugin.features.DockerImageRegistry.dockerHub(
+//                appName = provider { "ktor-app" },
+//                username = providers.environmentVariable("DOCKER_HUB_USERNAME"),
+//                password = providers.environmentVariable("DOCKER_HUB_PASSWORD")
+//            )
+//        )
+    }
+}
+
 dependencies {
 
     //Kotlin
