@@ -20,7 +20,8 @@ import io.ktor.server.netty.Netty
 import org.koin.ktor.ext.inject
 
 fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::initModuleProd)
+    val port = System.getenv("PORT")
+    embeddedServer(Netty, port = port.toInt(), host = "0.0.0.0", module = Application::initModuleProd)
         .start(wait = true)
 }
 
