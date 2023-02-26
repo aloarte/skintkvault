@@ -123,31 +123,6 @@ tasks.shadowJar {
     }
 }
 
-
-//tasks.withType<ShadowJar> {
-//    manifest {
-//        attributes["Main-Class"] = "com.skintker.Application"
-//    }
-//}
-
 tasks.create("stage") {
     dependsOn(tasks.getByName("build"),tasks.getByName("clean"))
-}
-
-val mainClass = "com.skintker.Application"
-
-tasks {
-    register("fatJar", Jar::class.java) {
-        archiveClassifier.set("all")
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        manifest {
-            attributes("Main-Class" to mainClass)
-        }
-        from(configurations.runtimeClasspath.get()
-            .onEach { println("add from dependencies: ${it.name}") }
-            .map { if (it.isDirectory) it else zipTree(it) })
-        val sourcesMain = sourceSets.main.get()
-        sourcesMain.allSource.forEach { println("add from sources: ${it.name}") }
-        from(sourcesMain.output)
-    }
 }
