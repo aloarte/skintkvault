@@ -1,3 +1,4 @@
+
 val exposedVersion: String by project
 val h2Version: String by project
 val logbackVersion: String by project
@@ -14,10 +15,13 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "1.7.22"
     id("org.unbroken-dome.test-sets") version "4.0.0"
     id("io.gitlab.arturbosch.detekt") version("1.22.0")
+    id("com.github.johnrengelman.shadow") version("6.0.0")
 }
 
 group = "com.skintker"
-version = "0.0.1"
+version = "1.0.0"
+val mainClassName = "com.skintker.Application"
+
 application {
     mainClass.set("com.skintker.ApplicationKt")
 
@@ -28,6 +32,12 @@ application {
 repositories {
     mavenCentral()
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
+}
+
+ktor {
+    fatJar {
+        archiveFileName.set("skintkvault-$version.jar")
+    }
 }
 
 dependencies {
@@ -102,6 +112,17 @@ val integrationTest = task<Test>("integrationTest") {
     mustRunAfter(tasks["test"])
 }
 
+
 tasks.check {
     dependsOn(integrationTest)
+}
+
+tasks.shadowJar {
+    manifest {
+        attributes("Main-Class" to mainClassName)
+    }
+}
+
+tasks.create("stage") {
+    dependsOn(tasks.getByName("build"),tasks.getByName("clean"))
 }

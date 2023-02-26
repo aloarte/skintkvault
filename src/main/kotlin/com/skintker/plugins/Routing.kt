@@ -20,7 +20,6 @@ fun Application.configureRouting(
     paginationManager: PaginationManager,
     statsRepository: StatsRepository,
     reportsRepository: ReportsRepository
-
 ) {
 
     routing {
