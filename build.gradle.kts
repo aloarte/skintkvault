@@ -20,7 +20,7 @@ plugins {
 }
 
 group = "com.skintker"
-version = "0.0.1"
+version = "0.0.2"
 //val mainClassName = "com.skintker.Application"
 
 application {
