@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 val exposedVersion: String by project
 val h2Version: String by project
 val logbackVersion: String by project
@@ -14,10 +16,13 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "1.7.22"
     id("org.unbroken-dome.test-sets") version "4.0.0"
     id("io.gitlab.arturbosch.detekt") version("1.22.0")
+//    id("com.github.johnrengelman.shadow") version("6.0.0")
 }
 
 group = "com.skintker"
 version = "0.0.1"
+//val mainClassName = "com.skintker.Application"
+
 application {
     mainClass.set("com.skintker.ApplicationKt")
 
@@ -31,18 +36,8 @@ repositories {
 }
 
 ktor {
-    docker {
-        jreVersion.set(io.ktor.plugin.features.JreVersion.JRE_17)
-        localImageName.set("skintkvault-docker-image")
-        imageTag.set("$version")
-
-//        externalRegistry.set(
-//            io.ktor.plugin.features.DockerImageRegistry.dockerHub(
-//                appName = provider { "ktor-app" },
-//                username = providers.environmentVariable("DOCKER_HUB_USERNAME"),
-//                password = providers.environmentVariable("DOCKER_HUB_PASSWORD")
-//            )
-//        )
+    fatJar {
+        archiveFileName.set("skintkvault-$version.jar")
     }
 }
 
@@ -120,4 +115,41 @@ val integrationTest = task<Test>("integrationTest") {
 
 tasks.check {
     dependsOn(integrationTest)
+}
+
+
+
+//tasks.shadowJar {
+//    manifest {
+//        attributes("Main-Class" to mainClassName)
+//    }
+//}
+
+
+//tasks.withType<ShadowJar> {
+//    manifest {
+//        attributes["Main-Class"] = "com.skintker.Application"
+//    }
+//}
+
+tasks.create("stage") {
+    dependsOn(tasks.getByName("build"),tasks.getByName("clean"))
+}
+
+val mainClass = "com.skintker.Application"
+
+tasks {
+    register("fatJar", Jar::class.java) {
+        archiveClassifier.set("all")
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        manifest {
+            attributes("Main-Class" to mainClass)
+        }
+        from(configurations.runtimeClasspath.get()
+            .onEach { println("add from dependencies: ${it.name}") }
+            .map { if (it.isDirectory) it else zipTree(it) })
+        val sourcesMain = sourceSets.main.get()
+        sourcesMain.allSource.forEach { println("add from sources: ${it.name}") }
+        from(sourcesMain.output)
+    }
 }
