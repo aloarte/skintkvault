@@ -16,12 +16,12 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "1.7.22"
     id("org.unbroken-dome.test-sets") version "4.0.0"
     id("io.gitlab.arturbosch.detekt") version("1.22.0")
-//    id("com.github.johnrengelman.shadow") version("6.0.0")
+    id("com.github.johnrengelman.shadow") version("6.0.0")
 }
 
 group = "com.skintker"
 version = "0.0.2"
-//val mainClassName = "com.skintker.Application"
+val mainClassName = "com.skintker.Application"
 
 application {
     mainClass.set("com.skintker.ApplicationKt")
@@ -117,13 +117,11 @@ tasks.check {
     dependsOn(integrationTest)
 }
 
-
-
-//tasks.shadowJar {
-//    manifest {
-//        attributes("Main-Class" to mainClassName)
-//    }
-//}
+tasks.shadowJar {
+    manifest {
+        attributes("Main-Class" to mainClassName)
+    }
+}
 
 
 //tasks.withType<ShadowJar> {
