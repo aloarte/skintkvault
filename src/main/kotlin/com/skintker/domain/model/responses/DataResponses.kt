@@ -15,6 +15,6 @@ class LogListResponse(
 ) : DataResponses()
 
 @Serializable
-class StatsResponse(var stats: StatsDto) : DataResponses()
+class StatsResponse(var stats: StatsDto?) : DataResponses()
 
 

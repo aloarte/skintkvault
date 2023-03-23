@@ -1,6 +1,5 @@
 package com.skintker.domain
 
-import com.skintker.TestConstants.emptyStats
 import com.skintker.TestConstants.log
 import com.skintker.TestConstants.logList
 import com.skintker.TestConstants.stats
@@ -16,6 +15,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class StatsRepositoryTest{
 
@@ -69,6 +69,6 @@ class StatsRepositoryTest{
         }
 
         coVerify { logsDatasource.getAllLogs(userId)  }
-        assertEquals(emptyStats,result)
+        assertNull(result)
     }
 }
