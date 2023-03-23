@@ -4,6 +4,6 @@ import com.skintker.data.dto.stats.StatsDto
 
 interface StatsRepository {
 
-    suspend fun calculateUserStats(userId: String, statsThreshold: Int): StatsDto
+    suspend fun calculateUserStats(userId: String, statsThreshold: Int): StatsDto?
 
 }

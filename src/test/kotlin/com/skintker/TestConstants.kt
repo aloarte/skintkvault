@@ -145,7 +145,6 @@ object TestConstants {
 
     //Stats
 
-    val emptyStats = StatsDto()
     val statsAlcohol = StatsAlcohol(true, adBeerTypes.first())
     val statsStress = StatsStress(false, adStress)
     val statsTravel = StatsTravel(true, adCity)

@@ -7,12 +7,12 @@ import com.skintker.domain.repository.StatsRepository
 
 class StatsRepositoryImpl(private val logsDatasource: LogsDatasource, private val statsDatasource: StatsDatasource) :
     StatsRepository {
-    override suspend fun calculateUserStats(userId: String, statsThreshold: Int): StatsDto {
+    override suspend fun calculateUserStats(userId: String, statsThreshold: Int): StatsDto? {
         val userLogs = logsDatasource.getAllLogs(userId).filter { it.irritation.overallValue >= statsThreshold }
         return if (userLogs.isNotEmpty()) {
             statsDatasource.calculateStats(userLogs)
         } else {
-            StatsDto()
+            null
         }
     }
 
