@@ -16,7 +16,6 @@ import com.skintker.data.dto.logs.DailyLog
 import com.skintker.domain.model.responses.ServiceResponse
 import com.skintker.data.components.InputValidator
 import com.skintker.domain.model.SaveReportStatus
-import com.skintker.domain.repository.impl.UserRepositoryImpl
 import com.skintker.routes.PathParams.USER_ID_PARAM
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.JsonConvertException
@@ -39,7 +38,7 @@ fun Route.createReport(reportsRepository: ReportsRepository, inputValidator: Inp
      * Put a new report from the given user and save it on the database
      */
     put("/report/{$USER_ID_PARAM}") {
-        val logger = LoggerFactory.getLogger(UserRepositoryImpl::class.java)
+        val logger = LoggerFactory.getLogger("Route.createReport")
         try {
             val userId = call.parameters[USER_ID_PARAM]
             if (inputValidator.isUserIdInvalid(userId)) {
@@ -48,6 +47,7 @@ fun Route.createReport(reportsRepository: ReportsRepository, inputValidator: Inp
                 val log = call.receive<DailyLog>()
                 val errorMessageInvalidLog = inputValidator.isLogInvalid(log)
                 if (errorMessageInvalidLog != null) {
+                    logger.error("Error $INVALID_INPUT. $errorMessageInvalidLog")
                     call.respond(
                         status = HttpStatusCode.OK, message = ServiceResponse(INVALID_INPUT, errorMessageInvalidLog)
                     )

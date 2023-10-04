@@ -15,6 +15,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
+import org.slf4j.LoggerFactory
 
 fun Route.deleteReports(reportsRepository: ReportsRepository, inputValidator: InputValidator) {
 
@@ -22,6 +23,7 @@ fun Route.deleteReports(reportsRepository: ReportsRepository, inputValidator: In
      * Delete all the reports from a given user token
      */
     delete("/reports/{${USER_ID_PARAM}}") {
+        val logger = LoggerFactory.getLogger("Route.deleteReports")
         val userId = call.parameters[USER_ID_PARAM]
         if (inputValidator.isUserIdInvalid(userId)) {
             call.respondText(
@@ -35,6 +37,7 @@ fun Route.deleteReports(reportsRepository: ReportsRepository, inputValidator: In
                     ServiceResponse(NO_ERROR, REPORTS_DELETED_RESPONSE)
                 } else {
                     ServiceResponse(DATABASE_ISSUE, REPORTS_NOT_DELETED_RESPONSE)
+                    logger.error("Returned 200 with a database error: $DATABASE_ISSUE - $REPORTS_NOT_DELETED_RESPONSE")
                 }
             )
         }

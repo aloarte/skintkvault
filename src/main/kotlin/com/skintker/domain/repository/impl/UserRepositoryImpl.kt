@@ -21,7 +21,7 @@ class UserRepositoryImpl(private val userDatasource: UserDatasource, private val
                 true
             }
             catch (ex: FirebaseAuthException){
-                getLogger().error("Exception with user $userId: ${ex.message}")
+                getLogger().error("FIREBASE Exception with user $userId: ${ex.message}")
                 false
             }
         }

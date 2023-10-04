@@ -14,15 +14,18 @@ import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
+import org.slf4j.LoggerFactory
 
 fun Route.getStats(statsRepository: StatsRepository, inputValidator: InputValidator) {
     /**
      * Get the stats from a given user
      */
     get("/stats/{${USER_ID_PARAM}}") {
+        val logger = LoggerFactory.getLogger("Route.getStats")
         val irritationThreshold = call.request.queryParameters["threshold"]?.toIntOrNull() ?: IRRITATION_THRESHOLD
         val userId = call.parameters[USER_ID_PARAM]
         if (inputValidator.isUserIdInvalid(userId)) {
+            logger.error("Returned 401. ${ResponseConstants.INVALID_USER_ID_RESPONSE}")
             call.respondText(
                 ResponseConstants.INVALID_USER_ID_RESPONSE, status = HttpStatusCode.Unauthorized
             )
