@@ -19,6 +19,7 @@ import com.skintker.domain.model.SaveReportStatus
 import com.skintker.routes.PathParams.USER_ID_PARAM
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.JsonConvertException
+import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.CannotTransformContentToTypeException
@@ -52,30 +53,7 @@ fun Route.createReport(reportsRepository: ReportsRepository, inputValidator: Inp
                         status = HttpStatusCode.OK, message = ServiceResponse(INVALID_INPUT, errorMessageInvalidLog)
                     )
                 } else {
-                    when (reportsRepository.saveReport(userId!!, log)) {
-                        SaveReportStatus.Saved -> call.respond(
-                            status = HttpStatusCode.Created, message = ServiceResponse(NO_ERROR, REPORT_STORED_RESPONSE)
-                        )
-
-                        SaveReportStatus.Edited -> call.respond(
-                            status = HttpStatusCode.OK, message = ServiceResponse(NO_ERROR, REPORT_EDITED_RESPONSE)
-                        )
-
-                        SaveReportStatus.SavingFailed -> call.respond(
-                            status = HttpStatusCode.OK,
-                            message = ServiceResponse(DATABASE_ISSUE, REPORT_NOT_STORED_RESPONSE)
-                        )
-
-                        SaveReportStatus.EditingFailed -> call.respond(
-                            status = HttpStatusCode.OK,
-                            message = ServiceResponse(DATABASE_ISSUE, REPORT_NOT_EDITED_RESPONSE)
-                        )
-
-                        SaveReportStatus.BadInput -> call.respondText(
-                            BAD_INPUT_DATA,
-                            status = HttpStatusCode.BadRequest
-                        )
-                    }
+                    answerSaveReportResult(call,reportsRepository.saveReport(userId!!, log))
                 }
             }
         } catch (exception: JsonConvertException) {
@@ -101,5 +79,32 @@ fun Route.createReport(reportsRepository: ReportsRepository, inputValidator: Inp
                 status = HttpStatusCode.OK, message = ServiceResponse(DATABASE_ISSUE, DATABASE_ERROR)
             )
         }
+    }
+}
+
+private suspend fun answerSaveReportResult(call: ApplicationCall, status: SaveReportStatus){
+    when (status) {
+        SaveReportStatus.Saved -> call.respond(
+            status = HttpStatusCode.Created, message = ServiceResponse(NO_ERROR, REPORT_STORED_RESPONSE)
+        )
+
+        SaveReportStatus.Edited -> call.respond(
+            status = HttpStatusCode.OK, message = ServiceResponse(NO_ERROR, REPORT_EDITED_RESPONSE)
+        )
+
+        SaveReportStatus.SavingFailed -> call.respond(
+            status = HttpStatusCode.OK,
+            message = ServiceResponse(DATABASE_ISSUE, REPORT_NOT_STORED_RESPONSE)
+        )
+
+        SaveReportStatus.EditingFailed -> call.respond(
+            status = HttpStatusCode.OK,
+            message = ServiceResponse(DATABASE_ISSUE, REPORT_NOT_EDITED_RESPONSE)
+        )
+
+        SaveReportStatus.BadInput -> call.respondText(
+            BAD_INPUT_DATA,
+            status = HttpStatusCode.BadRequest
+        )
     }
 }

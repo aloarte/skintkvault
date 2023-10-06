@@ -40,7 +40,7 @@ fun Route.deleteReport(reportsRepository: ReportsRepository, inputValidator: Inp
                     message = if (reportsRepository.deleteReport(LogIdValues(logDate, userId!!))) {
                         ServiceResponse(NO_ERROR, REPORT_DELETED_RESPONSE)
                     } else {
-                        logger.error("Returned 200 with a database error: $DATABASE_ISSUE - $REPORT_NOT_DELETED_RESPONSE")
+                        logger.error("Returned 200 with a database error: $DATABASE_ISSUE $REPORT_NOT_DELETED_RESPONSE")
                         ServiceResponse(DATABASE_ISSUE, REPORT_NOT_DELETED_RESPONSE)
                     }
                 )
