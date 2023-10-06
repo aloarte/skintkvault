@@ -21,8 +21,7 @@ fun Application.configureMonitoring() {
             val status = call.response.status()
             val queryString = call.request.queryString()
             val userAgent = call.request.headers["User-Agent"]
-            "[CallLogging] [$httpMethod] $path : $status. $queryString  - ($userAgent)"
+            "[API CALL] [$httpMethod] $path$queryString : $status ($userAgent)"
         }
     }
-
 }

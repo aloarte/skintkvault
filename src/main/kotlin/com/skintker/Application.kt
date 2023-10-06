@@ -20,12 +20,14 @@ import io.ktor.server.netty.Netty
 import org.koin.ktor.ext.inject
 
 fun main() {
-    val port = System.getenv("PORT")
-    embeddedServer(Netty, port = port.toInt(), host = "0.0.0.0", module = Application::initModuleProd)
+    embeddedServer(Netty, port = 8080, module = Application::initModuleProd)
         .start(wait = true)
+    println("-- SERVER STARTED --")
+
 }
 
 fun Application.initModuleProd(){
+    println("-- SERVER CONFIGURED IN PRODUCTION MODE --")
     val statsRepository by inject<StatsRepository>()
     val reportsRepository by inject<ReportsRepository>()
     val inputValidator by inject<InputValidator>()
@@ -47,6 +49,7 @@ fun Application.initModuleProd(){
 }
 
 fun Application.initModuleTest() {
+    println("-- SERVER CONFIGURED IN TEST MODE --")
     val statsRepository by inject<StatsRepository>()
     val reportsRepository by inject<ReportsRepository>()
     val inputValidator by inject<InputValidator>()

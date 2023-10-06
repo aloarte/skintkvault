@@ -11,7 +11,7 @@ val spekVersion: String by project
 
 plugins {
     kotlin("jvm") version "1.7.22"
-    id("io.ktor.plugin") version "2.2.1"
+    id("io.ktor.plugin") version "2.3.4"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.7.22"
     id("org.unbroken-dome.test-sets") version "4.0.0"
     id("io.gitlab.arturbosch.detekt") version("1.22.0")
