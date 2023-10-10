@@ -9,5 +9,6 @@ RUN mkdir /app
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/ktor-docker-sample.jar
 RUN mkdir /tmp/keys/
 ADD firebase/skintker-firebase-adminsdk-9ed86-e8cbebaddb.json /tmp/keys/
+ADD skt-keystore.jks /tmp/keys/
 
 ENTRYPOINT ["java","-jar","/app/ktor-docker-sample.jar"]

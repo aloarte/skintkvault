@@ -14,20 +14,35 @@ import com.skintker.plugins.configureKoin
 import com.skintker.plugins.configureMonitoring
 import com.skintker.plugins.configureRouting
 import com.skintker.plugins.configureSerialization
-import io.ktor.server.application.Application
+import io.ktor.server.application.*
+import io.ktor.server.engine.ApplicationEngineEnvironment
+import io.ktor.server.engine.applicationEngineEnvironment
+import io.ktor.server.engine.connector
 import io.ktor.server.engine.embeddedServer
+import io.ktor.server.engine.sslConnector
 import io.ktor.server.netty.Netty
 import org.koin.ktor.ext.inject
+import org.slf4j.LoggerFactory
+import java.io.File
+import java.lang.System.getenv
 
 fun main() {
-    embeddedServer(Netty, port = 8080, module = Application::initModuleProd)
-        .start(wait = true)
     println("-- SERVER STARTED --")
+
+    embeddedServer(factory = Netty, environment = configureSSLEnvironment()).start(wait = true)
+
+
+//    embeddedServer(Netty, port = 8080, module = Application::initModuleProd)
+//        .start(wait = true)
+
+
 
 }
 
-fun Application.initModuleProd(){
-    println("-- SERVER CONFIGURED IN PRODUCTION MODE --")
+fun Application.initModuleProd() {
+
+
+    println("-- SERVER CONFIGURED IN PRODUCTION MODE ")
     val statsRepository by inject<StatsRepository>()
     val reportsRepository by inject<ReportsRepository>()
     val inputValidator by inject<InputValidator>()
@@ -45,8 +60,35 @@ fun Application.initModuleProd(){
     configureFreeMarker()
     configureAdministration()
     configureSerialization()
-    configureRouting(inputValidator,paginationManager,statsRepository,reportsRepository)
+    configureRouting(inputValidator, paginationManager, statsRepository, reportsRepository)
 }
+
+private fun configureSSLEnvironment(): ApplicationEngineEnvironment {
+    return applicationEngineEnvironment {
+
+        log = LoggerFactory.getLogger("ktor.application")
+        connector {
+            port = 8080
+        }
+
+        val ksPath = getenv("KS_PATH") ?: ""
+        val ksPassword = getenv("KS_PASSWORD") ?: ""
+        val ksAlias = getenv("KS_ALIAS") ?: ""
+        val ksPkPassword = getenv("KS_PK_PASSWORD") ?: ""
+
+        sslConnector(
+            keyStore = SslSettings.getKeyStore(ksPath, ksPassword),
+            keyAlias = ksAlias,
+            keyStorePassword = { ksPassword.toCharArray() },
+            privateKeyPassword = { ksPkPassword.toCharArray() }
+        ) {
+//            this.keyStorePath = ?????????????
+            port = 8443
+        }
+        module(Application::initModuleProd)
+    }
+}
+
 
 fun Application.initModuleTest() {
     println("-- SERVER CONFIGURED IN TEST MODE --")
@@ -67,5 +109,5 @@ fun Application.initModuleTest() {
     configureFreeMarker()
     configureAdministration()
     configureSerialization()
-    configureRouting(inputValidator,paginationManager,statsRepository,reportsRepository)
+    configureRouting(inputValidator, paginationManager, statsRepository, reportsRepository)
 }
