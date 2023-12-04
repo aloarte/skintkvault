@@ -3,7 +3,7 @@ package com.skintker
 import com.skintker.data.db.logs.AdditionalDataTable
 import com.skintker.data.db.logs.IrritationTable
 import com.skintker.data.db.logs.LogTable
-import com.skintker.data.db.logs.UserTable
+import com.skintker.data.db.logs.FirebaseUserTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -23,10 +23,10 @@ object TestDatabaseFactory {
                 listOf(LogTable, IrritationTable, AdditionalDataTable)
             }
             DatabaseInitialization.User -> {
-                listOf(UserTable)
+                listOf(FirebaseUserTable)
             }
             DatabaseInitialization.All -> {
-                listOf(LogTable, IrritationTable, AdditionalDataTable, UserTable)
+                listOf(LogTable, IrritationTable, AdditionalDataTable, FirebaseUserTable)
             }
         }
 

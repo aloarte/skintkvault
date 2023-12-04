@@ -209,3 +209,4 @@ gradle-app.setting
 
 /firebase
 *.json
+/config skt docker.txt

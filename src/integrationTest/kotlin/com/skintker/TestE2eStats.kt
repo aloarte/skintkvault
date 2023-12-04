@@ -14,7 +14,6 @@ import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.apache.http.client.methods.HttpGet
@@ -39,7 +38,7 @@ object TestE2eStats : Spek({
             Netty,
             port = port,
             host = "0.0.0.0",
-            module = Application::initModuleTest
+            module = Application::initTestMode
         ).start(wait = false)
     }
 

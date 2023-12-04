@@ -20,5 +20,5 @@ More info can be found at the [Api Wiki](https://github.com/aloarte/skintkvault/
 The application can be build through a Dockerfile into a docker image:
 * **docker build -t skintktvault:1.0.0 .**
 
-Then the GOOGLE_APPLICATION_CREDENTIALS environment variable must be provided. This is the same value found in the Dockerfile.
-* **docker run --name skintktvault -p8080:8080 -e GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/skintker-firebase-adminsdk-9ed86-e8cbebaddb.json skintktvault:1.0.0**
+Then the GOOGLE_APPLICATION_CREDENTIALS environment variable must be provided. This is the same value found in the Dockerfile. Also the data needed to access to the database must be provided.
+* **docker run --name skintkvault -e DDBB_USER= -e DDBB_PWD= -e DDBB_NAME= -e DDBB_PORT= -e DDBB_CONTAINER= -e GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/skintker-firebase-adminsdk-9ed86-e8cbebaddb.json --network=skintktvault_network -d skintkvault:1.0.0**
