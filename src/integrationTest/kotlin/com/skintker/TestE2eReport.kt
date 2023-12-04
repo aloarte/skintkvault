@@ -35,7 +35,7 @@ object TestE2eReport : Spek({
             Netty,
             port = port,
             host = "0.0.0.0",
-            module = Application::initModuleTest
+            module = Application::initTestMode
         ).start(wait = false)
     }
 

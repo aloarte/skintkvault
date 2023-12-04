@@ -1,6 +1,7 @@
 
 val exposedVersion: String by project
 val h2Version: String by project
+val postgresVersion: String by project
 val logbackVersion: String by project
 val mockkVersion: String by project
 val koinVersion: String by project
@@ -10,9 +11,9 @@ val ktorVersion: String by project
 val spekVersion: String by project
 
 plugins {
-    kotlin("jvm") version "1.7.22"
+    kotlin("jvm") version "1.9.0"
     id("io.ktor.plugin") version "2.3.4"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.7.22"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0"
     id("org.unbroken-dome.test-sets") version "4.0.0"
     id("io.gitlab.arturbosch.detekt") version("1.22.0")
     id("com.github.johnrengelman.shadow") version("6.0.0")
@@ -71,6 +72,8 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("org.postgresql:postgresql:$postgresVersion")
+
     implementation("com.h2database:h2:$h2Version")
 
     //Logs

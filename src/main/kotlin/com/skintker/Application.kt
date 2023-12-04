@@ -6,6 +6,7 @@ import com.google.firebase.FirebaseOptions
 import com.skintker.data.db.DatabaseFactory
 import com.skintker.data.components.InputValidator
 import com.skintker.data.components.PaginationManager
+import com.skintker.data.db.DdbbConfig
 import com.skintker.domain.repository.ReportsRepository
 import com.skintker.domain.repository.StatsRepository
 import com.skintker.plugins.configureAdministration
@@ -18,54 +19,78 @@ import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import org.koin.ktor.ext.inject
+import java.lang.System.getenv
 
 fun main() {
-    embeddedServer(Netty, port = 8080, module = Application::initModuleProd)
+    embeddedServer(Netty, port = 8080, module = Application::initProdMode)
         .start(wait = true)
     println("-- SERVER STARTED --")
-
 }
 
-fun Application.initModuleProd(){
+fun Application.initProdMode() {
     println("-- SERVER CONFIGURED IN PRODUCTION MODE --")
-    val statsRepository by inject<StatsRepository>()
-    val reportsRepository by inject<ReportsRepository>()
-    val inputValidator by inject<InputValidator>()
-    val paginationManager by inject<PaginationManager>()
-
-    val options = FirebaseOptions.builder()
-        .setCredentials(GoogleCredentials.getApplicationDefault())
-        .build()
-
-    FirebaseApp.initializeApp(options)
-
-    DatabaseFactory.init(false)
-    configureMonitoring()
-    configureKoin()
-    configureFreeMarker()
-    configureAdministration()
-    configureSerialization()
-    configureRouting(inputValidator,paginationManager,statsRepository,reportsRepository)
+    initFirebase()
+    initDatabase(true)
+    initModules()
 }
 
-fun Application.initModuleTest() {
+fun Application.initTestMode() {
     println("-- SERVER CONFIGURED IN TEST MODE --")
+    initFirebase()
+    initDatabase(false)
+    initModules()
+}
+
+
+private fun Application.initModules() {
     val statsRepository by inject<StatsRepository>()
     val reportsRepository by inject<ReportsRepository>()
     val inputValidator by inject<InputValidator>()
     val paginationManager by inject<PaginationManager>()
-
-    val options = FirebaseOptions.builder()
-        .setCredentials(GoogleCredentials.getApplicationDefault())
-        .build()
-
-    FirebaseApp.initializeApp(options)
-
-    DatabaseFactory.init(true)
     configureMonitoring()
     configureKoin()
     configureFreeMarker()
     configureAdministration()
     configureSerialization()
-    configureRouting(inputValidator,paginationManager,statsRepository,reportsRepository)
+    configureRouting(inputValidator, paginationManager, statsRepository, reportsRepository)
+}
+
+private fun initFirebase() {
+    FirebaseOptions.builder()
+        .setCredentials(GoogleCredentials.getApplicationDefault())
+        .build().also {
+            FirebaseApp.initializeApp(it)
+        }
+}
+
+private fun initDatabase(isProduction: Boolean) {
+    DatabaseFactory.init(
+        isProduction = isProduction,
+        config = if (isProduction) {
+            getDatabaseConfig()
+        } else {
+            DdbbConfig("", "", "", "","")
+        }
+    )
+}
+
+private fun getDatabaseConfig(): DdbbConfig {
+    val user = getenv("DDBB_USER")
+    val password = getenv("DDBB_PWD")
+    val databaseName = getenv("DDBB_NAME")
+    val databasePort = getenv("DDBB_PORT")
+    val containerName = getenv("DDBB_CONTAINER")
+
+    val userDataNotEmpty = user != null && password != null
+    val databaseDataNotEmpty = databaseName != null && databasePort != null && containerName!=null
+
+    return if (userDataNotEmpty && databaseDataNotEmpty) {
+        DdbbConfig(
+            userName = user,
+            password = password,
+            databaseName = databaseName,
+            databasePort = databasePort,
+            containerName = containerName
+        )
+    } else throw InstantiationException("Database initialization failed due to empty parameters")
 }
