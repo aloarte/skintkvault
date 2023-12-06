@@ -1,10 +1,8 @@
 package com.skintker.routes.report
 
 import com.skintker.domain.constants.ResponseConstants.INVALID_PARAM_RESPONSE
-import com.skintker.domain.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
 import com.skintker.domain.repository.ReportsRepository
 import com.skintker.domain.model.responses.ServiceResponse
-import com.skintker.data.components.InputValidator
 import com.skintker.domain.constants.ResponseCodes.DATABASE_ISSUE
 import com.skintker.domain.constants.ResponseCodes.NO_ERROR
 import com.skintker.domain.constants.ResponseConstants.REPORT_DELETED_RESPONSE
@@ -12,6 +10,7 @@ import com.skintker.domain.constants.ResponseConstants.REPORT_NOT_DELETED_RESPON
 import com.skintker.domain.model.LogIdValues
 import com.skintker.routes.PathParams.USER_ID_PARAM
 import com.skintker.routes.QueryParams.LOG_DATE_PARAM
+import com.skintker.domain.UserValidator
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
@@ -20,7 +19,7 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
 import org.slf4j.LoggerFactory
 
-fun Route.deleteReport(reportsRepository: ReportsRepository, inputValidator: InputValidator) {
+fun Route.deleteReport(reportsRepository: ReportsRepository, userValidator: UserValidator) {
 
     /**
      * Delete the given report from a given user
@@ -28,12 +27,9 @@ fun Route.deleteReport(reportsRepository: ReportsRepository, inputValidator: Inp
     delete("/report/{${USER_ID_PARAM}}") {
         val logger = LoggerFactory.getLogger("Route.deleteReport")
         val userId = call.parameters[USER_ID_PARAM]
-        if (inputValidator.isUserIdInvalid(userId)) {
-            call.respondText(
-                INVALID_USER_ID_RESPONSE,
-                status = HttpStatusCode.Unauthorized
-            )
-        } else {
+        val token = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+
+        userValidator.verifyUser(call = call, logger = logger, userId = userId, userToken = token) {
             call.request.queryParameters[LOG_DATE_PARAM]?.let { logDate->
                 call.respond(
                     status = HttpStatusCode.OK,
@@ -51,7 +47,6 @@ fun Route.deleteReport(reportsRepository: ReportsRepository, inputValidator: Inp
                     status = HttpStatusCode.BadRequest
                 )
             }
-
         }
     }
 }

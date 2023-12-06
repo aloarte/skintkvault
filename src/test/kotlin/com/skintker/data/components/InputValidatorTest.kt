@@ -1,6 +1,5 @@
 package com.skintker.data.components
 
-import com.skintker.TestConstants.userId
 import com.skintker.data.dto.logs.AdditionalData
 import com.skintker.data.dto.logs.AlcoholLevel
 import com.skintker.data.dto.logs.DailyLog
@@ -8,11 +7,6 @@ import com.skintker.data.dto.logs.Irritation
 import com.skintker.data.components.InputValidator.Companion.VALIDATION_ERROR_DATE
 import com.skintker.data.components.InputValidator.Companion.VALIDATION_ERROR_LEVEL
 import com.skintker.data.components.InputValidator.Companion.VALIDATION_ERROR_SLIDER
-import com.skintker.domain.repository.UserRepository
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -22,13 +16,11 @@ import kotlin.test.assertTrue
 
 class InputValidatorTest {
 
-    private val userRepository = mockk<UserRepository>()
-
     private lateinit var validator: InputValidator
 
     @Before
     fun setup(){
-        validator = InputValidator(userRepository)
+        validator = InputValidator()
     }
 
     @Test
@@ -150,34 +142,6 @@ class InputValidatorTest {
 
         assertEquals(VALIDATION_ERROR_SLIDER,result)
     }
-
-    @Test
-    fun `test is userId invalid empty user`() {
-        val result = runBlocking { validator.isUserIdInvalid("") }
-
-        assertTrue(result)
-    }
-
-    @Test
-    fun `test is userId invalid user`() {
-        coEvery {  userRepository.isUserValid(userId)} returns false
-
-        val result = runBlocking { validator.isUserIdInvalid(userId) }
-
-        coVerify { userRepository.isUserValid(userId) }
-        assertTrue(result)
-    }
-
-    @Test
-    fun `test is userId valid`() {
-        coEvery {  userRepository.isUserValid(userId)} returns true
-
-        val result = runBlocking { validator.isUserIdInvalid(userId) }
-
-        coVerify { userRepository.isUserValid(userId) }
-        assertFalse(result)
-    }
-
 
     @Test
     fun `test are pagination index valid, invalid inputs`(){

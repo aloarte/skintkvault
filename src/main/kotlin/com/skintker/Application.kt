@@ -15,6 +15,7 @@ import com.skintker.plugins.configureKoin
 import com.skintker.plugins.configureMonitoring
 import com.skintker.plugins.configureRouting
 import com.skintker.plugins.configureSerialization
+import com.skintker.domain.UserValidator
 import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -46,13 +47,14 @@ private fun Application.initModules() {
     val statsRepository by inject<StatsRepository>()
     val reportsRepository by inject<ReportsRepository>()
     val inputValidator by inject<InputValidator>()
+    val userValidator by inject<UserValidator>()
     val paginationManager by inject<PaginationManager>()
     configureMonitoring()
     configureKoin()
     configureFreeMarker()
     configureAdministration()
     configureSerialization()
-    configureRouting(inputValidator, paginationManager, statsRepository, reportsRepository)
+    configureRouting(inputValidator,userValidator, paginationManager, statsRepository, reportsRepository)
 }
 
 private fun initFirebase() {

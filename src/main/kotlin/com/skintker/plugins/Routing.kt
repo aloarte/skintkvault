@@ -4,6 +4,7 @@ import com.skintker.domain.repository.ReportsRepository
 import com.skintker.data.components.InputValidator
 import com.skintker.data.components.PaginationManager
 import com.skintker.domain.repository.StatsRepository
+import com.skintker.domain.UserValidator
 import com.skintker.routes.redirectHome
 import com.skintker.routes.report.createReport
 import com.skintker.routes.report.deleteReport
@@ -17,6 +18,7 @@ import io.ktor.server.routing.routing
 
 fun Application.configureRouting(
     inputValidator: InputValidator,
+    userValidator: UserValidator,
     paginationManager: PaginationManager,
     statsRepository: StatsRepository,
     reportsRepository: ReportsRepository
@@ -30,18 +32,18 @@ fun Application.configureRouting(
 
     //Everything requested to /report
     routing {
-        createReport(reportsRepository,inputValidator)
-        deleteReport(reportsRepository,inputValidator)
+        createReport(reportsRepository, inputValidator, userValidator)
+        deleteReport(reportsRepository, userValidator)
     }
 
     //Everything requested to /reports
     routing {
-        getReports(reportsRepository,inputValidator,paginationManager)
-        deleteReports(reportsRepository,inputValidator)
+        getReports(reportsRepository, inputValidator, userValidator, paginationManager)
+        deleteReports(reportsRepository, userValidator)
     }
 
     // Everything requested to /stats
     routing {
-        getStats(statsRepository,inputValidator)
+        getStats(statsRepository, userValidator)
     }
 }
