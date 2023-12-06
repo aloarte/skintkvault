@@ -3,9 +3,9 @@ package com.skintker.domain
 import com.skintker.domain.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.INVALID_USER_TOKEN_RESPONSE
 import com.skintker.domain.repository.UserRepository
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.response.*
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.response.respondText
+import io.ktor.http.HttpStatusCode
 import org.slf4j.Logger
 
 class UserValidator(private val userRepository: UserRepository) {

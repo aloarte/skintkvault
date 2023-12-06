@@ -1,6 +1,5 @@
 package com.skintker.data.components
 
-import com.skintker.TestConstants.userId
 import com.skintker.data.dto.logs.AdditionalData
 import com.skintker.data.dto.logs.AlcoholLevel
 import com.skintker.data.dto.logs.DailyLog
@@ -8,11 +7,6 @@ import com.skintker.data.dto.logs.Irritation
 import com.skintker.data.components.InputValidator.Companion.VALIDATION_ERROR_DATE
 import com.skintker.data.components.InputValidator.Companion.VALIDATION_ERROR_LEVEL
 import com.skintker.data.components.InputValidator.Companion.VALIDATION_ERROR_SLIDER
-import com.skintker.domain.repository.UserRepository
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -21,8 +15,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class InputValidatorTest {
-
-    private val userRepository = mockk<UserRepository>()
 
     private lateinit var validator: InputValidator
 

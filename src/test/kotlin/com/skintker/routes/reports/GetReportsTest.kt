@@ -9,9 +9,11 @@ import com.skintker.domain.constants.ResponseConstants
 import com.skintker.domain.model.responses.LogListResponse
 import com.skintker.domain.model.responses.ServiceResponse
 import io.ktor.client.call.body
-import io.ktor.client.request.*
+import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.*
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.coVerify

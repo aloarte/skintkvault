@@ -8,11 +8,14 @@ import com.skintker.domain.constants.ResponseCodes.NO_ERROR
 import com.skintker.domain.constants.ResponseConstants.REPORTS_DELETED_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.REPORTS_NOT_DELETED_RESPONSE
 import com.skintker.domain.model.responses.ServiceResponse
-import io.ktor.client.request.*
+import io.ktor.client.request.delete
+import io.ktor.client.request.header
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.*
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.testApplication
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
 import kotlinx.serialization.json.Json
 import org.junit.Test
 import kotlin.test.assertEquals

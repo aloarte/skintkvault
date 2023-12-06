@@ -5,15 +5,21 @@ import com.skintker.TestConstants.userToken
 import com.skintker.domain.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.INVALID_USER_TOKEN_RESPONSE
 import com.skintker.domain.repository.UserRepository
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.mockk.*
 import kotlinx.coroutines.runBlocking
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.response.respondText
+import io.ktor.http.HttpStatusCode
+import io.mockk.Runs
 import org.junit.Before
 import org.junit.Ignore
 import org.slf4j.Logger
 import kotlin.test.Test
+import io.mockk.mockk
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.just
+import io.mockk.verify
 
 class UserValidatorTest {
 

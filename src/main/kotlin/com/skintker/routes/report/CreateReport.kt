@@ -32,8 +32,11 @@ import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.statements.BatchDataInconsistentException
 import org.slf4j.LoggerFactory
 
-
-fun Route.createReport(reportsRepository: ReportsRepository, inputValidator: InputValidator, userValidator: UserValidator) {
+fun Route.createReport(
+    reportsRepository: ReportsRepository,
+    inputValidator: InputValidator,
+    userValidator: UserValidator
+) {
 
     /**
      * Put a new report from the given user and save it on the database
@@ -52,7 +55,7 @@ fun Route.createReport(reportsRepository: ReportsRepository, inputValidator: Inp
                         status = HttpStatusCode.OK, message = ServiceResponse(INVALID_INPUT, errorMessageInvalidLog)
                     )
                 } else {
-                    answerSaveReportResult(call,reportsRepository.saveReport(userId!!, log))
+                    answerSaveReportResult(call, reportsRepository.saveReport(userId!!, log))
                 }
             }
 
@@ -82,7 +85,7 @@ fun Route.createReport(reportsRepository: ReportsRepository, inputValidator: Inp
     }
 }
 
-private suspend fun answerSaveReportResult(call: ApplicationCall, status: SaveReportStatus){
+private suspend fun answerSaveReportResult(call: ApplicationCall, status: SaveReportStatus) {
     when (status) {
         SaveReportStatus.Saved -> call.respond(
             status = HttpStatusCode.Created, message = ServiceResponse(NO_ERROR, REPORT_STORED_RESPONSE)

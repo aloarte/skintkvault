@@ -11,9 +11,14 @@ import com.skintker.domain.constants.ResponseConstants.INVALID_PARAM_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.REPORT_NOT_DELETED_RESPONSE
 import com.skintker.domain.model.responses.ServiceResponse
 import com.skintker.routes.QueryParams.LOG_DATE_PARAM
-import io.ktor.client.request.*
+import io.ktor.client.request.delete
+import io.ktor.client.request.header
+import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.*
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.coVerify
