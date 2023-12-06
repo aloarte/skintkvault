@@ -21,10 +21,12 @@ import com.skintker.domain.repository.StatsRepository
 import com.skintker.domain.repository.UserRepository
 import com.skintker.domain.repository.impl.StatsRepositoryImpl
 import com.skintker.domain.repository.impl.UserRepositoryImpl
+import com.skintker.domain.UserValidator
 import org.koin.dsl.module
 
 val components = module {
-    factory { InputValidator(get()) }
+    factory { InputValidator() }
+    factory { UserValidator(get()) }
     factory { PaginationManager() }
     factory { StatsDataProcessor() }
 }
@@ -33,7 +35,6 @@ val repository = module {
     factory<StatsRepository> { StatsRepositoryImpl(get(),get()) }
     factory<ReportsRepository> { ReportsRepositoryImpl(get()) }
     factory<UserRepository> { UserRepositoryImpl(get(),get()) }
-
 }
 
 val dao = module {

@@ -7,9 +7,9 @@ import com.skintker.domain.model.responses.LogListResponse
 import com.skintker.domain.model.responses.ServiceResponse
 import com.skintker.data.components.InputValidator
 import com.skintker.domain.constants.ResponseConstants.BAD_INPUT_DATA
-import com.skintker.domain.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
 import com.skintker.routes.PathParams.USER_ID_PARAM
 import com.skintker.routes.QueryParams
+import com.skintker.domain.UserValidator
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory
 fun Route.getReports(
     reportsRepository: ReportsRepository,
     inputValidator: InputValidator,
+    userValidator: UserValidator,
     paginationManager: PaginationManager
 ) {
     /**
@@ -29,20 +30,17 @@ fun Route.getReports(
     get("/reports/{${USER_ID_PARAM}}") {
         val logger = LoggerFactory.getLogger("Route.getReports")
         val userId = call.parameters[USER_ID_PARAM]
-        if (inputValidator.isUserIdInvalid(userId)) {
-            call.respondText(
-                INVALID_USER_ID_RESPONSE, status = HttpStatusCode.Unauthorized
-            )
-            logger.error("Returned 401. $INVALID_USER_ID_RESPONSE")
-        } else {
+        val token = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+
+        userValidator.verifyUser(call = call, logger = logger, userId = userId, userToken = token) {
             val paramLimit = call.request.queryParameters[QueryParams.LIMIT_PARAM]
             val paramOffset = call.request.queryParameters[QueryParams.OFFSET_PARAM]
             val logList = reportsRepository.getReports(userId!!)
             val responseLogList = if (paramLimit != null && paramOffset != null) {
-                if (inputValidator.arePaginationIndexesInvalid(paramLimit,paramOffset, logList.size)) {
+                if (inputValidator.arePaginationIndexesInvalid(paramLimit, paramOffset, logList.size)) {
                     logger.error("Returned 400. $BAD_INPUT_DATA")
                     call.respondText(BAD_INPUT_DATA, status = HttpStatusCode.BadRequest)
-                    return@get
+                    return@verifyUser
                 }
                 paginationManager.getPageFromLogs(paramLimit, paramOffset, logList)
             } else {
@@ -55,8 +53,8 @@ fun Route.getReports(
                     statusCode = ResponseCodes.NO_ERROR, content = LogListResponse(responseLogList, logList.size)
                 )
             )
-
-
         }
+
+
     }
 }

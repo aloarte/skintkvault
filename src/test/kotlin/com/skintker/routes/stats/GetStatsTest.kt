@@ -3,19 +3,17 @@ package com.skintker.routes.stats
 import com.skintker.RoutesKoinTest
 import com.skintker.TestConstants.stats
 import com.skintker.TestConstants.userId
+import com.skintker.TestConstants.userToken
 import com.skintker.data.IRRITATION_THRESHOLD
 import com.skintker.domain.constants.ResponseCodes.NO_ERROR
-import com.skintker.domain.constants.ResponseConstants
 import com.skintker.domain.model.responses.ServiceResponse
 import com.skintker.domain.model.responses.StatsResponse
 import io.ktor.client.call.body
-import io.ktor.client.request.get
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.HttpStatusCode
+import io.ktor.client.request.*
+import io.ktor.http.*
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.coVerify
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -30,12 +28,14 @@ class GetStatsTest : RoutesKoinTest() {
     @Test
     fun `test get stats success default threshold parameter`() = testApplication {
         val client = configureClient()
-        coEvery { mockedInputValidator.isUserIdInvalid(userId) } returns false
+        mockVerifyUser(userId, userToken, true)
         coEvery { mockedStatsRepository.calculateUserStats(userId,IRRITATION_THRESHOLD) } returns stats
 
-        val response = client.get("/stats/$userId")
+        val response = client.get("/stats/$userId"){
+            header(HttpHeaders.Authorization, "Bearer $userToken")
+        }
 
-        coVerify { mockedInputValidator.isUserIdInvalid(userId) }
+        verifyVerifyUser(userId, userToken)
         coVerify { mockedStatsRepository.calculateUserStats(userId,IRRITATION_THRESHOLD) }
         val serviceResponse = Json.decodeFromString<ServiceResponse>(response.body())
         assertEquals(HttpStatusCode.OK, response.status)
@@ -47,12 +47,14 @@ class GetStatsTest : RoutesKoinTest() {
     @Test
     fun `test get stats success threshold parameter`() = testApplication {
         val client = configureClient()
-        coEvery { mockedInputValidator.isUserIdInvalid(userId) } returns false
+        mockVerifyUser(userId, userToken, true)
         coEvery { mockedStatsRepository.calculateUserStats(userId,threshold) } returns stats
 
-        val response = client.get("/stats/$userId?threshold=$threshold")
+        val response = client.get("/stats/$userId?threshold=$threshold"){
+            header(HttpHeaders.Authorization, "Bearer $userToken")
+        }
 
-        coVerify { mockedInputValidator.isUserIdInvalid(userId) }
+        verifyVerifyUser(userId, userToken)
         coVerify { mockedStatsRepository.calculateUserStats(userId,threshold) }
         val serviceResponse = Json.decodeFromString<ServiceResponse>(response.body())
         assertEquals(HttpStatusCode.OK, response.status)
@@ -62,14 +64,25 @@ class GetStatsTest : RoutesKoinTest() {
     }
 
     @Test
-    fun `test get stats unauthorized`() = testApplication {
+    fun `test get stats unauthorized bad token or userId`() = testApplication {
         val client = configureClient()
-        coEvery { mockedInputValidator.isUserIdInvalid(userId) } returns true
+        mockVerifyUser(userId, userToken, false)
 
-        val response = client.get("/stats/${userId}")
+        client.get("/stats/${userId}"){
+            header(HttpHeaders.Authorization, "Bearer $userToken")
+        }
 
-        coVerify { mockedInputValidator.isUserIdInvalid(userId) }
-        assertEquals(ResponseConstants.INVALID_USER_ID_RESPONSE, response.bodyAsText())
-        assertEquals(HttpStatusCode.Unauthorized, response.status)
+        verifyVerifyUser(userId, userToken)
     }
+
+    @Test
+    fun `test get stats unauthorized bad token not given`() = testApplication {
+        val client = configureClient()
+        mockVerifyUser(userId, null, false)
+
+        client.get("/stats/${userId}")
+
+        verifyVerifyUser(userId, null)
+    }
+
 }

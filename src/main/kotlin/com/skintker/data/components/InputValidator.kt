@@ -5,24 +5,15 @@ import com.skintker.data.Constants.LEVEL_MIN
 import com.skintker.data.Constants.SLIDER_MAX
 import com.skintker.data.Constants.SLIDER_MIN
 import com.skintker.data.dto.logs.DailyLog
-import com.skintker.domain.repository.UserRepository
 import java.text.ParseException
 import java.text.SimpleDateFormat
 
-class InputValidator(private val userRepository: UserRepository) {
+class InputValidator{
 
     companion object {
         const val VALIDATION_ERROR_DATE = "Invalid log data, the date is invalid. Follow the pattern mm-dd-yyyy"
         const val VALIDATION_ERROR_LEVEL = "Invalid log data, the level values must be between 1-10"
         const val VALIDATION_ERROR_SLIDER = "Invalid log data, the weather values must be between 1-5"
-    }
-
-    suspend fun isUserIdInvalid(userId: String?): Boolean {
-        return if (userId.isNullOrEmpty()) {
-            return true
-        } else {
-            userRepository.isUserValid(userId).not()
-        }
     }
 
     fun isLogInvalid(log: DailyLog) = when {

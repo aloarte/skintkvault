@@ -28,7 +28,7 @@ class InputValidatorTest {
 
     @Before
     fun setup(){
-        validator = InputValidator(userRepository)
+        validator = InputValidator()
     }
 
     @Test
@@ -150,34 +150,6 @@ class InputValidatorTest {
 
         assertEquals(VALIDATION_ERROR_SLIDER,result)
     }
-
-    @Test
-    fun `test is userId invalid empty user`() {
-        val result = runBlocking { validator.isUserIdInvalid("") }
-
-        assertTrue(result)
-    }
-
-    @Test
-    fun `test is userId invalid user`() {
-        coEvery {  userRepository.isUserValid(userId)} returns false
-
-        val result = runBlocking { validator.isUserIdInvalid(userId) }
-
-        coVerify { userRepository.isUserValid(userId) }
-        assertTrue(result)
-    }
-
-    @Test
-    fun `test is userId valid`() {
-        coEvery {  userRepository.isUserValid(userId)} returns true
-
-        val result = runBlocking { validator.isUserIdInvalid(userId) }
-
-        coVerify { userRepository.isUserValid(userId) }
-        assertFalse(result)
-    }
-
 
     @Test
     fun `test are pagination index valid, invalid inputs`(){

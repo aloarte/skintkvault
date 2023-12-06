@@ -125,6 +125,8 @@ object TestConstants {
     const val date6 = "05-01-2023"
 
     const val userId = "userId"
+    const val userToken = "userToken"
+
     val foodList = listOf("meat", "fish")
     val foodList2 = listOf("strawberry", "fish", "banana")
     val idValues = LogIdValues(dayDate = date, userId = userId)

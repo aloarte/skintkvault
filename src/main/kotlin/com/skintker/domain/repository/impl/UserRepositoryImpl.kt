@@ -10,20 +10,34 @@ class UserRepositoryImpl(private val userDatasource: UserDatasource, private val
     UserRepository {
     private fun getLogger() = LoggerFactory.getLogger(UserRepositoryImpl::class.java)
 
-    override suspend fun isUserValid(userId: String): Boolean {
-        return if(userDatasource.getUser(userId)){
-            true
-        }
-        else{
-            try{
-                firebaseAuth.getUser(userId)
-                userDatasource.addUser(userId) //If the FirebaseAuth didn't throw an exception, the user is valid
+    override suspend fun isUserValid(userId: String?): Boolean {
+        return userId?.let { id ->
+            if (userDatasource.getUser(id)) {
                 true
+            } else {
+                try {
+                    firebaseAuth.getUser(id)
+                    userDatasource.addUser(id) //If the FirebaseAuth didn't throw an exception, the user is valid
+                    true
+                } catch (ex: FirebaseAuthException) {
+                    getLogger().error("FIREBASE Exception with user $id: ${ex.message}")
+                    false
+                }
             }
-            catch (ex: FirebaseAuthException){
-                getLogger().error("FIREBASE Exception with user $userId: ${ex.message}")
-                false
-            }
+        } ?: false
+
+    }
+
+    override suspend fun isTokenValid(userToken: String?): Boolean {
+        return try {
+            userToken?.let {
+                firebaseAuth.verifyIdToken(userToken, true)
+                true
+            } ?: false
+        } catch (ex: FirebaseAuthException) {
+            getLogger().error("FIREBASE Exception with token $userToken: ${ex.message}")
+            false
         }
+
     }
 }

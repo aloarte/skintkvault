@@ -4,27 +4,23 @@ import com.skintker.RoutesKoinTest
 import com.skintker.TestConstants.jsonBodyLog
 import com.skintker.TestConstants.jsonDeserializedLog
 import com.skintker.TestConstants.userId
+import com.skintker.TestConstants.userToken
 import com.skintker.domain.constants.ResponseCodes.DATABASE_ISSUE
 import com.skintker.domain.constants.ResponseCodes.INVALID_INPUT
 import com.skintker.domain.constants.ResponseCodes.NO_ERROR
 import com.skintker.domain.constants.ResponseConstants.INVALID_INPUT_RESPONSE
-import com.skintker.domain.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.REPORT_EDITED_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.REPORT_NOT_EDITED_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.REPORT_NOT_STORED_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.REPORT_STORED_RESPONSE
 import com.skintker.domain.model.responses.ServiceResponse
 import com.skintker.domain.model.SaveReportStatus
-import io.ktor.client.request.put
-import io.ktor.client.request.setBody
+import io.ktor.client.request.*
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.contentType
+import io.ktor.http.*
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.coVerify
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -100,6 +96,7 @@ class CreateReportTest : RoutesKoinTest() {
         coEvery { mockedReportsRepository.saveReport(userId, jsonDeserializedLog) } returns SaveReportStatus.Saved
 
         val response = client.put("/report/$userId") {
+            header(HttpHeaders.Authorization, "Bearer $userToken")
             contentType(ContentType.Application.Json)
             setBody(jsonBodyLog)
         }
@@ -121,6 +118,7 @@ class CreateReportTest : RoutesKoinTest() {
         } returns SaveReportStatus.SavingFailed
 
         val response = client.put("/report/$userId") {
+            header(HttpHeaders.Authorization, "Bearer $userToken")
             contentType(ContentType.Application.Json)
             setBody(jsonBodyLog)
         }
@@ -139,6 +137,7 @@ class CreateReportTest : RoutesKoinTest() {
         coEvery { mockedReportsRepository.saveReport(userId, jsonDeserializedLog) } returns SaveReportStatus.Edited
 
         val response = client.put("/report/$userId") {
+            header(HttpHeaders.Authorization, "Bearer $userToken")
             contentType(ContentType.Application.Json)
             setBody(jsonBodyLog)
         }
@@ -159,6 +158,7 @@ class CreateReportTest : RoutesKoinTest() {
         } returns SaveReportStatus.EditingFailed
 
         val response = client.put("/report/$userId") {
+            header(HttpHeaders.Authorization, "Bearer $userToken")
             contentType(ContentType.Application.Json)
             setBody(jsonBodyLog)
         }
@@ -176,6 +176,7 @@ class CreateReportTest : RoutesKoinTest() {
         mockInputValidatorEvery(TestDataInput.InvalidLog)
 
         val response = client.put("/report/$userId") {
+            header(HttpHeaders.Authorization, "Bearer $userToken")
             contentType(ContentType.Application.Json)
             setBody(jsonBodyLog)
         }
@@ -186,34 +187,49 @@ class CreateReportTest : RoutesKoinTest() {
         assertEquals(expectedResponse, Json.decodeFromString(response.bodyAsText()))
     }
 
-
     @Test
-    fun `test put report bad user id unauthorized response`() = testApplication {
+    fun `test put report bad user id unauthorized bad token or userId`() = testApplication {
         val client = configureClient()
         mockInputValidatorEvery(TestDataInput.InvalidUser)
 
-        val response = client.put("/report/$userId") {
+        client.put("/report/$userId") {
+            header(HttpHeaders.Authorization, "Bearer $userToken")
             contentType(ContentType.Application.Json)
             setBody(onlyDateJsonBody)
         }
 
         mockInputValidatorVerify(TestDataInput.InvalidUser)
-        assertEquals(INVALID_USER_ID_RESPONSE, response.bodyAsText())
-        assertEquals(HttpStatusCode.Unauthorized, response.status)
+        //The return of the unauthorized part is handled by the UserValidator
+
     }
 
+    @Test
+    fun `test put report bad user id unauthorized token not given`() = testApplication {
+        val client = configureClient()
+        mockVerifyUser(userId, null, false)
+
+        client.put("/report/$userId") {
+            contentType(ContentType.Application.Json)
+            setBody(onlyDateJsonBody)
+        }
+
+        verifyVerifyUser(userId, null)
+        //The return of the unauthorized part is handled by the UserValidator
+
+    }
 
     @Test
     fun `test put report parse error different json`() = testApplication {
         val client = configureClient()
-        coEvery { mockedInputValidator.isUserIdInvalid(userId) } returns false
+        mockVerifyUser(userId, userToken, true)
 
         val response = client.put("/report/$userId") {
+            header(HttpHeaders.Authorization, "Bearer $userToken")
             contentType(ContentType.Application.Json)
             setBody(differentJson)
         }
 
-        coVerify { mockedInputValidator.isUserIdInvalid(userId) }
+        verifyVerifyUser(userId, userToken)
         assertEquals(INVALID_INPUT_RESPONSE, response.bodyAsText())
         assertEquals(HttpStatusCode.BadRequest, response.status)
     }
@@ -221,14 +237,15 @@ class CreateReportTest : RoutesKoinTest() {
     @Test
     fun `test put report parse error bad json`() = testApplication {
         val client = configureClient()
-        coEvery { mockedInputValidator.isUserIdInvalid(userId) } returns false
+        mockVerifyUser(userId, userToken, true)
 
         val response = client.put("/report/$userId") {
+            header(HttpHeaders.Authorization, "Bearer $userToken")
             contentType(ContentType.Application.Json)
             setBody(badJson)
         }
 
-        coVerify { mockedInputValidator.isUserIdInvalid(userId) }
+        verifyVerifyUser(userId, userToken)
         assertEquals(INVALID_INPUT_RESPONSE, response.bodyAsText())
         assertEquals(HttpStatusCode.BadRequest, response.status)
     }
@@ -241,17 +258,17 @@ class CreateReportTest : RoutesKoinTest() {
     private fun mockInputValidatorEvery(input: TestDataInput) {
         when (input) {
             TestDataInput.GoodInput -> {
-                coEvery { mockedInputValidator.isUserIdInvalid(any()) } returns false
+                mockVerifyUser(userId, userToken, true)
                 coEvery { mockedInputValidator.isLogInvalid(any()) } returns null
             }
 
             TestDataInput.InvalidLog -> {
-                coEvery { mockedInputValidator.isUserIdInvalid(any()) } returns false
+                mockVerifyUser(userId, userToken, true)
                 coEvery { mockedInputValidator.isLogInvalid(any()) } returns "Invalid log"
             }
 
             TestDataInput.InvalidUser -> {
-                coEvery { mockedInputValidator.isUserIdInvalid(any()) } returns true
+                mockVerifyUser(userId, userToken, false)
             }
         }
     }
@@ -259,11 +276,11 @@ class CreateReportTest : RoutesKoinTest() {
     private fun mockInputValidatorVerify(input: TestDataInput) {
         when (input) {
             TestDataInput.InvalidUser -> {
-                coVerify { mockedInputValidator.isUserIdInvalid(any()) }
+                verifyVerifyUser(userId, userToken)
             }
 
             else -> {
-                coVerify { mockedInputValidator.isUserIdInvalid(any()) }
+                verifyVerifyUser(userId, userToken)
                 coVerify { mockedInputValidator.isLogInvalid(any()) }
             }
         }

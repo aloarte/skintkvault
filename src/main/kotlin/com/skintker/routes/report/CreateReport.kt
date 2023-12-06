@@ -6,7 +6,6 @@ import com.skintker.domain.constants.ResponseCodes.NO_ERROR
 import com.skintker.domain.constants.ResponseConstants.BAD_INPUT_DATA
 import com.skintker.domain.constants.ResponseConstants.DATABASE_ERROR
 import com.skintker.domain.constants.ResponseConstants.INVALID_INPUT_RESPONSE
-import com.skintker.domain.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.REPORT_EDITED_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.REPORT_NOT_EDITED_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.REPORT_NOT_STORED_RESPONSE
@@ -17,6 +16,7 @@ import com.skintker.domain.model.responses.ServiceResponse
 import com.skintker.data.components.InputValidator
 import com.skintker.domain.model.SaveReportStatus
 import com.skintker.routes.PathParams.USER_ID_PARAM
+import com.skintker.domain.UserValidator
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.JsonConvertException
 import io.ktor.server.application.ApplicationCall
@@ -33,7 +33,7 @@ import org.jetbrains.exposed.sql.statements.BatchDataInconsistentException
 import org.slf4j.LoggerFactory
 
 
-fun Route.createReport(reportsRepository: ReportsRepository, inputValidator: InputValidator) {
+fun Route.createReport(reportsRepository: ReportsRepository, inputValidator: InputValidator, userValidator: UserValidator) {
 
     /**
      * Put a new report from the given user and save it on the database
@@ -42,9 +42,8 @@ fun Route.createReport(reportsRepository: ReportsRepository, inputValidator: Inp
         val logger = LoggerFactory.getLogger("Route.createReport")
         try {
             val userId = call.parameters[USER_ID_PARAM]
-            if (inputValidator.isUserIdInvalid(userId)) {
-                call.respondText(INVALID_USER_ID_RESPONSE, status = HttpStatusCode.Unauthorized)
-            } else {
+            val token = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+            userValidator.verifyUser(call = call, logger = logger, userId = userId, userToken = token) {
                 val log = call.receive<DailyLog>()
                 val errorMessageInvalidLog = inputValidator.isLogInvalid(log)
                 if (errorMessageInvalidLog != null) {
@@ -56,6 +55,7 @@ fun Route.createReport(reportsRepository: ReportsRepository, inputValidator: Inp
                     answerSaveReportResult(call,reportsRepository.saveReport(userId!!, log))
                 }
             }
+
         } catch (exception: JsonConvertException) {
             logger.error("Returned 400. JsonConvertException: $exception")
             call.respondText(INVALID_INPUT_RESPONSE, status = HttpStatusCode.BadRequest)
