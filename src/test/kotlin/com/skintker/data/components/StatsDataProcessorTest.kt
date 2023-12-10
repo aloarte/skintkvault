@@ -67,9 +67,6 @@ class StatsDataProcessorTest {
             AlcoholLevel.Mixed,
             AlcoholLevel.Mixed
         )
-        private val beersMap = mapOf("beer 1" to 4, "beer 2" to 2)
-        private val winesMap = mapOf("wine 1" to 4, "wine 2" to 2)
-        private val drinksMap = mapOf("drink 1" to 4, "drink 2" to 2)
 
         private val foodsLevels = mapOf(
             "food 1" to listOf(true, false, false, false, true),
@@ -373,5 +370,4 @@ class StatsDataProcessorTest {
             alcoholStats
         )
     }
-
 }

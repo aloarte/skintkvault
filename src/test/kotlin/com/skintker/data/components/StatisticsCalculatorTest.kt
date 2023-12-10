@@ -159,5 +159,4 @@ class StatisticsCalculatorTest {
 
         verify { anovaCalc.anovaPValue(binaryMap.values) }
     }
-
 }

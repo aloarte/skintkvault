@@ -20,7 +20,6 @@ class StatsDatasourceImpl(
 
     override fun calculateStats(logList: List<DailyLog>): StatsDto {
         val statsData = dataInitializer.prepareData(logList)
-
         return StatsDto(
             dietaryCauses = statsProcessor.getInvolvedData(InvolvedDataType.Foods, statsData, FOOD_AMOUNT_THRESHOLD),
             mostAffectedZones = statsProcessor.getInvolvedData(
@@ -32,12 +31,10 @@ class StatsDatasourceImpl(
             stress = statsProcessor.isStressInvolved(statsData, STRESS_THRESHOLD),
             travel = statsProcessor.isTravelingInvolved(statsData, TRAVEL_AMOUNT_THRESHOLD),
             weather = StatsWeather(
-                statsProcessor.isWeatherTemperatureInvolved(statsData),
-                statsProcessor.isWeatherHumidityInvolved(statsData)
+                temperature = statsProcessor.isWeatherTemperatureInvolved(statsData),
+                humidity = statsProcessor.isWeatherHumidityInvolved(statsData)
             )
-        ).also {
-            println("stats $it")
-        }
+        )
     }
 }
 

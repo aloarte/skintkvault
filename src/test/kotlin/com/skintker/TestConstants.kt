@@ -33,46 +33,40 @@ object TestConstants {
                 "      \"traveled\": true,\n" +
                 "      \"city\": \"Madrid\"\n" +
                 "    },\n" +
-                "    \"alcoholLevel\": \"Some\",\n" +
+                "    \"alcoholLevel\": \"None\",\n" +
                 "    \"beerTypes\": [\n" +
                 "      \"Ale\"\n" +
                 "    ]\n" +
                 "  },\n" +
                 "  \"foodList\": [\n" +
-                "    \"meat\",\n" +
-                "    \"fish\"\n" +
+                "    \"Meat\",\n" +
+                "    \"Blue fish\"\n" +
                 "  ]\n" +
                 "}"
 
+
+
     const val jsonStats = "{\n" +
-            "  \"enoughData\": false,\n" +
-            "  \"relevantLogs\": 2,\n" +
             "  \"dietaryCauses\": [\n" +
-            "    \"meat\",\n" +
-            "    \"fish\"\n" +
+            "    \"Meat\",\n" +
+            "    \"Blue fish\"\n" +
             "  ],\n" +
             "  \"mostAffectedZones\": [\n" +
             "    \"IrritationZone\"\n" +
             "  ],\n" +
             "  \"alcohol\": {\n" +
-            "    \"isPossible\": true,\n" +
-            "    \"beerType\": \"Ale\"\n" +
+            "    \"isPossible\": true\n" +
             "  },\n" +
-            "  \"stress\": {\n" +
-            "    \"isPossible\": false,\n" +
-            "    \"level\": 10\n" +
-            "  },\n" +
+            "  \"stress\": true,\n" +
             "  \"travel\": {\n" +
             "    \"isPossible\": true,\n" +
             "    \"city\": \"Madrid\"\n" +
             "  },\n" +
             "  \"weather\": {\n" +
             "    \"temperature\": {\n" +
-            "      \"isPossible\": false,\n" +
             "      \"level\": 0\n" +
             "    },\n" +
             "    \"humidity\": {\n" +
-            "      \"isPossible\": false,\n" +
             "      \"level\": 5\n" +
             "    }\n" +
             "  }\n" +

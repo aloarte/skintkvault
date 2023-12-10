@@ -1,5 +1,6 @@
 package com.skintker.data.components
 
+import com.skintker.data.Constants.P_VALUE
 import org.apache.commons.math3.exception.ConvergenceException
 import org.apache.commons.math3.exception.DimensionMismatchException
 import org.apache.commons.math3.exception.MaxCountExceededException
@@ -39,19 +40,20 @@ class StatisticsCalculator(private val corrCalc: PearsonsCorrelation, private va
     }
 
     fun isAnyGroupSignificant(groups: Map<Int, DoubleArray>): Boolean {
-        //TODO: Write logs if any exception is raised.
         return try {
-            anovaCalc.anovaPValue(groups.values) <= 0.05
+            anovaCalc.anovaPValue(groups.values) <= P_VALUE
         } catch (e: NullArgumentException) {
+            println("NullArgumentException during ANOVA: ${e.message}")
             false
         } catch (e: DimensionMismatchException) {
+            println("DimensionMismatchException during ANOVA: ${e.message}")
             false
         } catch (e: ConvergenceException) {
+            println("ConvergenceException during ANOVA: ${e.message}")
             false
         } catch (e: MaxCountExceededException) {
+            println("MaxCountExceededException during ANOVA: ${e.message}")
             false
         }
     }
-
-
 }

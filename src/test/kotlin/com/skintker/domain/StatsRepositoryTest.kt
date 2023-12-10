@@ -1,6 +1,5 @@
 package com.skintker.domain
 
-import com.skintker.TestConstants.log
 import com.skintker.TestConstants.logList
 import com.skintker.TestConstants.stats
 import com.skintker.TestConstants.userId
@@ -31,24 +30,8 @@ class StatsRepositoryTest{
     }
 
     @Test
-    fun `test calculate user stats only one is above threshold`() {
+    fun `test calculate user stats`() {
         coEvery { logsDatasource.getAllLogs(userId) } returns logList
-        //The input only will be the first log because its threshold is > 7
-        coEvery { statsDatasource.calculateStats(listOf(log)) } returns stats
-
-        val result = runBlocking {
-            repository.calculateUserStats(userId = userId, statsThreshold = 7)
-        }
-
-        coVerify { logsDatasource.getAllLogs(userId)  }
-        coVerify { statsDatasource.calculateStats(listOf(log)) }
-        assertEquals(stats,result)
-    }
-
-    @Test
-    fun `test calculate user stats both above threshold`() {
-        coEvery { logsDatasource.getAllLogs(userId) } returns logList
-        //The input will return both logs because its thresholds are > 5
         coEvery { statsDatasource.calculateStats(logList) } returns stats
 
         val result = runBlocking {

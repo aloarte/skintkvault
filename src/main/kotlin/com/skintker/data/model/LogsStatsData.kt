@@ -15,5 +15,4 @@ data class LogsStatsData(
     val beersLevels: Map<String, List<Boolean>> = mapOf(),
     val winesLevels: Map<String, List<Boolean>> = mapOf(),
     val drinksLevels: Map<String, List<Boolean>> = mapOf()
-
 )
