@@ -33,3 +33,10 @@ fun MutableMap<Boolean, Int>.increaseValue(key: Boolean) {
 fun MutableMap<AlcoholLevel, Int>.increaseValue(key: AlcoholLevel) {
     this[key] = (this[key] ?: 0) + 1
 }
+
+fun MutableMap<String, List<Boolean>>.increaseValue(key: String, index: Int) {
+    this[key]?.toMutableList()?.let {
+        it[index] = true
+        this[key] = it
+    }
+}

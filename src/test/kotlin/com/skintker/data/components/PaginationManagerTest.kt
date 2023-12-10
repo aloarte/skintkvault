@@ -14,7 +14,6 @@ import kotlin.test.assertEquals
 class PaginationManagerTest {
 
     private lateinit var paginationManager: PaginationManager
-
     @Before
     fun setup(){
         paginationManager = PaginationManager()
