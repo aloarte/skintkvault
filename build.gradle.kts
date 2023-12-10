@@ -91,7 +91,7 @@ dependencies {
     implementation ("com.google.firebase:firebase-admin:9.1.1")
 
     implementation("org.apache.commons:commons-math3:3.6.1")
-    
+
     //Testing dependencies
     testImplementation ("io.mockk:mockk:$mockkVersion")
     testImplementation("io.ktor:ktor-server-host-common:$ktorVersion")

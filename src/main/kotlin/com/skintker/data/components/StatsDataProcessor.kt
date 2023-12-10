@@ -54,20 +54,21 @@ class StatsDataProcessor(private val statsCalculator: StatisticsCalculator) {
             getSignificantGroup(statsData.irritationLevels, statsData.alcoholTypeMap.map { it.value })
 
         val alcoholIsRelevant = significantGroup != -1
+        val alcoholType = AlcoholLevel.fromValue(significantGroup)
         return StatsAlcohol(
             isPossible = alcoholIsRelevant,
-            type = AlcoholLevel.fromValue(significantGroup),
-            suspiciousBeers = if (alcoholIsRelevant) {
+            type = alcoholType,
+            suspiciousBeers = if (alcoholType == AlcoholLevel.Beer || alcoholType == AlcoholLevel.Mixed) {
                 getInvolvedData(InvolvedDataType.Beers, statsData, threshold)
             } else {
                 emptyList()
             },
-            suspiciousWines = if (alcoholIsRelevant) {
+            suspiciousWines = if (alcoholType == AlcoholLevel.Wine || alcoholType == AlcoholLevel.Mixed) {
                 getInvolvedData(InvolvedDataType.Wines, statsData, threshold)
             } else {
                 emptyList()
             },
-            suspiciousDrinks = if (alcoholIsRelevant) {
+            suspiciousDrinks = if (alcoholType == AlcoholLevel.Distilled || alcoholType == AlcoholLevel.Mixed) {
                 getInvolvedData(InvolvedDataType.Drinks, statsData, threshold)
             } else {
                 emptyList()

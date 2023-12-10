@@ -11,7 +11,7 @@ data class LogsStatsData(
     val humidityLevels: List<Int> = emptyList(),
     val traveledLevels: List<Boolean> = emptyList(),
     val traveledCityMap: Map<String, Int> = mapOf(),
-    val alcoholTypeMap: Map<AlcoholLevel, Int> = mapOf(),
+    val alcoholTypeMap: List<AlcoholLevel> = emptyList(),
     val beersLevels: Map<String, List<Boolean>> = mapOf(),
     val winesLevels: Map<String, List<Boolean>> = mapOf(),
     val drinksLevels: Map<String, List<Boolean>> = mapOf()

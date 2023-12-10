@@ -7,8 +7,6 @@ import com.skintker.data.dto.logs.Irritation
 import com.skintker.data.components.InputValidator.Companion.VALIDATION_ERROR_DATE
 import com.skintker.data.components.InputValidator.Companion.VALIDATION_ERROR_LEVEL
 import com.skintker.data.components.InputValidator.Companion.VALIDATION_ERROR_SLIDER
-import io.mockk.InternalPlatformDsl.toArray
-import org.apache.commons.math3.stat.correlation.PearsonsCorrelation
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -16,35 +14,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-
-
 class InputValidatorTest {
-    @Test
-    fun mainaa() {
-        // Ejemplo de datos
-        val nivelDePicor = listOf(10, 4, 1, 8, 9, 6, 7, 3, 9, 10)
-        val haberComidoPescado = listOf(true, false, false, true, true, false, true, false, true, true)
-        val haberComidoArrpz = listOf(false, true, true, false, false, true, false, true, false, true)
-
-        val haberBebidoAlcohol = listOf(false, true, false, true, false, true, false, true, true, false)
-
-        // Calcular la correlación de punto biserial entre "nivel de picor" y "haber comido pescado"
-        val correlationComidoPescado = calculatePointBiserialCorrelation(nivelDePicor, haberComidoPescado)
-        println("Correlación de punto biserial con haber comido pescado: $correlationComidoPescado")
-
-        // Calcular la correlación de punto biserial entre "nivel de picor" y "haber bebido alcohol"
-        val correlationBebidoArroz = calculatePointBiserialCorrelation(nivelDePicor, haberComidoArrpz)
-        println("Correlación de punto biserial con haber bebido arroz: $correlationBebidoArroz")
-
-        // Calcular la correlación de punto biserial entre "nivel de picor" y "haber bebido alcohol"
-        val correlationBebidoAlcohol = calculatePointBiserialCorrelation(nivelDePicor, haberBebidoAlcohol)
-        println("Correlación de punto biserial con haber bebido alcohol: $correlationBebidoAlcohol")
-    }
-
-    fun calculatePointBiserialCorrelation(continuousData: List<Int>, binaryData: List<Boolean>): Double {
-        val pearsonsCorrelation = PearsonsCorrelation()
-        return pearsonsCorrelation.correlation(continuousData.map { it.toDouble() }.toDoubleArray(), binaryData.map { if (it) 1.0 else 0.0 }.toDoubleArray())
-    }
 
     private lateinit var validator: InputValidator
 

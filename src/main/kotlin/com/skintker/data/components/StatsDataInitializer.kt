@@ -69,7 +69,7 @@ class StatsDataInitializer {
         val humidityLevels = mutableListOf<Int>()
         val traveledLevels = mutableListOf<Boolean>()
         val traveledCityMap = mutableMapOf<String, Int>()
-        val alcoholTypeMap = mutableMapOf<AlcoholLevel, Int>()
+        val alcoholTypeLevels = mutableListOf<AlcoholLevel>()
         val beersLevels = initializeMap(getBeersReferenceList(), logList.size)
         logList.forEachIndexed { index, log ->
             log.foodList.forEach { food ->
@@ -88,7 +88,7 @@ class StatsDataInitializer {
                 humidityLevels.add(index, it.weather.humidity)
                 traveledLevels.add(index, it.travel.traveled)
                 traveledCityMap.increaseValue(it.travel.city)
-                alcoholTypeMap.increaseValue(it.alcoholLevel)
+                alcoholTypeLevels.add(index, it.alcoholLevel)
                 it.beerTypes.forEach { beerType ->
                     beersLevels.increaseValue(beerType, index)
                 }
@@ -104,7 +104,7 @@ class StatsDataInitializer {
             humidityLevels,
             traveledLevels,
             traveledCityMap,
-            alcoholTypeMap,
+            alcoholTypeLevels,
             beersLevels
         )
     }
