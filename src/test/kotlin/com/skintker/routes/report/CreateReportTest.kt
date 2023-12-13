@@ -1,10 +1,15 @@
 package com.skintker.routes.report
 
 import com.skintker.RoutesKoinTest
+import com.skintker.TestConstants
 import com.skintker.TestConstants.jsonBodyLog
 import com.skintker.TestConstants.jsonDeserializedLog
 import com.skintker.TestConstants.userId
 import com.skintker.TestConstants.userToken
+import com.skintker.data.dto.logs.AdditionalData
+import com.skintker.data.dto.logs.AlcoholLevel
+import com.skintker.data.dto.logs.DailyLog
+import com.skintker.data.dto.logs.Irritation
 import com.skintker.domain.constants.ResponseCodes.DATABASE_ISSUE
 import com.skintker.domain.constants.ResponseCodes.INVALID_INPUT
 import com.skintker.domain.constants.ResponseCodes.NO_ERROR
@@ -26,6 +31,7 @@ import io.ktor.http.contentType
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.coVerify
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.Test
 import kotlin.test.assertEquals

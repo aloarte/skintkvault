@@ -9,7 +9,9 @@ import com.skintker.TestConstants.additionalDataEdited
 import com.skintker.TestConstants.foodList
 import com.skintker.TestConstants.foodList2
 import com.skintker.TestConstants.idValues
+import com.skintker.TestConstants.idValues2
 import com.skintker.TestConstants.irritation
+import com.skintker.TestConstants.irritation2
 import com.skintker.TestConstants.irritationEdited
 import com.skintker.TestConstants.irritationOverallValue
 import com.skintker.TestConstants.irritationOverallValue2
@@ -46,8 +48,8 @@ class LogsDatasourceTest {
 
     @Before
     fun setup() {
-        logsDataSource = LogsDatasourceImpl(irritationDataSource, additionalDataDataSource)
         TestDatabaseFactory.init(TestDatabaseFactory.DatabaseInitialization.Log)
+        logsDataSource = LogsDatasourceImpl(irritationDataSource, additionalDataDataSource)
     }
 
     @Test
@@ -113,7 +115,7 @@ class LogsDatasourceTest {
 
         val result = runBlocking {
             logsDataSource.addNewLog(idValues, foodList, irritation, additionalData)
-            logsDataSource.addNewLog(idValues, foodList, irritation, additionalData)
+            logsDataSource.addNewLog(idValues2, foodList2, irritation2, additionalDataEdited)
             logsDataSource.deleteAllLogs(userId)
             logsDataSource.getAllLogs(userId)
         }
@@ -196,10 +198,10 @@ class LogsDatasourceTest {
     private fun mockInsert() {
         runBlocking {
             coEvery {
-                irritationDataSource.addNewIrritation(irritation)
+                irritationDataSource.addNewIrritation(any())
             } returns createIrritationEntity(true)
             coEvery {
-                additionalDataDataSource.addNewAdditionalData(additionalData)
+                additionalDataDataSource.addNewAdditionalData(any())
             } returns createAdditionalDataEntity(true)
         }
     }
@@ -222,11 +224,21 @@ class LogsDatasourceTest {
             weatherTemperature = if (added) TestConstants.weather.temperature else TestConstants.weather2.temperature
             traveled = if (added) TestConstants.travel.traveled else TestConstants.travel2.traveled
             travelCity = if (added) TestConstants.travel.city else TestConstants.travel2.city
-            alcoholLevel = if (added) TestConstants.adAlcohol.name else adAlcohol2.name
-            beerTypes = if (added) {
+            alcoholLevel = if (added) TestConstants.adAlcohol.level.toString() else adAlcohol2.level.toString()
+            beers = if (added) {
                 TestConstants.adBeerTypes.joinToString(",")
             } else {
                 TestConstants.adBeerTypes2.joinToString(",")
+            }
+            wines = if (added) {
+                TestConstants.adWineTypes.joinToString(",")
+            } else {
+                TestConstants.adWineTypes2.joinToString(",")
+            }
+            distilledDrinks = if (added) {
+                TestConstants.addistilledTypes.joinToString(",")
+            } else {
+                TestConstants.adDistilledTypes2.joinToString(",")
             }
         }
     }

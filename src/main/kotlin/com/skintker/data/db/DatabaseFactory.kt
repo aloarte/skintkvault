@@ -27,6 +27,7 @@ object DatabaseFactory {
             password = config.password
         )
         transaction(database) {
+            SchemaUtils.drop(LogTable, IrritationTable, AdditionalDataTable, FirebaseUserTable)
             SchemaUtils.create(LogTable, IrritationTable, AdditionalDataTable, FirebaseUserTable)
         }
     }

@@ -49,7 +49,16 @@ class StatsDataInitializer {
 
     private fun getBeersReferenceList() = listOf(
         "Wheat", "Stout", "Porter", "Lager", "Dark Lager",
-        "Brown Ale", "Pale Ale/IPA", "Belgian-Style Ale", "Sour Ale"
+        "Brown Ale", "Pale Ale/IPA", "Belgian-Style Ale", "Sour Ale", "Other"
+    )
+
+    private fun getWinesReferenceList() = listOf(
+        "Red", "White", "Rose", "Sparkling", "Vermouth", "Other"
+    )
+
+    private fun getDistilledDrinksReferenceList() = listOf(
+        "Gin", "Vodka", "Rum", "Whiskey", "Tequila",
+        "Brandy", "Other"
     )
 
     private fun initializeMap(referenceList: List<String>, size: Int): MutableMap<String, List<Boolean>> {
@@ -71,6 +80,9 @@ class StatsDataInitializer {
         val traveledCityMap = mutableMapOf<String, Int>()
         val alcoholTypeLevels = mutableListOf<AlcoholLevel>()
         val beersLevels = initializeMap(getBeersReferenceList(), logList.size)
+        val wineLevels = initializeMap(getWinesReferenceList(), logList.size)
+        val distilledDrinksLevels = initializeMap(getDistilledDrinksReferenceList(), logList.size)
+
         logList.forEachIndexed { index, log ->
             log.foodList.forEach { food ->
                 foodsLevels.increaseValue(food, index)
@@ -88,9 +100,15 @@ class StatsDataInitializer {
                 humidityLevels.add(index, it.weather.humidity)
                 traveledLevels.add(index, it.travel.traveled)
                 traveledCityMap.increaseValue(it.travel.city)
-                alcoholTypeLevels.add(index, it.alcoholLevel)
-                it.beerTypes.forEach { beerType ->
+                alcoholTypeLevels.add(index, it.alcohol.level)
+                it.alcohol.beers.forEach { beerType ->
                     beersLevels.increaseValue(beerType, index)
+                }
+                it.alcohol.wines.forEach { beerType ->
+                    wineLevels.increaseValue(beerType, index)
+                }
+                it.alcohol.distilledDrinks.forEach { beerType ->
+                    distilledDrinksLevels.increaseValue(beerType, index)
                 }
             }
         }

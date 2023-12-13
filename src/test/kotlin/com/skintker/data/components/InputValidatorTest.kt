@@ -33,8 +33,10 @@ class InputValidatorTest {
                 1,
                 AdditionalData.Weather(1,5),
                 AdditionalData.Travel(true,""),
-                AlcoholLevel.None,
-                emptyList()
+                AdditionalData.Alcohol(
+                    AlcoholLevel.None,
+                    emptyList()
+                )
             )
         )
 
@@ -53,8 +55,10 @@ class InputValidatorTest {
                 1,
                 AdditionalData.Weather(1,5),
                 AdditionalData.Travel(true,""),
-                AlcoholLevel.None,
-                emptyList()
+                AdditionalData.Alcohol(
+                    AlcoholLevel.None,
+                    emptyList()
+                )
             )
         )
 
@@ -73,8 +77,10 @@ class InputValidatorTest {
                 1,
                 AdditionalData.Weather(1,5),
                 AdditionalData.Travel(true,""),
-                AlcoholLevel.None,
-                emptyList()
+                AdditionalData.Alcohol(
+                    AlcoholLevel.None,
+                    emptyList()
+                )
             )
         )
 
@@ -93,8 +99,10 @@ class InputValidatorTest {
                 0,
                 AdditionalData.Weather(1,5),
                 AdditionalData.Travel(true,""),
-                AlcoholLevel.None,
-                emptyList()
+                AdditionalData.Alcohol(
+                    AlcoholLevel.None,
+                    emptyList()
+                )
             )
         )
 
@@ -113,8 +121,10 @@ class InputValidatorTest {
                 1,
                 AdditionalData.Weather(0,5),
                 AdditionalData.Travel(true,""),
-                AlcoholLevel.None,
-                emptyList()
+                AdditionalData.Alcohol(
+                    AlcoholLevel.None,
+                    emptyList()
+                )
             )
         )
 
@@ -133,8 +143,10 @@ class InputValidatorTest {
                 1,
                 AdditionalData.Weather(1,6),
                 AdditionalData.Travel(true,""),
-                AlcoholLevel.None,
-                emptyList()
+                AdditionalData.Alcohol(
+                    AlcoholLevel.None,
+                    emptyList()
+                )
             )
         )
 

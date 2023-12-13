@@ -36,26 +36,29 @@ object TestConstantsE2E {
     private const val adWeatherTemperature = 5
     private const val adTraveled = true
     private const val adCity = "Madrid"
-    private val adAlcohol = AlcoholLevel.Some
-    private val adBeerTypes = listOf("Ale")
+    private val adAlcohol = AdditionalData.Alcohol(
+        AlcoholLevel.Beer,
+        wines = listOf("Ale")
+    )
     private val weather = AdditionalData.Weather(adWeatherHumidity, adWeatherTemperature)
     private val travel = AdditionalData.Travel(adTraveled, adCity)
-    private val additionalData = AdditionalData(adStress, weather, travel, adAlcohol, adBeerTypes)
+    private val additionalData = AdditionalData(adStress, weather, travel, adAlcohol)
     private const val adStress2 = 3
     private const val adWeatherHumidity2 = 1
     private const val adWeatherTemperature2 = 2
     private const val adTraveled2 = false
     private const val adCity2 = ""
-    private val adAlcohol2 = AlcoholLevel.FewWine
-    private val adBeerTypes2 = listOf("Stout")
+    private val adAlcohol2 =AdditionalData.Alcohol(
+        AlcoholLevel.Wine,
+        wines = listOf("Rose")
+    )
     private val weather2 = AdditionalData.Weather(adWeatherHumidity2, adWeatherTemperature2)
     private val travel2 = AdditionalData.Travel(adTraveled2, adCity2)
     private val additionalDataEdited = AdditionalData(
         adStress2,
         weather2,
         travel2,
-        adAlcohol2,
-        adBeerTypes2
+        adAlcohol2
     )
 
     //Log data
@@ -68,12 +71,10 @@ object TestConstantsE2E {
 
     //Stats
     val stats = StatsDto(
-        relevantLogs = 1,
-        enoughData = false,
         dietaryCauses = emptyList(),
         mostAffectedZones = listOf("IrritationZone"),
-        alcohol = StatsAlcohol(true,"Ale"),
-        stress = StatsStress(true,adStress),
+        alcohol = StatsAlcohol(true,AlcoholLevel.Beer, suspiciousBeers = listOf("Ale")),
+        stress = true,
         travel = StatsTravel(true,"Madrid"),
         weather = StatsWeather(
             StatsWeather.StatsTemperature(true, adWeatherTemperature),

@@ -12,5 +12,7 @@ object AdditionalDataTable : IntIdTable(){
     val traveled = bool("traveled")
     val travelCity = varchar("travelCity",DDBB_SIZE_CITY)
     val alcoholLevel = varchar("alcoholLevel",DDBB_SIZE_ENUM)
-    val beerTypes = varchar("beerTypes", DDBB_SIZE_LIST)
+    val beers= varchar("beers", DDBB_SIZE_LIST)
+    val wines = varchar("wines", DDBB_SIZE_LIST)
+    val distilledDrinks = varchar("distilledDrinks", DDBB_SIZE_LIST)
 }
