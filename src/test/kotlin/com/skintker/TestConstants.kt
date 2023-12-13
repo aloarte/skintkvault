@@ -14,7 +14,42 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 object TestConstants {
-    const val jsonBodyLog ="{\"date\":\"31-12-2022\",\"foodList\":[\"Meat\",\"Blue fish\"],\"irritation\":{\"overallValue\":8,\"zoneValues\":[\"IrritationZone\"]},\"additionalData\":{\"stressLevel\":10,\"weather\":{\"humidity\":0,\"temperature\":5},\"travel\":{\"traveled\":true,\"city\":\"Madrid\"},\"alcohol\":{\"level\":\"Beer\",\"beers\":[\"Ale\"],\"wines\":[\"White\"],\"distilledDrinks\":[\"Gin\"]}}}"
+    const val jsonBodyLog ="{\n" +
+            "  \"date\": \"31-12-2022\",\n" +
+            "  \"foodList\": [\n" +
+            "    \"Meat\",\n" +
+            "    \"Blue fish\"\n" +
+            "  ],\n" +
+            "  \"irritation\": {\n" +
+            "    \"overallValue\": 8,\n" +
+            "    \"zoneValues\": [\n" +
+            "      \"IrritationZone\"\n" +
+            "    ]\n" +
+            "  },\n" +
+            "  \"additionalData\": {\n" +
+            "    \"stressLevel\": 10,\n" +
+            "    \"weather\": {\n" +
+            "      \"humidity\": 0,\n" +
+            "      \"temperature\": 5\n" +
+            "    },\n" +
+            "    \"travel\": {\n" +
+            "      \"traveled\": true,\n" +
+            "      \"city\": \"Madrid\"\n" +
+            "    },\n" +
+            "    \"alcohol\": {\n" +
+            "      \"level\": \"Beer\",\n" +
+            "      \"beers\": [\n" +
+            "        \"Ale\"\n" +
+            "      ],\n" +
+            "      \"wines\": [\n" +
+            "        \"White\"\n" +
+            "      ],\n" +
+            "      \"distilledDrinks\": [\n" +
+            "        \"Gin\"\n" +
+            "      ]\n" +
+            "    }\n" +
+            "  }\n" +
+            "}"
 
     const val jsonStats = "{\n" +
             "  \"dietaryCauses\": [\n" +
