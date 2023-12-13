@@ -87,10 +87,8 @@ class LogsDatasourceImpl(
 
     override suspend fun deleteAllLogs(userId: String): Boolean = dbQuery {
         LogsEntity.find { LogTable.userId eq userId }
-            .onEach {
+            .forEach {
                 it.delete()
-            }
-            .onEach {
                 it.irritation.delete()
                 it.additionalData.delete()
             }
