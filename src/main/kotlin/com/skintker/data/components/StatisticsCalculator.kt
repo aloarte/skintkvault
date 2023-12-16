@@ -22,8 +22,8 @@ class StatisticsCalculator(private val corrCalc: PearsonsCorrelation, private va
     }
 
     fun calculateCorrelation(continuousData: List<Int>, otherContinuousData: List<Int>): Double {
-        return if (continuousData.size == otherContinuousData.size) {
-            corrCalc.correlation(
+        return if (continuousData.size == otherContinuousData.size && continuousData.size >= 2) {
+            calculateCorrelationSafe(
                 continuousData.map { it.toDouble() }.toDoubleArray(),
                 otherContinuousData.map { it.toDouble() }.toDoubleArray()
             )
@@ -31,29 +31,30 @@ class StatisticsCalculator(private val corrCalc: PearsonsCorrelation, private va
     }
 
     fun calculateCorrelationBinary(continuousData: List<Int>, binaryData: List<Boolean>): Double {
-        return if (continuousData.size == binaryData.size) {
-            corrCalc.correlation(
+        return if (continuousData.size == binaryData.size && continuousData.size >= 2) {
+            calculateCorrelationSafe(
                 continuousData.map { it.toDouble() }.toDoubleArray(),
                 binaryData.map { if (it) 1.0 else 0.0 }.toDoubleArray()
             )
         } else Double.NaN
     }
 
-    fun isAnyGroupSignificant(groups: Map<Int, DoubleArray>): Boolean {
-        return try {
-            anovaCalc.anovaPValue(groups.values) <= P_VALUE
-        } catch (e: NullArgumentException) {
-            println("NullArgumentException during ANOVA: ${e.message}")
-            false
-        } catch (e: DimensionMismatchException) {
-            println("DimensionMismatchException during ANOVA: ${e.message}")
-            false
-        } catch (e: ConvergenceException) {
-            println("ConvergenceException during ANOVA: ${e.message}")
-            false
-        } catch (e: MaxCountExceededException) {
-            println("MaxCountExceededException during ANOVA: ${e.message}")
-            false
-        }
-    }
+    private fun calculateCorrelationSafe(xList: DoubleArray, yList: DoubleArray) =
+        runCatching { corrCalc.correlation(xList, yList) }.fold(
+            onSuccess = { it },
+            onFailure = {
+                println("Exception during correlation: ${it.message}")
+                Double.NaN
+            }
+        )
+
+    fun isAnyGroupSignificant(groups: Map<Int, DoubleArray>) =
+        runCatching { anovaCalc.anovaPValue(groups.values) }.fold(
+            onSuccess = { it <= P_VALUE },
+            onFailure = {
+                println("Exception during ANOVA: ${it.message}")
+                false
+            }
+        )
+
 }

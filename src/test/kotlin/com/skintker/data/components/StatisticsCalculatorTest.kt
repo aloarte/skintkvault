@@ -92,6 +92,17 @@ class StatisticsCalculatorTest {
     }
 
     @Test
+    fun `test calculate correlation only 1 dimension`() {
+        val continuousData = listOf(1)
+        val otherContinuousData = listOf(4)
+
+        val correlation = calculator.calculateCorrelation(continuousData, otherContinuousData)
+
+        verify(exactly = 0) { corrCalc.correlation(any(), any()) }
+        Assert.assertEquals(Double.NaN, correlation, 0.0)
+    }
+
+    @Test
     fun `test calculate binary correlation `() {
         val continuousData = listOf(1, 2)
         val continuousDataD = listOf(1.0, 2.0)
@@ -114,6 +125,17 @@ class StatisticsCalculatorTest {
     fun `test calculate binary correlation bad sizes`() {
         val continuousData = listOf(1, 2)
         val otherContinuousData = listOf(true, false, false)
+
+        val correlation = calculator.calculateCorrelationBinary(continuousData, otherContinuousData)
+
+        verify(exactly = 0) { corrCalc.correlation(any(), any()) }
+        Assert.assertEquals(Double.NaN, correlation, 0.0)
+    }
+
+    @Test
+    fun `test calculate binary correlation only 1 dimension`() {
+        val continuousData = listOf(1)
+        val otherContinuousData = listOf(true)
 
         val correlation = calculator.calculateCorrelationBinary(continuousData, otherContinuousData)
 
