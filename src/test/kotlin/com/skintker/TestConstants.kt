@@ -14,106 +14,115 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 object TestConstants {
-    const val jsonBodyLog =
-        "{\n" +
-                "  \"date\": \"31-12-2022\",\n" +
-                "  \"irritation\": {\n" +
-                "    \"overallValue\": 8,\n" +
-                "    \"zoneValues\": [\n" +
-                "      \"IrritationZone\"\n" +
-                "    ]\n" +
-                "  },\n" +
-                "  \"additionalData\": {\n" +
-                "    \"stressLevel\": 10,\n" +
-                "    \"weather\": {\n" +
-                "      \"humidity\": 0,\n" +
-                "      \"temperature\": 5\n" +
-                "    },\n" +
-                "    \"travel\": {\n" +
-                "      \"traveled\": true,\n" +
-                "      \"city\": \"Madrid\"\n" +
-                "    },\n" +
-                "    \"alcoholLevel\": \"Some\",\n" +
-                "    \"beerTypes\": [\n" +
-                "      \"Ale\"\n" +
-                "    ]\n" +
-                "  },\n" +
-                "  \"foodList\": [\n" +
-                "    \"meat\",\n" +
-                "    \"fish\"\n" +
-                "  ]\n" +
-                "}"
+    const val jsonBodyLog ="{\n" +
+            "  \"date\": \"31-12-2022\",\n" +
+            "  \"foodList\": [\n" +
+            "    \"Meat\",\n" +
+            "    \"Blue fish\"\n" +
+            "  ],\n" +
+            "  \"irritation\": {\n" +
+            "    \"overallValue\": 8,\n" +
+            "    \"zoneValues\": [\n" +
+            "      \"IrritationZone\"\n" +
+            "    ]\n" +
+            "  },\n" +
+            "  \"additionalData\": {\n" +
+            "    \"stressLevel\": 10,\n" +
+            "    \"weather\": {\n" +
+            "      \"humidity\": 0,\n" +
+            "      \"temperature\": 5\n" +
+            "    },\n" +
+            "    \"travel\": {\n" +
+            "      \"traveled\": true,\n" +
+            "      \"city\": \"Madrid\"\n" +
+            "    },\n" +
+            "    \"alcohol\": {\n" +
+            "      \"level\": \"Beer\",\n" +
+            "      \"beers\": [\n" +
+            "        \"Ale\"\n" +
+            "      ],\n" +
+            "      \"wines\": [\n" +
+            "        \"White\"\n" +
+            "      ],\n" +
+            "      \"distilledDrinks\": [\n" +
+            "        \"Gin\"\n" +
+            "      ]\n" +
+            "    }\n" +
+            "  }\n" +
+            "}"
 
     const val jsonStats = "{\n" +
-            "  \"enoughData\": false,\n" +
-            "  \"relevantLogs\": 2,\n" +
             "  \"dietaryCauses\": [\n" +
-            "    \"meat\",\n" +
-            "    \"fish\"\n" +
+            "    \"Meat\",\n" +
+            "    \"Blue fish\"\n" +
             "  ],\n" +
             "  \"mostAffectedZones\": [\n" +
             "    \"IrritationZone\"\n" +
             "  ],\n" +
             "  \"alcohol\": {\n" +
-            "    \"isPossible\": true,\n" +
-            "    \"beerType\": \"Ale\"\n" +
+            "    \"isPossible\": true\n" +
             "  },\n" +
-            "  \"stress\": {\n" +
-            "    \"isPossible\": false,\n" +
-            "    \"level\": 10\n" +
-            "  },\n" +
+            "  \"stress\": true,\n" +
             "  \"travel\": {\n" +
             "    \"isPossible\": true,\n" +
             "    \"city\": \"Madrid\"\n" +
             "  },\n" +
             "  \"weather\": {\n" +
             "    \"temperature\": {\n" +
-            "      \"isPossible\": false,\n" +
             "      \"level\": 0\n" +
             "    },\n" +
             "    \"humidity\": {\n" +
-            "      \"isPossible\": false,\n" +
             "      \"level\": 5\n" +
             "    }\n" +
             "  }\n" +
             "}"
     val jsonDeserializedLog = Json.decodeFromString<DailyLog>(jsonBodyLog)
 
-
     //Irritation values
-    const val irritationOverallValue = 8
-    val irritationZones = listOf("IrritationZone")
-    val irritation = Irritation(irritationOverallValue, irritationZones)
-    const val irritationOverallValue2 = 5
-    val irritationZones2 = listOf("IrritationZone", "IrritationZone2")
-    val irritationEdited = Irritation(irritationOverallValue2, irritationZones2)
+    val irritation = Irritation( 8,  listOf("IrritationZone"))
+    val irritation2 = Irritation(5, listOf("Ears", "Eyelid","Arms","Wrists"))
+    val irritation3 = Irritation(7, listOf("Wrists", "Ears"))
+    val irritation4 = Irritation(2, listOf("Shoulders", "Chest"))
+    val irritationEdited = Irritation(5, listOf("Ears", "Eyelid","Arms","Wrists"))
 
     //AdditionalData values
-    const val adStress = 10
-    private const val adWeatherHumidity = 0
-    private const val adWeatherTemperature = 5
-    private const val adTraveled = true
-    private const val adCity = "Madrid"
-    val adAlcohol = AlcoholLevel.Some
     val adBeerTypes = listOf("Ale")
-    val weather = AdditionalData.Weather(adWeatherHumidity, adWeatherTemperature)
-    val travel = AdditionalData.Travel(adTraveled, adCity)
-    val additionalData = AdditionalData(adStress, weather, travel, adAlcohol, adBeerTypes)
+    val adWineTypes = listOf("White")
+    val addistilledTypes = listOf("Gin")
+    val adAlcohol = AdditionalData.Alcohol(
+        AlcoholLevel.Beer,
+        adBeerTypes,
+        adWineTypes,
+        addistilledTypes
+    )
+    val weather = AdditionalData.Weather(0, 5)
+    val travel = AdditionalData.Travel(true,  "Madrid")
+    val additionalData = AdditionalData(10, weather, travel, adAlcohol)
+
     const val adStress2 = 3
     private const val adWeatherHumidity2 = 1
     private const val adWeatherTemperature2 = 2
     private const val adTraveled2 = false
     private const val adCity2 = ""
-    val adAlcohol2 = AlcoholLevel.FewWine
     val adBeerTypes2 = emptyList<String>()
+    val adWineTypes2 = emptyList<String>()
+    val adDistilledTypes2 = emptyList<String>()
+    val adAlcohol2 = AdditionalData.Alcohol(
+        AlcoholLevel.Wine,
+        adBeerTypes2,
+        adWineTypes2,
+        adDistilledTypes2
+    )
+
+
     val weather2 = AdditionalData.Weather(adWeatherHumidity2, adWeatherTemperature2)
     val travel2 = AdditionalData.Travel(adTraveled2, adCity2)
     val additionalDataEdited = AdditionalData(
         adStress2,
         weather2,
         travel2,
-        adAlcohol2,
-        adBeerTypes2
+        adAlcohol2
+
     )
 
     //Log data
@@ -123,16 +132,23 @@ object TestConstants {
     const val date4 = "03-01-2023"
     const val date5 = "04-01-2023"
     const val date6 = "05-01-2023"
-
     const val userId = "userId"
     const val userToken = "userToken"
 
-    val foodList = listOf("meat", "fish")
-    val foodList2 = listOf("strawberry", "fish", "banana")
+    val foodList = listOf("Meat", "Blue fish")
+    val foodList2 = listOf("Strawberry", "Blue fish", "Banana")
+    val foodList3 = listOf("Meat", "Pineapple", "Citrus","Pickles")
+    val foodList4 = listOf("Strawberry", "Blue fish", "Banana")
+
     val idValues = LogIdValues(dayDate = date, userId = userId)
+    val idValues2 = LogIdValues(dayDate = date2, userId = userId)
+
     val log = DailyLog(date, foodList, irritation, additionalData)
     val log2 = DailyLog(date2, foodList2, irritationEdited, additionalDataEdited)
-    val logList = listOf(log, log2)
+    val log3 = DailyLog(date3, foodList3, irritation3, additionalData)
+    val log4 = DailyLog(date3, foodList4, irritation4, additionalData)
+
+    val logList = listOf(log, log2,log3,log4)
     val bigLogList = listOf(
         log,
         log2,
@@ -144,35 +160,18 @@ object TestConstants {
 
     val logEdited = DailyLog(date, foodList2, irritationEdited, additionalDataEdited)
 
-
     //Stats
-
-    val statsAlcohol = StatsAlcohol(true, adBeerTypes.first())
-    val statsStress = StatsStress(false, adStress)
-    val statsTravel = StatsTravel(true, adCity)
-    val statsTemperature = StatsWeather.StatsTemperature(false, adWeatherHumidity)
-    val statsHumidity = StatsWeather.StatsHumidity(false, adWeatherTemperature)
+    val statsAlcohol = StatsAlcohol(true)
+    val statsTravel = StatsTravel(true,  "Madrid")
+    val statsTemperature = StatsWeather.StatsTemperature(false, 0)
+    val statsHumidity = StatsWeather.StatsHumidity(false, 5)
     val stats = StatsDto(
-        relevantLogs = 2,
-        enoughData = false,
         dietaryCauses = foodList,
-        mostAffectedZones = irritationZones,
+        mostAffectedZones = listOf("IrritationZone"),
         alcohol = statsAlcohol,
-        stress = statsStress,
+        stress = true,
         travel = statsTravel,
         weather = StatsWeather(statsTemperature, statsHumidity)
-    )
-
-    val foodMap = mapOf(
-        "meat" to 1,
-        "strawberry" to 1,
-        "fish" to 2,
-        "banana" to 1
-    )
-
-    val zonesMap = mapOf(
-        "IrritationZone" to 2,
-        "IrritationZone2" to 1
     )
 
 }

@@ -3,7 +3,6 @@ package com.skintker.data.dto
 import com.skintker.TestConstants.jsonStats
 import com.skintker.TestConstants.stats
 import com.skintker.data.dto.stats.StatsDto
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.junit.Test
 import kotlin.test.assertEquals

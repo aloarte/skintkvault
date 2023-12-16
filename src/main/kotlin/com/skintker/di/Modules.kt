@@ -7,6 +7,8 @@ import com.skintker.domain.repository.ReportsRepository
 import com.skintker.domain.repository.impl.ReportsRepositoryImpl
 import com.skintker.data.components.InputValidator
 import com.skintker.data.components.PaginationManager
+import com.skintker.data.components.StatisticsCalculator
+import com.skintker.data.components.StatsDataInitializer
 import com.skintker.data.datasources.AdditionalDataDatasource
 import com.skintker.data.datasources.IrritationsDatasource
 import com.skintker.data.datasources.LogsDatasource
@@ -22,13 +24,19 @@ import com.skintker.domain.repository.UserRepository
 import com.skintker.domain.repository.impl.StatsRepositoryImpl
 import com.skintker.domain.repository.impl.UserRepositoryImpl
 import com.skintker.domain.UserValidator
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation
+import org.apache.commons.math3.stat.inference.OneWayAnova
 import org.koin.dsl.module
 
 val components = module {
     factory { InputValidator() }
     factory { UserValidator(get()) }
     factory { PaginationManager() }
-    factory { StatsDataProcessor() }
+    factory { PearsonsCorrelation() }
+    factory { OneWayAnova() }
+    factory { StatisticsCalculator(get(),get()) }
+    factory { StatsDataProcessor(get()) }
+    factory { StatsDataInitializer() }
 }
 
 val repository = module {
@@ -38,7 +46,7 @@ val repository = module {
 }
 
 val dao = module {
-    factory<StatsDatasource> { StatsDatasourceImpl(get()) }
+    factory<StatsDatasource> { StatsDatasourceImpl(get(),get()) }
     factory<LogsDatasource> { LogsDatasourceImpl(get(),get()) }
     factory<IrritationsDatasource> { IrritationsDatasourceImpl() }
     factory<AdditionalDataDatasource> { AdditionalDataDatasourceImpl() }

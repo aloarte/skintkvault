@@ -26,7 +26,13 @@ object EntityParsers {
         ), travel = AdditionalData.Travel(
             traveled = entity.traveled,
             city = entity.travelCity
-        ), alcoholLevel = AlcoholLevel.valueOf(entity.alcoholLevel),
-        beerTypes = entity.beerTypes.split(",")
+        ),
+        alcohol = AdditionalData.Alcohol(
+            level = AlcoholLevel.valueOf(entity.alcoholLevel),
+            beers = entity.beers.split(","),
+            wines = entity.wines.split(","),
+            distilledDrinks = entity.distilledDrinks.split(",")
+        )
+
     )
 }

@@ -16,6 +16,8 @@ class AdditionalDataEntity(id: EntityID<Int>):IntEntity(id) {
     var traveled by AdditionalDataTable.traveled
     var travelCity by AdditionalDataTable.travelCity
     var alcoholLevel by AdditionalDataTable.alcoholLevel
-    var beerTypes by AdditionalDataTable.beerTypes
+    var beers by AdditionalDataTable.beers
+    var wines by AdditionalDataTable.wines
+    var distilledDrinks by AdditionalDataTable.distilledDrinks
 
 }

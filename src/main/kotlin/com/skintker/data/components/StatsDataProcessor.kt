@@ -2,153 +2,117 @@ package com.skintker.data.components
 
 import com.skintker.data.dto.logs.AlcoholLevel
 import com.skintker.data.dto.stats.StatsAlcohol
-import com.skintker.data.dto.stats.StatsStress
 import com.skintker.data.dto.stats.StatsTravel
 import com.skintker.data.dto.stats.StatsWeather
-import com.skintker.data.getKeyOfMaxValue
 import com.skintker.data.getMaxValue
+import com.skintker.data.model.InvolvedDataType
+import com.skintker.data.model.LogsStatsData
 
-class StatsDataProcessor {
+class StatsDataProcessor(private val statsCalculator: StatisticsCalculator) {
 
-    /**
-     * Parse the given map of <string item , times> returning the list of the most repeated items
-     * that get over the given threshold.
-     */
-    fun getFromItemList(
-        itemMap: Map<String, Int>,
-        relevantAmountThreshold: Float // Proportion of relevant stressful repetitions
-    ): List<String> {
-        val returnList = mutableListOf<String>()
-        var totalCnt = 0
+    fun getInvolvedData(involvedDataType: InvolvedDataType, statsData: LogsStatsData, threshold: Double): List<String> =
+        getInvolvedData(
+            statsData.irritationLevels, when (involvedDataType) {
+                InvolvedDataType.Foods -> statsData.foodsLevels
+                InvolvedDataType.Zones -> statsData.zonesLevels
+                InvolvedDataType.Beers -> statsData.beersLevels
+                InvolvedDataType.Wines -> statsData.winesLevels
+                InvolvedDataType.Drinks -> statsData.drinksLevels
+            }, threshold
+        )
 
-        for ((_, times) in itemMap) {
-            totalCnt += times
-        }
-        for ((item, times) in itemMap) {
-            if (times >= totalCnt * relevantAmountThreshold) {
-                returnList.add(item)
-            }
-        }
-        return returnList
-    }
+    fun isStressInvolved(statsData: LogsStatsData, threshold: Double) =
+        statsCalculator.calculateCorrelation(statsData.irritationLevels, statsData.stressLevels)
+            .let { !it.isNaN() && it > threshold }
 
-    /**
-     * Parse the given map of <stress integer value , times> returning a StatsStress using the
-     * given thresholds.
-     */
-    fun getFromStress(
-        stressMap: Map<Int, Int>,
-        stressThreshold: Int,   //If the value is higher to this threshold, it's relevant to consider
-        relevantAmountThreshold: Float // Proportion of relevant stressful repetitions
-    ): StatsStress {
-        if (stressMap.isEmpty()) {
-            return StatsStress()
-        }
-        var totalRepetitions = 0
-        var stressfulRepetitions = 0
+    fun isTravelingInvolved(statsData: LogsStatsData, threshold: Double) = StatsTravel(
+        isPossible = statsCalculator.calculateCorrelationBinary(
+            statsData.irritationLevels,
+            statsData.traveledLevels
+        ).let { !it.isNaN() && it > threshold },
+        city = statsData.traveledCityMap.getMaxValue()
+    )
 
-        stressMap.forEach { (stressLevel, times) ->
-            if (stressLevel >= stressThreshold) {
-                stressfulRepetitions += times
-            }
-            totalRepetitions += times
-        }
-        return StatsStress(
-            isPossible = stressfulRepetitions >= (totalRepetitions * relevantAmountThreshold),
-            level = stressMap.getMaxValue()
+    fun isWeatherTemperatureInvolved(statsData: LogsStatsData): StatsWeather.StatsTemperature {
+        val significantGroup = getSignificantGroup(statsData.irritationLevels, statsData.temperatureLevels)
+        return StatsWeather.StatsTemperature(
+            isPossible = significantGroup != -1,
+            level = significantGroup
         )
     }
 
-    /**
-     * Parse the given maps of <traveled boolean value , times> and <traveled city string value
-     * , times> returning a StatsTravel using the given thresholds.
-     */
-    fun getFromTravel(
-        traveledMap: Map<Boolean, Int>,
-        traveledCityMap: Map<String, Int>,
-        relevantAmountThreshold: Float // Proportion of relevant travel repetitions
-    ): StatsTravel {
-        if (traveledMap.isEmpty() && traveledCityMap.isEmpty()) {
-            return StatsTravel()
-        }
-        var travelRepetitions = 0
-        var totalRepetitions = 0
-
-        traveledMap.forEach { (traveled, times) ->
-            if (traveled) {
-                travelRepetitions += times
-            }
-            totalRepetitions += times
-        }
-
-        return StatsTravel(
-            isPossible = travelRepetitions >= (totalRepetitions * relevantAmountThreshold),
-            city = traveledCityMap.getMaxValue()
+    fun isWeatherHumidityInvolved(statsData: LogsStatsData): StatsWeather.StatsHumidity {
+        val significantGroup = getSignificantGroup(statsData.irritationLevels, statsData.humidityLevels)
+        return StatsWeather.StatsHumidity(
+            isPossible = significantGroup != -1,
+            level = significantGroup
         )
     }
 
-    /**
-     * Parse the given maps of <temperature integer value , times> and <humidity integer string
-     * value, times> returning a pair of WeatherCauseBO using the given thresholds.
-     */
-    fun getFromWeatherTemperature(
-        temperatureMap: Map<Int, Int>, relevantAmountThreshold: Float // Proportion of relevant travel repetitions
-    ): StatsWeather.StatsTemperature {
-        return if (temperatureMap.isEmpty()) {
-            StatsWeather.StatsTemperature()
-        } else {
-            StatsWeather.StatsTemperature(
-                isPossible = temperatureMap.getKeyOfMaxValue() > temperatureMap.size * relevantAmountThreshold,
-                level = temperatureMap.getMaxValue()
-            )
-        }
-    }
+    fun isAlcoholInvolved(statsData: LogsStatsData, threshold: Double): StatsAlcohol {
+        val significantGroup =
+            getSignificantGroup(statsData.irritationLevels, statsData.alcoholTypeMap.map { it.value })
 
-    /**
-     * Parse the given maps of <temperature integer value , times> and <humidity integer string
-     * value, times> returning a pair of WeatherCauseBO using the given thresholds.
-     */
-    fun getFromWeatherHumidity(
-        humidityMap: Map<Int, Int>,
-        relevantAmountThreshold: Float // Proportion of relevant travel repetitions
-    ): StatsWeather.StatsHumidity {
-        return if (humidityMap.isEmpty()) {
-            StatsWeather.StatsHumidity()
-        } else {
-            StatsWeather.StatsHumidity(
-                isPossible = humidityMap.getKeyOfMaxValue() > humidityMap.size * relevantAmountThreshold,
-                level = humidityMap.getMaxValue()
-            )
-        }
-    }
-
-
-    fun getFromAlcohol(
-        beerTypesMap: Map<String, Int>,
-        alcoholLevelMap: Map<AlcoholLevel, Int>,
-        relevantAmountThreshold: Float // Proportion of relevant travel repetitions
-    ): StatsAlcohol {
-        if (alcoholLevelMap.isEmpty()) {
-            return StatsAlcohol()
-        }
-        var alcoholRepetitions = 0
-        var totalRepetitions = 0
-        alcoholLevelMap.forEach { (alcoholLevel, times) ->
-            if (alcoholLevel != AlcoholLevel.None) {
-                alcoholRepetitions += times
-            }
-            totalRepetitions += times
-        }
-
+        val alcoholIsRelevant = significantGroup != -1
+        val alcoholType = AlcoholLevel.fromValue(significantGroup)
         return StatsAlcohol(
-            isPossible = alcoholRepetitions >= totalRepetitions * relevantAmountThreshold,
-            beerType = if (
-                alcoholLevelMap.getMaxValue() == AlcoholLevel.Few || alcoholLevelMap.getMaxValue() == AlcoholLevel.Some
-            ) {
-                beerTypesMap.getMaxValue()
+            isPossible = alcoholIsRelevant,
+            type = alcoholType,
+            suspiciousBeers = if (alcoholType == AlcoholLevel.Beer || alcoholType == AlcoholLevel.Mixed) {
+                getInvolvedData(InvolvedDataType.Beers, statsData, threshold)
             } else {
-                null
+                emptyList()
+            },
+            suspiciousWines = if (alcoholType == AlcoholLevel.Wine || alcoholType == AlcoholLevel.Mixed) {
+                getInvolvedData(InvolvedDataType.Wines, statsData, threshold)
+            } else {
+                emptyList()
+            },
+            suspiciousDrinks = if (alcoholType == AlcoholLevel.Distilled || alcoholType == AlcoholLevel.Mixed) {
+                getInvolvedData(InvolvedDataType.Drinks, statsData, threshold)
+            } else {
+                emptyList()
             }
         )
     }
+
+    private fun getSignificantGroup(continuousData: List<Int>, groupedData: List<Int>): Int {
+        //Both datasets must have the same size and the grouped data must have at least 2 groups
+        return if (groupedData.toSet().size >= 2 && continuousData.size == groupedData.size) {
+            //Group each continuous data into separates lists
+            val groups = groupedData.toSet().associateWith { continuousDataLevel ->
+                continuousData.filterIndexed { index, _ -> groupedData[index] == continuousDataLevel }
+                    .map { it.toDouble() }
+                    .toDoubleArray()
+            }.filter { it.value.size > 1 } // Avoid those groups with just 1 item
+
+            //If there is any significant group, get the one with the highest average. Also must be more than one group
+            if (groups.size > 1 && statsCalculator.isAnyGroupSignificant(groups)) {
+                val list = mutableMapOf<Int, Double>()
+                groups.forEach {
+                    list[it.key] = it.value.average()
+                }
+                list.entries.maxByOrNull { it.value }?.toPair()?.first ?: -1
+
+            } else -1
+        } else {
+            -1
+        }
+    }
+
+    private fun getInvolvedData(
+        irritationLevels: List<Int>,
+        binaryDataMap: Map<String, List<Boolean>>,
+        threshold: Double,
+    ): List<String> {
+        val zonesCorrelations = statsCalculator.getCorrelations(irritationLevels, binaryDataMap)
+        val involvedFoods = mutableListOf<String>()
+        zonesCorrelations.forEach { (name, correlation) ->
+            if (!correlation.isNaN() && correlation > threshold) {
+                involvedFoods.add(name)
+            }
+        }
+        return involvedFoods
+    }
+
 }

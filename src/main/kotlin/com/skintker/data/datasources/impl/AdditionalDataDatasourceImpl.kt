@@ -25,8 +25,11 @@ class AdditionalDataDatasourceImpl : AdditionalDataDatasource {
             it.weatherTemperature = additionalDataValue.weather.temperature
             it.traveled = additionalDataValue.travel.traveled
             it.travelCity = additionalDataValue.travel.city
-            it.alcoholLevel = additionalDataValue.alcoholLevel.name
-            it.beerTypes = additionalDataValue.beerTypes.joinToString(",")
+            it.alcoholLevel = additionalDataValue.alcohol.level.name
+            it.beers = additionalDataValue.alcohol.beers.joinToString(",")
+            it.wines = additionalDataValue.alcohol.wines.joinToString(",")
+            it.distilledDrinks = additionalDataValue.alcohol.distilledDrinks.joinToString(",")
+
             it
         }
     }
@@ -45,8 +48,11 @@ class AdditionalDataDatasourceImpl : AdditionalDataDatasource {
             weatherTemperature = additionalDataValue.weather.temperature
             traveled = additionalDataValue.travel.traveled
             travelCity = additionalDataValue.travel.city
-            alcoholLevel = additionalDataValue.alcoholLevel.name
-            beerTypes = additionalDataValue.beerTypes.joinToString(",")
+            alcoholLevel = additionalDataValue.alcohol.level.name
+            beers = additionalDataValue.alcohol.beers.joinToString(",")
+            wines = additionalDataValue.alcohol.wines.joinToString(",")
+            distilledDrinks = additionalDataValue.alcohol.distilledDrinks.joinToString(",")
+
         }
     }
 

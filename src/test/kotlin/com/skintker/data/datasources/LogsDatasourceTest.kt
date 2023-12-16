@@ -1,20 +1,14 @@
 package com.skintker.data.datasources
 
-import com.skintker.TestConstants
-import com.skintker.TestConstants.adAlcohol2
-import com.skintker.TestConstants.adStress
-import com.skintker.TestConstants.adStress2
 import com.skintker.TestConstants.additionalData
 import com.skintker.TestConstants.additionalDataEdited
 import com.skintker.TestConstants.foodList
 import com.skintker.TestConstants.foodList2
 import com.skintker.TestConstants.idValues
+import com.skintker.TestConstants.idValues2
 import com.skintker.TestConstants.irritation
+import com.skintker.TestConstants.irritation2
 import com.skintker.TestConstants.irritationEdited
-import com.skintker.TestConstants.irritationOverallValue
-import com.skintker.TestConstants.irritationOverallValue2
-import com.skintker.TestConstants.irritationZones
-import com.skintker.TestConstants.irritationZones2
 import com.skintker.TestConstants.log
 import com.skintker.TestConstants.logEdited
 import com.skintker.TestConstants.userId
@@ -25,6 +19,8 @@ import com.skintker.data.datasources.impl.LogsDatasourceImpl
 import com.skintker.data.db.DatabaseFactory.dbQuery
 import com.skintker.data.db.logs.entities.AdditionalDataEntity
 import com.skintker.data.db.logs.entities.IrritationEntity
+import com.skintker.data.dto.logs.AdditionalData
+import com.skintker.data.dto.logs.Irritation
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -46,30 +42,30 @@ class LogsDatasourceTest {
 
     @Before
     fun setup() {
-        logsDataSource = LogsDatasourceImpl(irritationDataSource, additionalDataDataSource)
         TestDatabaseFactory.init(TestDatabaseFactory.DatabaseInitialization.Log)
+        logsDataSource = LogsDatasourceImpl(irritationDataSource, additionalDataDataSource)
     }
 
     @Test
     fun `test add new log`() {
-        mockInsert()
+        mockInsert(irritation, additionalData)
 
         val result = runBlocking { logsDataSource.addNewLog(idValues, foodList, irritation, additionalData) }
 
-        verifyMockInsert()
+        verifyMockInsert(irritation, additionalData)
         assertEquals(1, result)
     }
 
     @Test
     fun `test get log success`() {
-        mockInsert()
+        mockInsert(irritation, additionalData)
 
         val result = runBlocking {
             logsDataSource.addNewLog(idValues, foodList, irritation, additionalData)
             logsDataSource.getLog(idValues)
         }
 
-        verifyMockInsert()
+        verifyMockInsert(irritation, additionalData)
         assertNotNull(result)
         assertEquals(log, result)
     }
@@ -85,7 +81,7 @@ class LogsDatasourceTest {
 
     @Test
     fun `test delete log success`() {
-        mockInsert()
+        mockInsert(irritation, additionalData)
 
         val result = runBlocking {
             logsDataSource.addNewLog(idValues, foodList, irritation, additionalData)
@@ -93,7 +89,7 @@ class LogsDatasourceTest {
             logsDataSource.getLog(idValues)
         }
 
-        verifyMockInsert()
+        verifyMockInsert(irritation, additionalData)
         assertNull(result)
     }
 
@@ -109,16 +105,17 @@ class LogsDatasourceTest {
 
     @Test
     fun `test delete all logs `() {
-        mockInsert()
+        mockInsert(irritation, additionalData,irritation2, additionalDataEdited)
 
         val result = runBlocking {
             logsDataSource.addNewLog(idValues, foodList, irritation, additionalData)
-            logsDataSource.addNewLog(idValues, foodList, irritation, additionalData)
+            logsDataSource.addNewLog(idValues2, foodList2, irritation2, additionalDataEdited)
             logsDataSource.deleteAllLogs(userId)
             logsDataSource.getAllLogs(userId)
         }
 
-        verifyMockInsert()
+        verifyMockInsert(irritation, additionalData)
+        verifyMockInsert(irritation2, additionalDataEdited)
         assertEquals(emptyList(), result)
     }
 
@@ -134,8 +131,8 @@ class LogsDatasourceTest {
 
     @Test
     fun `test edit log success`() {
-        mockInsert()
-        mockEdit()
+        mockInsert(irritation, additionalData)
+        mockEdit(irritationEdited, additionalDataEdited)
 
         val result = runBlocking {
             logsDataSource.addNewLog(idValues, foodList, irritation, additionalData)
@@ -143,7 +140,7 @@ class LogsDatasourceTest {
             logsDataSource.getLog(idValues)
         }
 
-        verifyMockInsert()
+        verifyMockInsert(irritation, additionalData)
         verifyMockEdit()
         assertNotNull(result)
         assertEquals(logEdited.date, result.date)
@@ -163,15 +160,17 @@ class LogsDatasourceTest {
 
     @Test
     fun `test get all log from user with value`() {
-        mockInsert()
+        mockInsert(irritation, additionalData)
+        mockInsert(irritation2, additionalDataEdited)
 
         val result = runBlocking {
             logsDataSource.addNewLog(idValues, foodList, irritation, additionalData)
-            logsDataSource.addNewLog(idValues, foodList, irritation, additionalData)
+            logsDataSource.addNewLog(idValues, foodList, irritation2, additionalDataEdited)
             logsDataSource.getAllLogs(userId)
         }
 
-        verifyMockInsert()
+        verifyMockInsert(irritation, additionalData)
+        verifyMockInsert(irritation2, additionalDataEdited)
         assertTrue(result.isNotEmpty())
         assertEquals(2, result.size)
 
@@ -179,74 +178,87 @@ class LogsDatasourceTest {
 
     @Test
     fun `test get all logs value `() {
-        mockInsert()
+        mockInsert(irritation, additionalData)
+        mockInsert(irritation2, additionalDataEdited)
 
         val result = runBlocking {
             logsDataSource.addNewLog(idValues, foodList, irritation, additionalData)
-            logsDataSource.addNewLog(idValues, foodList, irritation, additionalData)
+            logsDataSource.addNewLog(idValues2, foodList2, irritation2, additionalDataEdited)
             logsDataSource.getAllLogs(userId)
         }
 
-        verifyMockInsert()
+        verifyMockInsert(irritation, additionalData)
+        verifyMockInsert(irritation2, additionalDataEdited)
         assertTrue(result.isNotEmpty())
         assertEquals(2, result.size)
     }
 
 
-    private fun mockInsert() {
+    private fun mockInsert(
+        irritation: Irritation,
+        additionalData: AdditionalData,
+        irritation2: Irritation? = null,
+        additionalData2: AdditionalData? = null
+    ) {
         runBlocking {
-            coEvery {
-                irritationDataSource.addNewIrritation(irritation)
-            } returns createIrritationEntity(true)
-            coEvery {
-                additionalDataDataSource.addNewAdditionalData(additionalData)
-            } returns createAdditionalDataEntity(true)
+
+            irritation2?.let {
+                coEvery {
+                    irritationDataSource.addNewIrritation(any())
+                } returns createIrritationEntity(irritation) andThen createIrritationEntity(irritation2)
+            } ?: run {
+                coEvery {
+                    irritationDataSource.addNewIrritation(any())
+                } returns createIrritationEntity(irritation)
+            }
+
+            additionalData2?.let {
+                coEvery {
+                    additionalDataDataSource.addNewAdditionalData(any())
+                } returns createAdditionalDataEntity(additionalData) andThen createAdditionalDataEntity(additionalData2)
+            } ?: run {
+                coEvery {
+                    additionalDataDataSource.addNewAdditionalData(any())
+                } returns createAdditionalDataEntity(additionalData)
+            }
+
+
         }
     }
 
-    private suspend fun createIrritationEntity(added: Boolean) = dbQuery {
+    private suspend fun createIrritationEntity(irritation: Irritation) = dbQuery {
         IrritationEntity.new {
-            value = if (added) irritationOverallValue else irritationOverallValue2
-            zoneValues = if (added) {
-                irritationZones.joinToString(",")
-            } else {
-                irritationZones2.joinToString(",")
-            }
+            value = irritation.overallValue
+            zoneValues = irritation.zoneValues.joinToString(",")
         }
     }
 
-    private suspend fun createAdditionalDataEntity(added: Boolean) = dbQuery {
+    private suspend fun createAdditionalDataEntity(additionalData: AdditionalData) = dbQuery {
         AdditionalDataEntity.new {
-            stressLevel = if (added) adStress else adStress2
-            weatherHumidity = if (added) TestConstants.weather.humidity else TestConstants.weather2.humidity
-            weatherTemperature = if (added) TestConstants.weather.temperature else TestConstants.weather2.temperature
-            traveled = if (added) TestConstants.travel.traveled else TestConstants.travel2.traveled
-            travelCity = if (added) TestConstants.travel.city else TestConstants.travel2.city
-            alcoholLevel = if (added) TestConstants.adAlcohol.name else adAlcohol2.name
-            beerTypes = if (added) {
-                TestConstants.adBeerTypes.joinToString(",")
-            } else {
-                TestConstants.adBeerTypes2.joinToString(",")
-            }
+            stressLevel = additionalData.stressLevel
+            weatherHumidity = additionalData.weather.humidity
+            weatherTemperature = additionalData.weather.temperature
+            traveled = additionalData.travel.traveled
+            travelCity = additionalData.travel.city
+            alcoholLevel = additionalData.alcohol.level.name
+            beers = additionalData.alcohol.beers.joinToString(",")
+            wines = additionalData.alcohol.wines.joinToString(",")
+            distilledDrinks = additionalData.alcohol.distilledDrinks.joinToString(",")
         }
     }
 
-    private fun mockEdit() {
+    private fun mockEdit(irritation: Irritation, additionalData: AdditionalData) {
         runBlocking {
-            coEvery { irritationDataSource.editIrritation(any(), irritationEdited) } returns createIrritationEntity(
-                false
-            )
+            coEvery { irritationDataSource.editIrritation(any(), irritation) } returns
+                    createIrritationEntity(irritation)
             coEvery {
-                additionalDataDataSource.editAdditionalData(
-                    any(),
-                    additionalDataEdited
-                )
-            } returns createAdditionalDataEntity(false)
+                additionalDataDataSource.editAdditionalData(any(), additionalData)
+            } returns createAdditionalDataEntity(additionalData)
         }
     }
 
 
-    private fun verifyMockInsert() {
+    private fun verifyMockInsert(irritation: Irritation, additionalData: AdditionalData) {
         coVerify { irritationDataSource.addNewIrritation(irritation) }
         coVerify { additionalDataDataSource.addNewAdditionalData(additionalData) }
     }

@@ -37,15 +37,16 @@ class ReportsRepositoryTest{
         private const val temperature = 4
         private const val traveled = true
         private const val city = "Madrid"
-        private val alcoholLevel = AlcoholLevel.None
-        private val beerList = listOf("beer1", "beer2")
+        private val alcoholLevel =AdditionalData.Alcohol(
+            AlcoholLevel.None,
+            emptyList()
+        )
         private val irritation = Irritation(overallValue, zoneList)
         private val additionalData = AdditionalData(
             stressLevel,
             AdditionalData.Weather(humidity, temperature),
             AdditionalData.Travel(traveled, city),
             alcoholLevel,
-            beerList
         )
 
         private val log = DailyLog(DATE,foodList, irritation, additionalData)

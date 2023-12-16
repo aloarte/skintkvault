@@ -77,13 +77,21 @@ class LogsDatasourceImpl(
 
     override suspend fun deleteLog(idValues: LogIdValues): Boolean = dbQuery {
         LogsEntity.find { (LogTable.userId eq idValues.userId) and (LogTable.dayDate eq idValues.dayDate) }
-            .singleOrNull()?.delete()
+            .singleOrNull()?.let {
+                it.delete()
+                it.irritation.delete()
+                it.additionalData.delete()
+            }
         true
     }
 
     override suspend fun deleteAllLogs(userId: String): Boolean = dbQuery {
         LogsEntity.find { LogTable.userId eq userId }
-            .forEach { it.delete() }
+            .forEach {
+                it.delete()
+                it.irritation.delete()
+                it.additionalData.delete()
+            }
         true
     }
 
