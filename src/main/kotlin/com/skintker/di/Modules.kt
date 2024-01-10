@@ -42,7 +42,7 @@ val components = module {
 val repository = module {
     factory<StatsRepository> { StatsRepositoryImpl(get(),get()) }
     factory<ReportsRepository> { ReportsRepositoryImpl(get()) }
-    factory<UserRepository> { UserRepositoryImpl(get(),get()) }
+    factory<UserRepository> { UserRepositoryImpl(get()/*,get()*/) }
 }
 
 val dao = module {

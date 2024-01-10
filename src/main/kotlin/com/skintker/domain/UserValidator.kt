@@ -28,8 +28,29 @@ class UserValidator(private val userRepository: UserRepository) {
         } else {
             logger.error("Returned 401. $INVALID_USER_TOKEN_RESPONSE")
             call.respondText(
-                text= INVALID_USER_TOKEN_RESPONSE, status = HttpStatusCode.Unauthorized
+                text = INVALID_USER_TOKEN_RESPONSE, status = HttpStatusCode.Unauthorized
             )
+        }
+    }
+
+    suspend fun getFirebaseUserByMail(
+        call: ApplicationCall,
+        logger: Logger,
+        email: String?,
+        execute: suspend (String) -> Unit
+    ) {
+        email?.let {
+            val firebaseUser = userRepository.getFirebaseUser(email)
+            if (firebaseUser.isNotEmpty() && userRepository.isUserValid(firebaseUser)) {
+                execute(firebaseUser)
+            } else {
+//            logger.error("Returned 401. $INVALID_USER_TOKEN_RESPONSE")
+//            call.respondText(
+//                text= INVALID_USER_TOKEN_RESPONSE, status = HttpStatusCode.Unauthorized
+//            )
+            }
+        } ?: run {
+
         }
     }
 

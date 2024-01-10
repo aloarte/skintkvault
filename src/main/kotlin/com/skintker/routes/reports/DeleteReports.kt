@@ -8,6 +8,7 @@ import com.skintker.domain.repository.ReportsRepository
 import com.skintker.domain.model.responses.ServiceResponse
 import com.skintker.routes.PathParams.USER_ID_PARAM
 import com.skintker.domain.UserValidator
+import com.skintker.routes.PathParams.USER_MAIL_PARAM
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
@@ -37,4 +38,22 @@ fun Route.deleteReports(reportsRepository: ReportsRepository, userValidator: Use
             )
         }
     }
+
+    delete("/reports/mail/{${USER_MAIL_PARAM}}") {
+        val logger = LoggerFactory.getLogger("Route.deleteReports")
+        val userEmail = call.parameters[USER_MAIL_PARAM]
+
+        userValidator.getFirebaseUserByMail(call = call, logger = logger, email = userEmail) {userId->
+            call.respond(
+                status = HttpStatusCode.OK,
+                message = if (reportsRepository.deleteReports(userId)) {
+                    ServiceResponse(NO_ERROR, REPORTS_DELETED_RESPONSE)
+                } else {
+                    logger.error("Returned 200 with a database error: $DATABASE_ISSUE - $REPORTS_NOT_DELETED_RESPONSE")
+                    ServiceResponse(DATABASE_ISSUE, REPORTS_NOT_DELETED_RESPONSE)
+                }
+            )
+        }
+    }
+
 }
