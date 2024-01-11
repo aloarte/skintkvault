@@ -31,7 +31,7 @@ fun main() {
 fun Application.initProdMode() {
     println("-- SERVER CONFIGURED IN PRODUCTION MODE --")
     initFirebase()
-    initDatabase(false)
+    initDatabase(true)
     initModules()
 }
 
@@ -58,11 +58,11 @@ private fun Application.initModules() {
 }
 
 private fun initFirebase() {
-//    FirebaseOptions.builder()
-//        .setCredentials(GoogleCredentials.getApplicationDefault())
-//        .build().also {
-//            FirebaseApp.initializeApp(it)
-//        }
+    FirebaseOptions.builder()
+        .setCredentials(GoogleCredentials.getApplicationDefault())
+        .build().also {
+            FirebaseApp.initializeApp(it)
+        }
 }
 
 private fun initDatabase(isProduction: Boolean) {
@@ -94,14 +94,5 @@ private fun getDatabaseConfig(): DdbbConfig {
             databasePort = databasePort,
             containerName = containerName
         )
-    } else {
-        DdbbConfig(
-            userName = "",
-            password = "password",
-            databaseName = "databaseName",
-            databasePort = "databasePort",
-            containerName = "containerName"
-        )
-    /*throw InstantiationException("Database initialization failed due to empty parameters")*/
-    }
+    } else throw InstantiationException("Database initialization failed due to empty parameters")
 }

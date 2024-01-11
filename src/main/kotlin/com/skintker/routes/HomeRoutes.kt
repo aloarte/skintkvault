@@ -49,15 +49,6 @@ fun Route.removeSteps() {
     get("/remove") {
         call.respond(FreeMarkerContent("remove.html", mapOf<Unit, Unit>()))
     }
-
-    post("/wipedata") {
-        val emailRequest = call.receive<EmailRequest>()
-        if (emailRequest.email != null) {
-            call.respond(true)
-        } else {
-            call.respond(HttpStatusCode.BadRequest, false)
-        }
-    }
 }
 
 fun Route.redirectHome() {
