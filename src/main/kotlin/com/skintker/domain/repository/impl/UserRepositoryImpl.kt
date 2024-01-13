@@ -19,6 +19,10 @@ class UserRepositoryImpl(private val userDatasource: UserDatasource, private val
         }
     }
 
+    override suspend fun userExists(userId: String): Boolean = userDatasource.getUser(userId)
+
+    override suspend fun removeUser(userId: String) = userDatasource.deleteUser(userId)
+
     override suspend fun isUserValid(userId: String?): Boolean {
         return userId?.let { id ->
             if (userDatasource.getUser(id)) {

@@ -5,6 +5,7 @@ import com.skintker.data.components.InputValidator
 import com.skintker.data.components.PaginationManager
 import com.skintker.domain.repository.StatsRepository
 import com.skintker.domain.UserValidator
+import com.skintker.domain.repository.UserRepository
 import com.skintker.routes.redirectHome
 import com.skintker.routes.report.createReport
 import com.skintker.routes.report.deleteReport
@@ -22,7 +23,9 @@ fun Application.configureRouting(
     userValidator: UserValidator,
     paginationManager: PaginationManager,
     statsRepository: StatsRepository,
-    reportsRepository: ReportsRepository
+    reportsRepository: ReportsRepository,
+    userRepository: UserRepository
+
 ) {
 
     routing {
@@ -41,7 +44,7 @@ fun Application.configureRouting(
     //Everything requested to /reports
     routing {
         getReports(reportsRepository, inputValidator, userValidator, paginationManager)
-        deleteReports(reportsRepository, userValidator)
+        deleteReports(reportsRepository,userRepository, userValidator)
     }
 
     // Everything requested to /stats

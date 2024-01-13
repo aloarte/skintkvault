@@ -15,16 +15,21 @@ function onWipeButton() {
                 })
                 .then(response => {
                     if (!response.ok) {
-                        alert("Something went wrong trying to removing your data. Please, try again and if this error persist, contact skintker@gmail.com");
+                        if(response.status === 401){
+                            alert(`Invalid email. Please, ensure that the mail ${email} was used in the Skintker android application.`);
+                        }
+                        else{
+                            alert("Something went wrong trying to removing your data. Please, try again and if this error persist, contact skintker@gmail.com");
+                        }
                     }
-                    return response.json();
+                    else{
+                        return response.json();
+                    }
                 })
                 .then(data => {
                         console.log('Backend response:', data);
                         if (data === true) {
-                            alert("Contenido eliminado correctamente");
-                        } else {
-                            alert("Something went wrong trying to removing your data. Please, try again and if this error persist, contact skintker@gmail.com");
+                            alert(`Data from the user ${email} successfully removed.`);
                         }
                 })
                 .catch(error => {

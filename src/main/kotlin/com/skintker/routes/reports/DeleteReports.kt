@@ -8,8 +8,8 @@ import com.skintker.domain.repository.ReportsRepository
 import com.skintker.domain.model.responses.ServiceResponse
 import com.skintker.routes.PathParams.USER_ID_PARAM
 import com.skintker.domain.UserValidator
+import com.skintker.domain.repository.UserRepository
 import com.skintker.routes.EmailRequest
-import com.skintker.routes.PathParams.USER_MAIL_PARAM
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.request.receive
@@ -18,7 +18,7 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
 import org.slf4j.LoggerFactory
 
-fun Route.deleteReports(reportsRepository: ReportsRepository, userValidator: UserValidator) {
+fun Route.deleteReports(reportsRepository: ReportsRepository, userRepository: UserRepository,userValidator: UserValidator) {
 
     /**
      * Delete all the reports from a given user token
@@ -48,6 +48,7 @@ fun Route.deleteReports(reportsRepository: ReportsRepository, userValidator: Use
             call.respond(
                 status = HttpStatusCode.OK,
                 message = if (reportsRepository.deleteReports(userId)) {
+                    userRepository.removeUser(userId)
                     true
                 } else {
                     logger.error("Returned 200 with error removing: $DATABASE_ISSUE")

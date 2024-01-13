@@ -16,6 +16,7 @@ import com.skintker.plugins.configureMonitoring
 import com.skintker.plugins.configureRouting
 import com.skintker.plugins.configureSerialization
 import com.skintker.domain.UserValidator
+import com.skintker.domain.repository.UserRepository
 import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -46,6 +47,7 @@ fun Application.initTestMode() {
 private fun Application.initModules() {
     val statsRepository by inject<StatsRepository>()
     val reportsRepository by inject<ReportsRepository>()
+    val userRepository by inject<UserRepository>()
     val inputValidator by inject<InputValidator>()
     val userValidator by inject<UserValidator>()
     val paginationManager by inject<PaginationManager>()
@@ -54,7 +56,14 @@ private fun Application.initModules() {
     configureFreeMarker()
     configureAdministration()
     configureSerialization()
-    configureRouting(inputValidator,userValidator, paginationManager, statsRepository, reportsRepository)
+    configureRouting(
+        inputValidator,
+        userValidator,
+        paginationManager,
+        statsRepository,
+        reportsRepository,
+        userRepository
+    )
 }
 
 private fun initFirebase() {
@@ -68,10 +77,11 @@ private fun initFirebase() {
 private fun initDatabase(isProduction: Boolean) {
     DatabaseFactory.init(
         isProduction = isProduction,
+        createFromScratch = getenv("CREATE_DDBB")?.toBoolean() ?: false,
         config = if (isProduction) {
             getDatabaseConfig()
         } else {
-            DdbbConfig("", "", "", "","")
+            DdbbConfig("", "", "", "", "")
         }
     )
 }
@@ -84,7 +94,7 @@ private fun getDatabaseConfig(): DdbbConfig {
     val containerName = getenv("DDBB_CONTAINER")
 
     val userDataNotEmpty = user != null && password != null
-    val databaseDataNotEmpty = databaseName != null && databasePort != null && containerName!=null
+    val databaseDataNotEmpty = databaseName != null && databasePort != null && containerName != null
 
     return if (userDataNotEmpty && databaseDataNotEmpty) {
         DdbbConfig(

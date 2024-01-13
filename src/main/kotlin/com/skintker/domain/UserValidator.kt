@@ -42,7 +42,7 @@ class UserValidator(private val userRepository: UserRepository) {
         email.let {
             val firebaseUser = userRepository.getFirebaseUser(email)
 
-            if (firebaseUser.isNotEmpty() && userRepository.isUserValid(firebaseUser)) {
+            if (firebaseUser.isNotEmpty() && userRepository.userExists(firebaseUser)) {
                 execute(firebaseUser)
             } else {
                 logger.error("Returned 401. $INVALID_USER_TOKEN_RESPONSE")
