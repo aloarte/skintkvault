@@ -17,19 +17,37 @@ fun Route.staticContent() {
         staticBasePackage = "static"
         static("images") {
             resource("logo.png")
+            resource("examplehomedelete.png")
+            resource("examplehomedeletedialog.png")
+            resource("examplehomesettings.png")
             resource("favicon.ico")
         }
         static("assets") {
             resources("css")
             resources("js")
         }
+        static("/fonts") {
+            resources("fonts")
+        }
     }
 }
 
 fun Route.getHome() {
     get("/home") {
-        call.respond(FreeMarkerContent("index.html", mapOf<Unit, Unit>()))
+        call.respond(FreeMarkerContent("home.html", mapOf<Unit, Unit>()))
+    }
+}
 
+
+fun Route.privacyPolicy() {
+    get("/privacypolicy") {
+        call.respond(FreeMarkerContent("privacypolicy.html", mapOf<Unit, Unit>()))
+    }
+}
+
+fun Route.removeSteps() {
+    get("/remove") {
+        call.respond(FreeMarkerContent("remove.html", mapOf<Unit, Unit>()))
     }
 }
 

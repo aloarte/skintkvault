@@ -5,7 +5,7 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
-class UserEntity(id: EntityID<Int>):IntEntity(id) {
-    companion object : IntEntityClass<UserEntity>(FirebaseUserTable)
+class FirebaseUserEntity(id: EntityID<Int>):IntEntity(id) {
+    companion object : IntEntityClass<FirebaseUserEntity>(FirebaseUserTable)
     var userId by FirebaseUserTable.userId
 }

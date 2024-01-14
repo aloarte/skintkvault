@@ -4,12 +4,16 @@ import com.google.firebase.ErrorCode
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.UserRecord
+import com.skintker.TestConstants.userEmail
 import com.skintker.TestConstants.userId
 import com.skintker.data.datasources.UserDatasource
 import com.skintker.domain.repository.UserRepository
 import com.skintker.domain.repository.impl.UserRepositoryImpl
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -74,4 +78,28 @@ class UserRepositoryTest{
         coVerify { firebaseMock.getUser(userId)  }
         assertFalse(status)
     }
+
+    @Test
+    fun `test remove user`() {
+        coEvery { daoFacadeMock.deleteUser(userId) } just Runs
+
+        runBlocking {
+            repository.removeUser(userId = userId)
+        }
+
+        coVerify { daoFacadeMock.deleteUser(userId) }
+    }
+
+    @Test
+    fun `test user exist`() {
+        coEvery { daoFacadeMock.getUser(userId) } returns true
+
+        val userExist = runBlocking {
+            repository.userExists(userId = userId)
+        }
+
+        coVerify { daoFacadeMock.getUser(userId) }
+        assertTrue(userExist)
+    }
+
 }

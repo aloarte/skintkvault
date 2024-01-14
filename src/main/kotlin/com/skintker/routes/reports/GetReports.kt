@@ -9,7 +9,7 @@ import com.skintker.data.components.InputValidator
 import com.skintker.domain.constants.ResponseConstants.BAD_INPUT_DATA
 import com.skintker.routes.PathParams.USER_ID_PARAM
 import com.skintker.routes.QueryParams
-import com.skintker.domain.UserValidator
+import com.skintker.domain.UserManager
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory
 fun Route.getReports(
     reportsRepository: ReportsRepository,
     inputValidator: InputValidator,
-    userValidator: UserValidator,
+    userManager: UserManager,
     paginationManager: PaginationManager
 ) {
     /**
@@ -32,7 +32,7 @@ fun Route.getReports(
         val userId = call.parameters[USER_ID_PARAM]
         val token = call.request.headers["Authorization"]?.removePrefix("Bearer ")
 
-        userValidator.verifyUser(call = call, logger = logger, userId = userId, userToken = token) {
+        userManager.verifyUser(call = call, logger = logger, userId = userId, userToken = token) {
             val paramLimit = call.request.queryParameters[QueryParams.LIMIT_PARAM]
             val paramOffset = call.request.queryParameters[QueryParams.OFFSET_PARAM]
             val logList = reportsRepository.getReports(userId!!)

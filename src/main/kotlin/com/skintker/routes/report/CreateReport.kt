@@ -16,7 +16,7 @@ import com.skintker.domain.model.responses.ServiceResponse
 import com.skintker.data.components.InputValidator
 import com.skintker.domain.model.SaveReportStatus
 import com.skintker.routes.PathParams.USER_ID_PARAM
-import com.skintker.domain.UserValidator
+import com.skintker.domain.UserManager
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.JsonConvertException
 import io.ktor.server.application.ApplicationCall
@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory
 fun Route.createReport(
     reportsRepository: ReportsRepository,
     inputValidator: InputValidator,
-    userValidator: UserValidator
+    userManager: UserManager
 ) {
 
     /**
@@ -46,7 +46,7 @@ fun Route.createReport(
         try {
             val userId = call.parameters[USER_ID_PARAM]
             val token = call.request.headers["Authorization"]?.removePrefix("Bearer ")
-            userValidator.verifyUser(call = call, logger = logger, userId = userId, userToken = token) {
+            userManager.verifyUser(call = call, logger = logger, userId = userId, userToken = token) {
                 val log = call.receive<DailyLog>()
                 val errorMessageInvalidLog = inputValidator.isLogInvalid(log)
                 if (errorMessageInvalidLog != null) {

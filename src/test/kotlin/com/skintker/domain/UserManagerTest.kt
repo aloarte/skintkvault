@@ -21,7 +21,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.verify
 
-class UserValidatorTest {
+class UserManagerTest {
 
     private val repository = mockk<UserRepository>()
 
@@ -31,11 +31,11 @@ class UserValidatorTest {
 
     private val callback = mockk<suspend () -> Unit>()
 
-    private lateinit var userValidator: UserValidator
+    private lateinit var userManager: UserManager
 
     @Before
     fun setup() {
-        userValidator = UserValidator(repository)
+        userManager = UserManager(repository)
     }
 
     @Test
@@ -45,7 +45,7 @@ class UserValidatorTest {
         coEvery { callback.invoke() } just Runs
 
         runBlocking {
-            userValidator.verifyUser(call, logger, userToken, userId, callback)
+            userManager.verifyUser(call, logger, userToken, userId, callback)
         }
 
         coVerify { repository.isTokenValid(userToken) }
@@ -63,7 +63,7 @@ class UserValidatorTest {
 
 
         runBlocking {
-            userValidator.verifyUser(call, logger, null, userId, callback)
+            userManager.verifyUser(call, logger, null, userId, callback)
         }
 
         coVerify { repository.isTokenValid(null) }
@@ -84,7 +84,7 @@ class UserValidatorTest {
 
 
         runBlocking {
-            userValidator.verifyUser(call, logger, null, userId, callback)
+            userManager.verifyUser(call, logger, null, userId, callback)
         }
 
         coVerify { repository.isTokenValid(userToken) }

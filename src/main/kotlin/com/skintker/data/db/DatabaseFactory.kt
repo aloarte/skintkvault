@@ -11,24 +11,27 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object DatabaseFactory {
-    fun init(isProduction: Boolean, config: DdbbConfig) {
+    fun init(isProduction: Boolean,createFromScratch:Boolean, config: DdbbConfig) {
         if (isProduction) {
-            initPostgres(config)
+            initPostgres(config,createFromScratch)
         } else {
             initTestDatabase()
         }
     }
 
-    private fun initPostgres(config: DdbbConfig) {
+    private fun initPostgres(config: DdbbConfig, createFromScratch:Boolean) {
         val database = Database.connect(
             url = "jdbc:postgresql://${config.containerName}:${config.databasePort}/${config.databaseName}",
             driver = "org.postgresql.Driver",
             user = config.userName,
             password = config.password
         )
-        transaction(database) {
-            SchemaUtils.drop(LogTable, IrritationTable, AdditionalDataTable, FirebaseUserTable)
-            SchemaUtils.create(LogTable, IrritationTable, AdditionalDataTable, FirebaseUserTable)
+
+        if(createFromScratch){
+            transaction(database) {
+                SchemaUtils.drop(LogTable, IrritationTable, AdditionalDataTable, FirebaseUserTable)
+                SchemaUtils.create(LogTable, IrritationTable, AdditionalDataTable, FirebaseUserTable)
+            }
         }
     }
 

@@ -13,7 +13,9 @@ fun Application.configureMonitoring() {
     install(CallLogging) {
         level = Level.INFO
         filter { call ->
-            call.request.path().contains("/images").not() && call.request.path().contains("/assets").not()
+            call.request.path().contains("/images").not()
+                    && call.request.path().contains("/assets").not()
+                    && call.request.path().contains("/fonts").not()
         }
         format { call ->
             val httpMethod = call.request.httpMethod.value

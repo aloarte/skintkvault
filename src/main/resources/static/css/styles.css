@@ -1,5 +1,126 @@
-body {
+@font-face {
+    font-family: 'Monserrat-medium';
+    src: url('/fonts/montserrat_medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Monserrat-regular';
+    src: url('/fonts/montserrat_regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Monserrat-semibold';
+    src: url('/fonts/montserrat_semibold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body,p{
     text-align: center;
-    font-family: Verdana, sans-serif;
-    background-color: rgba(255,138,128,255);
+    font-family: 'Monserrat-regular', sans-serif;
+    background-color: rgba(255, 138, 128, 255);
+    margin: 0;
+    padding: 40px;
+}
+
+h1 {
+    font-family: 'Monserrat-semibold', sans-serif;
+}
+
+h3 {
+    font-family: 'Monserrat-semibold', sans-serif;
+}
+
+ol {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    position: relative;
+    padding-left: 40px;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+
+    &::before {
+        content: '\2022';
+        position: absolute;
+        left: 0;
+        color: #007BFF;
+        font-size: 1.5em;
+        line-height: 1;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+}
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.image-container img {
+    max-width: 100%;
+    max-height: 70vh;
+    border: 2px solid #333;
+    margin: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.image-title-container {
+    text-align: center;
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 10px;
+    border-radius: 8px;
+    margin: 10px;
+}
+
+.text-box {
+    background-color: rgba(255, 255, 255, 0.7);
+    font-family: 'Montserrat-regular', sans-serif;
+    padding: 10px;
+    margin: 10px;
+    border: 2px solid #c85a54;
+    border-radius: 8px;
+}
+
+.wipe-button {
+    font-family: 'Montserrat-semibold', sans-serif;
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: #c85a54;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.wipe-button:hover {
+    background-color: #ba504e;
+}
+
+.text-overlay {
+    font-family: 'Monserrat-semibold', sans-serif;
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+    .image-container {
+        margin-top: 10px;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .image-title-container {
+        margin-bottom: 20px;
+    }
 }
