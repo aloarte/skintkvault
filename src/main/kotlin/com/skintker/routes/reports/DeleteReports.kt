@@ -1,5 +1,6 @@
 package com.skintker.routes.reports
 
+import com.skintker.data.model.EmailRequest
 import com.skintker.domain.constants.ResponseCodes.DATABASE_ISSUE
 import com.skintker.domain.constants.ResponseCodes.NO_ERROR
 import com.skintker.domain.constants.ResponseConstants.REPORTS_DELETED_RESPONSE
@@ -9,7 +10,6 @@ import com.skintker.domain.model.responses.ServiceResponse
 import com.skintker.routes.PathParams.USER_ID_PARAM
 import com.skintker.domain.UserValidator
 import com.skintker.domain.repository.UserRepository
-import com.skintker.routes.EmailRequest
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.request.receive

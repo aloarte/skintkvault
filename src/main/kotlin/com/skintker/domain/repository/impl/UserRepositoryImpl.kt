@@ -11,10 +11,9 @@ class UserRepositoryImpl(private val userDatasource: UserDatasource, private val
     private fun getLogger() = LoggerFactory.getLogger(UserRepositoryImpl::class.java)
 
     override suspend fun getFirebaseUser(email: String): String {
-        return try{
+        return try {
             firebaseAuth.getUserByEmail(email).uid
-        }
-        catch (exception:FirebaseAuthException){
+        } catch (exception: FirebaseAuthException) {
             ""
         }
     }

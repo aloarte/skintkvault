@@ -8,7 +8,7 @@ fun Application.configureAdministration() {
     val shutdownPath = System.getenv("SHUTDOWN_PATH")
 
     install(ShutDownUrl.ApplicationCallPlugin) {
-        shutDownUrl = shutdownPath
+        shutDownUrl = shutdownPath?:"/shutdown"
         exitCodeSupplier = { 0 } // ApplicationCall.() -> Int
     }
 

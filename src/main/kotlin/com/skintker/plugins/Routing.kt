@@ -12,6 +12,7 @@ import com.skintker.routes.report.deleteReport
 import com.skintker.routes.reports.deleteReports
 import com.skintker.routes.reports.getReports
 import com.skintker.routes.getHome
+import com.skintker.routes.privacyPolicy
 import com.skintker.routes.removeSteps
 import com.skintker.routes.staticContent
 import com.skintker.routes.stats.getStats
@@ -31,6 +32,7 @@ fun Application.configureRouting(
     routing {
         getHome()
         removeSteps()
+        privacyPolicy()
         redirectHome()
         staticContent()
     }
