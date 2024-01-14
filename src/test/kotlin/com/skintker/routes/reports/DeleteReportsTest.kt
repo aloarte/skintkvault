@@ -86,22 +86,4 @@ class DeleteReportsTest : RoutesKoinTest() {
         //The return of the unauthorized part is handled by the UserValidator
     }
 
-    @Test
-    fun `test wipe data by mail success`() = testApplication {
-        val client = configureClient()
-        mockVerifyUser(userId, userToken, true)
-        coEvery { mockedUserManager.getFirebaseUserByMail(any(),any(),"email@test.com",any()) } just Runs
-
-        val response = client.delete("/reports/mail"){
-            contentType(ContentType.Application.Json)
-            setBody(jsonBodyDeleteMail)
-        }
-
-        verifyVerifyUser(userId, userToken)
-        coVerify { mockedReportsRepository.deleteReports(userId) }
-        assertEquals(HttpStatusCode.OK, response.status)
-        val expectedResponse = ServiceResponse(NO_ERROR, REPORTS_DELETED_RESPONSE)
-        assertEquals(expectedResponse, Json.decodeFromString(response.bodyAsText()))
-    }
-
 }

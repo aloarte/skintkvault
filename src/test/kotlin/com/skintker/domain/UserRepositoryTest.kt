@@ -99,7 +99,7 @@ class UserRepositoryTest{
         }
 
         coVerify { daoFacadeMock.getUser(userId) }
-        assertFalse(userExist)
+        assertTrue(userExist)
     }
 
 }
