@@ -13,7 +13,8 @@ class UserRepositoryImpl(private val userDatasource: UserDatasource, private val
     override suspend fun getFirebaseUser(email: String): String {
         return try {
             firebaseAuth.getUserByEmail(email).uid
-        } catch (exception: FirebaseAuthException) {
+        } catch (ex: FirebaseAuthException) {
+            getLogger().error("FIREBASE Exception during getFirebaseUser for mail $email: ${ex.message}")
             ""
         }
     }
