@@ -10,7 +10,7 @@ import com.skintker.domain.constants.ResponseConstants.REPORT_NOT_DELETED_RESPON
 import com.skintker.domain.model.LogIdValues
 import com.skintker.routes.PathParams.USER_ID_PARAM
 import com.skintker.routes.QueryParams.LOG_DATE_PARAM
-import com.skintker.domain.UserValidator
+import com.skintker.domain.UserManager
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
@@ -19,7 +19,7 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
 import org.slf4j.LoggerFactory
 
-fun Route.deleteReport(reportsRepository: ReportsRepository, userValidator: UserValidator) {
+fun Route.deleteReport(reportsRepository: ReportsRepository, userManager: UserManager) {
 
     /**
      * Delete the given report from a given user
@@ -29,7 +29,7 @@ fun Route.deleteReport(reportsRepository: ReportsRepository, userValidator: User
         val userId = call.parameters[USER_ID_PARAM]
         val token = call.request.headers["Authorization"]?.removePrefix("Bearer ")
 
-        userValidator.verifyUser(call = call, logger = logger, userId = userId, userToken = token) {
+        userManager.verifyUser(call = call, logger = logger, userId = userId, userToken = token) {
             call.request.queryParameters[LOG_DATE_PARAM]?.let { logDate->
                 call.respond(
                     status = HttpStatusCode.OK,

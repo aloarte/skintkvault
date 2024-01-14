@@ -8,7 +8,10 @@ import io.ktor.server.response.respondText
 import io.ktor.http.HttpStatusCode
 import org.slf4j.Logger
 
-class UserValidator(private val userRepository: UserRepository) {
+class UserManager(private val userRepository: UserRepository) {
+
+    suspend fun removeUser(userId: String) = userRepository.removeUser(userId)
+
     suspend fun verifyUser(
         call: ApplicationCall,
         logger: Logger,

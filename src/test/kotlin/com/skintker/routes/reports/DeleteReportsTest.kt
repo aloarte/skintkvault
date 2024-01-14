@@ -1,7 +1,6 @@
 package com.skintker.routes.reports
 
 import com.skintker.RoutesKoinTest
-import com.skintker.TestConstants
 import com.skintker.TestConstants.jsonBodyDeleteMail
 import com.skintker.TestConstants.userId
 import com.skintker.TestConstants.userToken
@@ -91,7 +90,7 @@ class DeleteReportsTest : RoutesKoinTest() {
     fun `test wipe data by mail success`() = testApplication {
         val client = configureClient()
         mockVerifyUser(userId, userToken, true)
-        coEvery { mockedUserValidator.getFirebaseUserByMail(any(),any(),"email@test.com",any()) } just Runs
+        coEvery { mockedUserManager.getFirebaseUserByMail(any(),any(),"email@test.com",any()) } just Runs
 
         val response = client.delete("/reports/mail"){
             contentType(ContentType.Application.Json)

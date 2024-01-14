@@ -23,14 +23,14 @@ import com.skintker.domain.repository.StatsRepository
 import com.skintker.domain.repository.UserRepository
 import com.skintker.domain.repository.impl.StatsRepositoryImpl
 import com.skintker.domain.repository.impl.UserRepositoryImpl
-import com.skintker.domain.UserValidator
+import com.skintker.domain.UserManager
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation
 import org.apache.commons.math3.stat.inference.OneWayAnova
 import org.koin.dsl.module
 
 val components = module {
     factory { InputValidator() }
-    factory { UserValidator(get()) }
+    factory { UserManager(get()) }
     factory { PaginationManager() }
     factory { PearsonsCorrelation() }
     factory { OneWayAnova() }

@@ -6,7 +6,7 @@ import com.skintker.domain.model.responses.ServiceResponse
 import com.skintker.domain.model.responses.StatsResponse
 import com.skintker.domain.repository.StatsRepository
 import com.skintker.routes.PathParams.USER_ID_PARAM
-import com.skintker.domain.UserValidator
+import com.skintker.domain.UserManager
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
@@ -14,7 +14,7 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import org.slf4j.LoggerFactory
 
-fun Route.getStats(statsRepository: StatsRepository, validator: UserValidator) {
+fun Route.getStats(statsRepository: StatsRepository, validator: UserManager) {
     /**
      * Get the stats from a given user
      */
