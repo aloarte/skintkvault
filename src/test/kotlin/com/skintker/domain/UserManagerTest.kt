@@ -41,7 +41,7 @@ class UserManagerTest {
     @Test
     fun `test verify user valid user and token`() {
         coEvery { repository.isTokenValid(userToken) } returns true
-        coEvery { repository.isUserValid(userId) } returns true
+//        coEvery { repository.isUserValid(userId) } returns true
         coEvery { callback.invoke() } just Runs
 
         runBlocking {
@@ -49,7 +49,7 @@ class UserManagerTest {
         }
 
         coVerify { repository.isTokenValid(userToken) }
-        coVerify { repository.isUserValid(userId) }
+//        coVerify { repository.isUserValid(userId) }
         coVerify { callback.invoke() }
     }
 

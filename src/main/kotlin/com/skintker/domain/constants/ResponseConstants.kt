@@ -5,6 +5,7 @@ object ResponseConstants {
     const val INVALID_INPUT_RESPONSE = "Invalid input. Verify that your input is not malformed"
     const val INVALID_USER_ID_RESPONSE = "Invalid user id"
     const val INVALID_USER_TOKEN_RESPONSE = "Invalid user token"
+    const val INVALID_USER_ID_OR_TOKEN_RESPONSE = "Invalid user id or token"
     const val GENERIC_ERROR_RESPONSE = "Something went wrong. Please, contact with the support team"
     const val DATABASE_ERROR = "Error in the database"
 
@@ -22,5 +23,9 @@ object ResponseConstants {
     /* /REPORTS */
     const val REPORTS_NOT_DELETED_RESPONSE = "Reports couldn't be removed"
     const val REPORTS_DELETED_RESPONSE = "Reports removed correctly"
+
+    /*  /USER */
+    const val USER_NOT_CREATED_RESPONSE = "User couldn't be created"
+    const val USER_CREATED_RESPONSE = "User created"
 
 }

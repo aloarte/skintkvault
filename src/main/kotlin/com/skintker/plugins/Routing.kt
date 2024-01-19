@@ -5,7 +5,6 @@ import com.skintker.data.components.InputValidator
 import com.skintker.data.components.PaginationManager
 import com.skintker.domain.repository.StatsRepository
 import com.skintker.domain.UserManager
-import com.skintker.domain.repository.UserRepository
 import com.skintker.routes.redirectHome
 import com.skintker.routes.report.createReport
 import com.skintker.routes.report.deleteReport
@@ -16,6 +15,7 @@ import com.skintker.routes.privacyPolicy
 import com.skintker.routes.removeSteps
 import com.skintker.routes.staticContent
 import com.skintker.routes.stats.getStats
+import com.skintker.routes.user.createUser
 import io.ktor.server.application.Application
 import io.ktor.server.routing.routing
 
@@ -51,4 +51,10 @@ fun Application.configureRouting(
     routing {
         getStats(statsRepository, userManager)
     }
+
+    // Everything requested to /user
+    routing {
+        createUser(userManager)
+    }
+
 }

@@ -19,33 +19,35 @@ class UserRepositoryImpl(private val userDatasource: UserDatasource, private val
         }
     }
 
-    override suspend fun userExists(userId: String): Boolean = userDatasource.getUser(userId)
+    override suspend fun userExists(userId: String?): Boolean = userId?.let { userDatasource.userExists(userId) } ?: false
 
     override suspend fun removeUser(userId: String) = userDatasource.deleteUser(userId)
 
-    override suspend fun isUserValid(userId: String?): Boolean {
-        return userId?.let { id ->
-            if (userDatasource.getUser(id)) {
-                true
-            } else {
-                try {
-                    firebaseAuth.getUser(id)
-                    userDatasource.addUser(id) //If the FirebaseAuth didn't throw an exception, the user is valid
+    override suspend fun addUser(userId: String): Boolean {
+        return if (userDatasource.userExists(userId)) {
+            true
+        } else {
+            try {
+                val fbUser = firebaseAuth.getUser(userId)
+                if(!fbUser.isDisabled){
+                    userDatasource.addUser(userId) //If the FirebaseAuth didn't throw an exception, the user is valid
                     true
-                } catch (ex: FirebaseAuthException) {
-                    getLogger().error("FIREBASE Exception with user $id: ${ex.message}")
+                }else {
+                    getLogger().error("FIREBASE Error user disabled $userId")
                     false
                 }
-            }
-        } ?: false
 
+            } catch (ex: FirebaseAuthException) {
+                getLogger().error("FIREBASE Exception with user $userId: ${ex.message}")
+                false
+            }
+        }
     }
 
     override suspend fun isTokenValid(userToken: String?): Boolean {
         return try {
             userToken?.let {
-                firebaseAuth.verifyIdToken(userToken, true)
-                true
+                firebaseAuth.verifyIdToken(userToken, true).isEmailVerified
             } ?: false
         } catch (ex: FirebaseAuthException) {
             getLogger().error("FIREBASE Exception with token $userToken: ${ex.message}")
