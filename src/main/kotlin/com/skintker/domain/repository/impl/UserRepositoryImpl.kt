@@ -19,7 +19,8 @@ class UserRepositoryImpl(private val userDatasource: UserDatasource, private val
         }
     }
 
-    override suspend fun userExists(userId: String?): Boolean = userId?.let { userDatasource.userExists(userId) } ?: false
+    override suspend fun userExists(userId: String?): Boolean =
+        userId?.let { userDatasource.userExists(userId) } ?: false
 
     override suspend fun removeUser(userId: String) = userDatasource.deleteUser(userId)
 
@@ -29,10 +30,10 @@ class UserRepositoryImpl(private val userDatasource: UserDatasource, private val
         } else {
             try {
                 val fbUser = firebaseAuth.getUser(userId)
-                if(!fbUser.isDisabled){
+                if (!fbUser.isDisabled) {
                     userDatasource.addUser(userId) //If the FirebaseAuth didn't throw an exception, the user is valid
                     true
-                }else {
+                } else {
                     getLogger().error("FIREBASE Error user disabled $userId")
                     false
                 }

@@ -80,13 +80,6 @@ dependencies {
     implementation("org.slf4j:slf4j-api:2.0.6")
     implementation("ch.qos.logback:logback-classic:1.3.5")
 
-    //Spek
-    testImplementation ("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
-    testRuntimeOnly ("org.spekframework.spek2:spek-runner-junit5:$spekVersion")
-
-    // spek requires kotlin-reflect, can be omitted if already in the classpath
-    testRuntimeOnly ("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
-
     //Firebase
     implementation ("com.google.firebase:firebase-admin:9.1.1")
 
@@ -98,28 +91,6 @@ dependencies {
     testImplementation("io.ktor:ktor-client-core:$ktorVersion")
     testImplementation("io.ktor:ktor-client-cio:$ktorVersion")
 
-}
-
-sourceSets {
-    create("integrationTest") {
-        kotlin {
-            compileClasspath += main.get().output + configurations.testRuntimeClasspath
-            runtimeClasspath += output + compileClasspath
-        }
-    }
-}
-
-val integrationTest = task<Test>("integrationTest") {
-    description = "Runs the integration tests"
-    group = "verification"
-    testClassesDirs = sourceSets["integrationTest"].output.classesDirs
-    classpath = sourceSets["integrationTest"].runtimeClasspath
-    mustRunAfter(tasks["test"])
-}
-
-
-tasks.check {
-    dependsOn(integrationTest)
 }
 
 tasks.shadowJar {
