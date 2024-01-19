@@ -50,7 +50,6 @@ class UserManager(private val userRepository: UserRepository) {
     ) {
         email.let {
             val firebaseUser = userRepository.getFirebaseUser(email)
-
             if (firebaseUser.isNotEmpty() && userRepository.userExists(firebaseUser)) {
                 execute(firebaseUser)
             } else {
