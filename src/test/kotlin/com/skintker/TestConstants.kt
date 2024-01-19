@@ -77,7 +77,6 @@ object TestConstants {
             "  }\n" +
             "}"
 
-    const val jsonBodyDeleteMail ="{\"email\": \"email@test.com\"}"
     val jsonDeserializedLog = Json.decodeFromString<DailyLog>(jsonBodyLog)
 
     //Irritation values
@@ -137,6 +136,8 @@ object TestConstants {
     const val userId = "userId"
     const val userEmail = "user@email.com"
     const val userToken = "userToken"
+
+    const val jsonBodyDeleteMail ="{\"email\": \"user@email.com\"}"
 
     val foodList = listOf("Meat", "Blue fish")
     val foodList2 = listOf("Strawberry", "Blue fish", "Banana")

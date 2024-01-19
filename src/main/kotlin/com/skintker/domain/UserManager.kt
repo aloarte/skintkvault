@@ -12,11 +12,12 @@ class UserManager(private val userRepository: UserRepository) {
 
     suspend fun removeUser(userId: String) = userRepository.removeUser(userId)
 
-    suspend fun addUser(userToken: String, userId: String) = if (userRepository.isTokenValid(userToken)) {
-        userRepository.addUser(userId)
-    } else {
-        false
-    }
+    suspend fun addUser(userToken: String, userId: String) =
+        if (!userRepository.userExists(userId) && userRepository.isTokenValid(userToken)) {
+            userRepository.addUser(userId)
+        } else {
+            false
+        }
 
     suspend fun verifyUser(
         call: ApplicationCall,

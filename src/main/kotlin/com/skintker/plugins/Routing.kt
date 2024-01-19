@@ -16,6 +16,7 @@ import com.skintker.routes.removeSteps
 import com.skintker.routes.staticContent
 import com.skintker.routes.stats.getStats
 import com.skintker.routes.user.createUser
+import com.skintker.routes.user.wipeUserByMail
 import io.ktor.server.application.Application
 import io.ktor.server.routing.routing
 
@@ -55,6 +56,7 @@ fun Application.configureRouting(
     // Everything requested to /user
     routing {
         createUser(userManager)
+        wipeUserByMail(reportsRepository, userManager)
     }
 
 }

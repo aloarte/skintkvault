@@ -34,7 +34,7 @@ fun Route.createUser(userManager: UserManager) {
                     )
                 )
             } else {
-                logger.error("User not created. ${USER_NOT_CREATED_RESPONSE}")
+                logger.error("User not created. $USER_NOT_CREATED_RESPONSE")
                 call.respondText(
                     USER_NOT_CREATED_RESPONSE,
                     status = HttpStatusCode.Conflict
@@ -42,7 +42,7 @@ fun Route.createUser(userManager: UserManager) {
 
             }
         } else {
-            logger.error("Invalid user input data ${INVALID_USER_ID_OR_TOKEN_RESPONSE}")
+            logger.error("Invalid user input data $INVALID_USER_ID_OR_TOKEN_RESPONSE")
             call.respondText(
                 INVALID_USER_ID_OR_TOKEN_RESPONSE,
                 status = HttpStatusCode.BadRequest

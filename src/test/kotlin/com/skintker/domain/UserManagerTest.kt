@@ -56,6 +56,7 @@ class UserManagerTest {
 
     @Test
     fun `test add user, token valid, user inserted`() {
+        coEvery { repository.userExists(userId) } returns false
         coEvery { repository.isTokenValid(userToken) } returns true
         coEvery { repository.addUser(userId) } returns true
 
@@ -63,13 +64,30 @@ class UserManagerTest {
             userManager.addUser(userToken,userId)
         }
 
+        coVerify { repository.userExists(userId) }
         coVerify { repository.isTokenValid(userToken) }
         coVerify { repository.addUser(userId) }
         assertTrue(inserted)
     }
 
     @Test
+    fun `test add user, token valid, user already exist`() {
+        coEvery { repository.userExists(userId) } returns true
+        coEvery { repository.isTokenValid(userToken) } returns true
+
+        val inserted = runBlocking {
+            userManager.addUser(userToken,userId)
+        }
+
+        coVerify { repository.userExists(userId) }
+        coVerify(exactly = 0) { repository.isTokenValid(userToken) }
+        coVerify(exactly = 0) { repository.addUser(userToken) }
+        assertFalse(inserted)
+    }
+
+    @Test
     fun `test add user, token valid, user not inserted`() {
+        coEvery { repository.userExists(userId) } returns false
         coEvery { repository.isTokenValid(userToken) } returns true
         coEvery { repository.addUser(userId) } returns false
 
@@ -77,6 +95,7 @@ class UserManagerTest {
             userManager.addUser(userToken,userId)
         }
 
+        coVerify { repository.userExists(userId) }
         coVerify { repository.isTokenValid(userToken) }
         coVerify { repository.addUser(userId) }
         assertFalse(inserted)
@@ -84,12 +103,14 @@ class UserManagerTest {
 
     @Test
     fun `test add user, token not valid`() {
+        coEvery { repository.userExists(userId) } returns false
         coEvery { repository.isTokenValid(userToken) } returns false
 
         val inserted = runBlocking {
             userManager.addUser(userToken,userId)
         }
 
+        coVerify { repository.userExists(userId) }
         coVerify { repository.isTokenValid(userToken) }
         coVerify(exactly = 0) { repository.addUser(any()) }
         assertFalse(inserted)
