@@ -24,7 +24,7 @@ class UserDatasourceImpl : UserDatasource {
         }
     }
 
-    override suspend fun getUser(id: String): Boolean = dbQuery {
+    override suspend fun userExists(id: String): Boolean = dbQuery {
         FirebaseUserTable.select { FirebaseUserTable.userId eq id }.firstOrNull() != null
     }
 

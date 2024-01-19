@@ -31,7 +31,7 @@ class UserDatasourceTest {
     fun `test get user success`() {
         val result = runBlocking {
             dataSource.addUser(userId)
-            dataSource.getUser(userId)
+            dataSource.userExists(userId)
         }
 
         assertTrue(result)
@@ -40,7 +40,7 @@ class UserDatasourceTest {
     @Test
     fun `test get user not found`() {
         val result = runBlocking {
-            dataSource.getUser(userId)
+            dataSource.userExists(userId)
         }
 
         assertFalse(result)
@@ -49,9 +49,9 @@ class UserDatasourceTest {
     @Test
     fun `test delete user success`() {
         val result=  runBlocking {
-            dataSource.getUser(userId)
+            dataSource.userExists(userId)
             dataSource.deleteUser(userId)
-            dataSource.getUser(userId)
+            dataSource.userExists(userId)
         }
 
         assertFalse(result)
@@ -61,7 +61,7 @@ class UserDatasourceTest {
     fun `test delete user not found`() {
         val result=  runBlocking {
             dataSource.deleteUser(userId)
-            dataSource.getUser(userId)
+            dataSource.userExists(userId)
         }
 
         assertFalse(result)

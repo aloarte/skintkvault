@@ -24,7 +24,7 @@ function onWipeButton() {
     if (email === "" || !emailRegex.test(email)) {
         alert("Please add a valid email address");
     } else {
-        fetch('/reports/mail', {
+        fetch('/user/wipe', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'

@@ -12,6 +12,13 @@ class UserManager(private val userRepository: UserRepository) {
 
     suspend fun removeUser(userId: String) = userRepository.removeUser(userId)
 
+    suspend fun addUser(userToken: String, userId: String) =
+        if (!userRepository.userExists(userId) && userRepository.isTokenValid(userToken)) {
+            userRepository.addUser(userId)
+        } else {
+            false
+        }
+
     suspend fun verifyUser(
         call: ApplicationCall,
         logger: Logger,
@@ -20,7 +27,7 @@ class UserManager(private val userRepository: UserRepository) {
         execute: suspend () -> Unit
     ) {
         if (userRepository.isTokenValid(userToken)) {
-            if (userRepository.isUserValid(userId)) {
+            if (userRepository.userExists(userId)) {
                 execute()
             } else {
                 logger.error("Returned 401. $INVALID_USER_ID_RESPONSE")
@@ -44,7 +51,6 @@ class UserManager(private val userRepository: UserRepository) {
     ) {
         email.let {
             val firebaseUser = userRepository.getFirebaseUser(email)
-
             if (firebaseUser.isNotEmpty() && userRepository.userExists(firebaseUser)) {
                 execute(firebaseUser)
             } else {
