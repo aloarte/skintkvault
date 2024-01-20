@@ -10,6 +10,7 @@ import com.skintker.TestConstants.userEmail
 import com.skintker.TestConstants.userId
 import com.skintker.TestConstants.userToken
 import com.skintker.data.datasources.UserDatasource
+import com.skintker.domain.model.UserResult
 import com.skintker.domain.repository.UserRepository
 import com.skintker.domain.repository.impl.UserRepositoryImpl
 import io.mockk.Runs
@@ -26,7 +27,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class UserRepositoryTest{
+class UserRepositoryTest {
 
     private val datasource = mockk<UserDatasource>()
 
@@ -41,7 +42,7 @@ class UserRepositoryTest{
 
     @Before
     fun setup() {
-        repository = UserRepositoryImpl(datasource,firebase)
+        repository = UserRepositoryImpl(datasource, firebase)
     }
 
     @Test
@@ -54,7 +55,7 @@ class UserRepositoryTest{
         }
 
         verify { firebase.getUserByEmail(userEmail) }
-        assertEquals(userId,user)
+        assertEquals(userId, user)
     }
 
     @Test
@@ -67,7 +68,7 @@ class UserRepositoryTest{
         }
 
         verify { firebase.getUserByEmail(userEmail) }
-        assertEquals(userId,user)
+        assertEquals(userId, user)
     }
 
     @Test
@@ -124,9 +125,9 @@ class UserRepositoryTest{
         }
 
         coVerify { datasource.userExists(userId) }
-        verify(exactly = 0) { firebase.getUser(userId)  }
+        verify(exactly = 0) { firebase.getUser(userId) }
         coVerify(exactly = 0) { datasource.addUser(userId) }
-        assertTrue(status)
+        assertEquals(UserResult.UserExist, status)
     }
 
     @Test
@@ -141,9 +142,9 @@ class UserRepositoryTest{
         }
 
         coVerify { datasource.userExists(userId) }
-        verify { firebase.getUser(userId)  }
+        verify { firebase.getUser(userId) }
         coVerify { datasource.addUser(userId) }
-        assertTrue(status)
+        assertEquals(UserResult.UserInsert(true),status)
     }
 
     @Test
@@ -157,16 +158,16 @@ class UserRepositoryTest{
         }
 
         coVerify { datasource.userExists(userId) }
-        verify { firebase.getUser(userId)  }
+        verify { firebase.getUser(userId) }
         coVerify(exactly = 0) { datasource.addUser(userId) }
-        assertFalse(status)
+        assertEquals(UserResult.FirebaseDisabled,status)
     }
 
     @Test
     fun `test add user, don't exist in firebase`() {
         coEvery { datasource.userExists(userId) } returns false
         every { firebase.getUser(userId) } throws FirebaseAuthException(
-            FirebaseException(ErrorCode.UNAUTHENTICATED,"Exception",Exception())
+            FirebaseException(ErrorCode.UNAUTHENTICATED, "Exception", Exception())
         )
 
         val status = runBlocking {
@@ -174,34 +175,34 @@ class UserRepositoryTest{
         }
 
         coVerify { datasource.userExists(userId) }
-        verify { firebase.getUser(userId)  }
+        verify { firebase.getUser(userId) }
         coVerify(exactly = 0) { datasource.addUser(userId) }
-        assertFalse(status)
+        assertEquals(UserResult.FirebaseError("Exception"),status)
     }
 
     @Test
     fun `test is token valid, token valid and mail verified`() {
-        every { firebase.verifyIdToken(userToken,true) } returns fbToken
+        every { firebase.verifyIdToken(userToken, true) } returns fbToken
         every { fbToken.isEmailVerified } returns true
 
         val status = runBlocking {
             repository.isTokenValid(userToken = userToken)
         }
 
-        verify { firebase.verifyIdToken(userToken,true)  }
+        verify { firebase.verifyIdToken(userToken, true) }
         assertTrue(status)
     }
 
     @Test
     fun `test is token valid, token valid and mail not verified`() {
-        every { firebase.verifyIdToken(userToken,true) } returns fbToken
+        every { firebase.verifyIdToken(userToken, true) } returns fbToken
         every { fbToken.isEmailVerified } returns false
 
         val status = runBlocking {
             repository.isTokenValid(userToken = userToken)
         }
 
-        verify { firebase.verifyIdToken(userToken,true)  }
+        verify { firebase.verifyIdToken(userToken, true) }
         assertFalse(status)
     }
 
@@ -211,20 +212,20 @@ class UserRepositoryTest{
             repository.isTokenValid(userToken = null)
         }
 
-        verify(exactly = 0) { firebase.verifyIdToken(any(),true)  }
+        verify(exactly = 0) { firebase.verifyIdToken(any(), true) }
         assertFalse(status)
     }
 
     @Test
     fun `test is token valid, token doesn't exist on firebase`() {
-        every { firebase.verifyIdToken(userToken,true) } throws
-                FirebaseAuthException(FirebaseException(ErrorCode.UNAUTHENTICATED,"a",Exception()))
+        every { firebase.verifyIdToken(userToken, true) } throws
+                FirebaseAuthException(FirebaseException(ErrorCode.UNAUTHENTICATED, "a", Exception()))
 
         val status = runBlocking {
             repository.isTokenValid(userToken = userToken)
         }
 
-        verify { firebase.verifyIdToken(userToken,true)  }
+        verify { firebase.verifyIdToken(userToken, true) }
         assertFalse(status)
     }
 

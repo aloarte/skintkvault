@@ -3,6 +3,7 @@ package com.skintker.domain.repository.impl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.skintker.data.datasources.UserDatasource
+import com.skintker.domain.model.UserResult
 import com.skintker.domain.repository.UserRepository
 import org.slf4j.LoggerFactory
 
@@ -24,23 +25,22 @@ class UserRepositoryImpl(private val userDatasource: UserDatasource, private val
 
     override suspend fun removeUser(userId: String) = userDatasource.deleteUser(userId)
 
-    override suspend fun addUser(userId: String): Boolean {
+    override suspend fun addUser(userId: String): UserResult {
         return if (userDatasource.userExists(userId)) {
-            true
+            UserResult.UserExist
         } else {
             try {
                 val fbUser = firebaseAuth.getUser(userId)
                 if (!fbUser.isDisabled) {
-                    userDatasource.addUser(userId) //If the FirebaseAuth didn't throw an exception, the user is valid
-                    true
+                    UserResult.UserInsert(userDatasource.addUser(userId))
                 } else {
                     getLogger().error("FIREBASE Error user disabled $userId")
-                    false
+                    UserResult.FirebaseDisabled
                 }
 
             } catch (ex: FirebaseAuthException) {
                 getLogger().error("FIREBASE Exception with user $userId: ${ex.message}")
-                false
+                UserResult.FirebaseError(ex.message)
             }
         }
     }

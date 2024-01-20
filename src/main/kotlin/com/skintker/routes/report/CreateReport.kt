@@ -72,7 +72,7 @@ fun Route.createReport(
             call.respondText(INVALID_INPUT_RESPONSE, status = HttpStatusCode.BadRequest)
 
         } catch (exception: BatchDataInconsistentException) {
-            logger.error("RReturned 200 with a database error. BatchDataInconsistentException: $exception")
+            logger.error("Returned 200 with a database error. BatchDataInconsistentException: $exception")
             call.respond(
                 status = HttpStatusCode.OK, message = ServiceResponse(DATABASE_ISSUE, DATABASE_ERROR)
             )

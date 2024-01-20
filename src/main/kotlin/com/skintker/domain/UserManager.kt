@@ -2,6 +2,7 @@ package com.skintker.domain
 
 import com.skintker.domain.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.INVALID_USER_TOKEN_RESPONSE
+import com.skintker.domain.model.UserResult
 import com.skintker.domain.repository.UserRepository
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respondText
@@ -13,10 +14,10 @@ class UserManager(private val userRepository: UserRepository) {
     suspend fun removeUser(userId: String) = userRepository.removeUser(userId)
 
     suspend fun addUser(userToken: String, userId: String) =
-        if (!userRepository.userExists(userId) && userRepository.isTokenValid(userToken)) {
+        if (userRepository.isTokenValid(userToken)) {
             userRepository.addUser(userId)
         } else {
-            false
+            UserResult.InvalidToken
         }
 
     suspend fun verifyUser(
