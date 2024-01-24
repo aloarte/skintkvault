@@ -3,6 +3,7 @@ package com.skintker.domain.repository.impl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.skintker.data.datasources.UserDatasource
+import com.skintker.domain.model.UserReturnType
 import com.skintker.domain.repository.UserRepository
 import org.slf4j.LoggerFactory
 
@@ -24,36 +25,40 @@ class UserRepositoryImpl(private val userDatasource: UserDatasource, private val
 
     override suspend fun removeUser(userId: String) = userDatasource.deleteUser(userId)
 
-    override suspend fun addUser(userId: String): Boolean {
+    override suspend fun addUser(userId: String): UserReturnType {
         return if (userDatasource.userExists(userId)) {
-            true
+            UserReturnType.UserExist
         } else {
-            try {
-                val fbUser = firebaseAuth.getUser(userId)
-                if (!fbUser.isDisabled) {
-                    userDatasource.addUser(userId) //If the FirebaseAuth didn't throw an exception, the user is valid
-                    true
-                } else {
-                    getLogger().error("FIREBASE Error user disabled $userId")
-                    false
-                }
+            addUserFirebase(userId)
+        }
+    }
 
-            } catch (ex: FirebaseAuthException) {
-                getLogger().error("FIREBASE Exception with user $userId: ${ex.message}")
-                false
+    private suspend fun addUserFirebase(userId:String):UserReturnType{
+        return try {
+            val fbUser = firebaseAuth.getUser(userId)
+            if (!fbUser.isDisabled) {
+                val inserted = userDatasource.addUser(userId)
+                if (inserted)UserReturnType.UserInserted else UserReturnType.UserNotInserted
+            } else {
+                getLogger().error("FIREBASE Error user disabled $userId")
+                UserReturnType.FirebaseDisabled
             }
+
+        } catch (ex: FirebaseAuthException) {
+            getLogger().error("FIREBASE Exception with user $userId: ${ex.message}")
+            UserReturnType.FirebaseError
         }
     }
 
     override suspend fun isTokenValid(userToken: String?): Boolean {
         return try {
             userToken?.let {
-                firebaseAuth.verifyIdToken(userToken, true).isEmailVerified
+                firebaseAuth.verifyIdToken(userToken, true)
+                true
             } ?: false
         } catch (ex: FirebaseAuthException) {
             getLogger().error("FIREBASE Exception with token $userToken: ${ex.message}")
             false
         }
-
     }
 }

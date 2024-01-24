@@ -5,6 +5,7 @@ import com.skintker.TestConstants.userId
 import com.skintker.TestConstants.userToken
 import com.skintker.domain.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.INVALID_USER_TOKEN_RESPONSE
+import com.skintker.domain.model.UserReturnType
 import com.skintker.domain.repository.UserRepository
 import kotlinx.coroutines.runBlocking
 import io.ktor.server.application.ApplicationCall
@@ -21,8 +22,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.verify
-import junit.framework.TestCase.assertFalse
-import kotlin.test.assertTrue
+import junit.framework.TestCase.assertEquals
 
 class UserManagerTest {
 
@@ -56,64 +56,57 @@ class UserManagerTest {
 
     @Test
     fun `test add user, token valid, user inserted`() {
-        coEvery { repository.userExists(userId) } returns false
         coEvery { repository.isTokenValid(userToken) } returns true
-        coEvery { repository.addUser(userId) } returns true
+        coEvery { repository.addUser(userId) } returns UserReturnType.UserInserted
 
         val inserted = runBlocking {
-            userManager.addUser(userToken,userId)
+            userManager.addUser(userToken, userId)
         }
 
-        coVerify { repository.userExists(userId) }
         coVerify { repository.isTokenValid(userToken) }
         coVerify { repository.addUser(userId) }
-        assertTrue(inserted)
+        assertEquals(UserReturnType.UserInserted, inserted)
     }
 
     @Test
     fun `test add user, token valid, user already exist`() {
-        coEvery { repository.userExists(userId) } returns true
         coEvery { repository.isTokenValid(userToken) } returns true
+        coEvery { repository.addUser(userId) } returns UserReturnType.UserExist
 
         val inserted = runBlocking {
-            userManager.addUser(userToken,userId)
+            userManager.addUser(userToken, userId)
         }
 
-        coVerify { repository.userExists(userId) }
-        coVerify(exactly = 0) { repository.isTokenValid(userToken) }
+        coVerify { repository.isTokenValid(userToken) }
         coVerify(exactly = 0) { repository.addUser(userToken) }
-        assertFalse(inserted)
+        assertEquals(UserReturnType.UserExist, inserted)
     }
 
     @Test
     fun `test add user, token valid, user not inserted`() {
-        coEvery { repository.userExists(userId) } returns false
         coEvery { repository.isTokenValid(userToken) } returns true
-        coEvery { repository.addUser(userId) } returns false
+        coEvery { repository.addUser(userId) } returns UserReturnType.FirebaseDisabled
 
         val inserted = runBlocking {
-            userManager.addUser(userToken,userId)
+            userManager.addUser(userToken, userId)
         }
 
-        coVerify { repository.userExists(userId) }
         coVerify { repository.isTokenValid(userToken) }
         coVerify { repository.addUser(userId) }
-        assertFalse(inserted)
+        assertEquals(UserReturnType.FirebaseDisabled, inserted)
     }
 
     @Test
     fun `test add user, token not valid`() {
-        coEvery { repository.userExists(userId) } returns false
         coEvery { repository.isTokenValid(userToken) } returns false
 
         val inserted = runBlocking {
-            userManager.addUser(userToken,userId)
+            userManager.addUser(userToken, userId)
         }
 
-        coVerify { repository.userExists(userId) }
         coVerify { repository.isTokenValid(userToken) }
         coVerify(exactly = 0) { repository.addUser(any()) }
-        assertFalse(inserted)
+        assertEquals(UserReturnType.InvalidToken, inserted)
     }
 
     @Test

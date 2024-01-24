@@ -6,15 +6,13 @@ import com.skintker.data.dto.logs.DailyLog
 import com.skintker.data.dto.logs.Irritation
 import com.skintker.data.dto.stats.StatsAlcohol
 import com.skintker.data.dto.stats.StatsDto
-import com.skintker.data.dto.stats.StatsStress
 import com.skintker.data.dto.stats.StatsTravel
 import com.skintker.data.dto.stats.StatsWeather
 import com.skintker.domain.model.LogIdValues
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 object TestConstants {
-    const val jsonBodyLog ="{\n" +
+    const val jsonBodyLog = "{\n" +
             "  \"date\": \"31-12-2022\",\n" +
             "  \"foodList\": [\n" +
             "    \"Meat\",\n" +
@@ -80,11 +78,11 @@ object TestConstants {
     val jsonDeserializedLog = Json.decodeFromString<DailyLog>(jsonBodyLog)
 
     //Irritation values
-    val irritation = Irritation( 8,  listOf("IrritationZone"))
-    val irritation2 = Irritation(5, listOf("Ears", "Eyelid","Arms","Wrists"))
+    val irritation = Irritation(8, listOf("IrritationZone"))
+    val irritation2 = Irritation(5, listOf("Ears", "Eyelid", "Arms", "Wrists"))
     val irritation3 = Irritation(7, listOf("Wrists", "Ears"))
     val irritation4 = Irritation(2, listOf("Shoulders", "Chest"))
-    val irritationEdited = Irritation(5, listOf("Ears", "Eyelid","Arms","Wrists"))
+    val irritationEdited = Irritation(5, listOf("Ears", "Eyelid", "Arms", "Wrists"))
 
     //AdditionalData values
     val adBeerTypes = listOf("Ale")
@@ -97,7 +95,7 @@ object TestConstants {
         addistilledTypes
     )
     val weather = AdditionalData.Weather(0, 5)
-    val travel = AdditionalData.Travel(true,  "Madrid")
+    val travel = AdditionalData.Travel(true, "Madrid")
     val additionalData = AdditionalData(10, weather, travel, adAlcohol)
 
     const val adStress2 = 3
@@ -137,11 +135,15 @@ object TestConstants {
     const val userEmail = "user@email.com"
     const val userToken = "userToken"
 
-    const val jsonBodyDeleteMail ="{\"email\": \"user@email.com\"}"
+    const val jsonBodyDeleteMail = "{\"email\": $userEmail}"
+
+    const val jsonBodyAddUser = "{\"userId\": $userId}"
+
+    const val jsonBodyAddUserMalformed = "{\"userI $userId}"
 
     val foodList = listOf("Meat", "Blue fish")
     val foodList2 = listOf("Strawberry", "Blue fish", "Banana")
-    val foodList3 = listOf("Meat", "Pineapple", "Citrus","Pickles")
+    val foodList3 = listOf("Meat", "Pineapple", "Citrus", "Pickles")
     val foodList4 = listOf("Strawberry", "Blue fish", "Banana")
 
     val idValues = LogIdValues(dayDate = date, userId = userId)
@@ -152,7 +154,7 @@ object TestConstants {
     val log3 = DailyLog(date3, foodList3, irritation3, additionalData)
     val log4 = DailyLog(date3, foodList4, irritation4, additionalData)
 
-    val logList = listOf(log, log2,log3,log4)
+    val logList = listOf(log, log2, log3, log4)
     val bigLogList = listOf(
         log,
         log2,
@@ -166,7 +168,7 @@ object TestConstants {
 
     //Stats
     val statsAlcohol = StatsAlcohol(true)
-    val statsTravel = StatsTravel(true,  "Madrid")
+    val statsTravel = StatsTravel(true, "Madrid")
     val statsTemperature = StatsWeather.StatsTemperature(false, 0)
     val statsHumidity = StatsWeather.StatsHumidity(false, 5)
     val stats = StatsDto(

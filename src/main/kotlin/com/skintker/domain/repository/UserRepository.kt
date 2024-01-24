@@ -1,5 +1,7 @@
 package com.skintker.domain.repository
 
+import com.skintker.domain.model.UserReturnType
+
 interface UserRepository {
 
     suspend fun getFirebaseUser(email: String): String
@@ -8,7 +10,7 @@ interface UserRepository {
 
     suspend fun removeUser(userId: String)
 
-    suspend fun addUser(userId: String): Boolean
+    suspend fun addUser(userId: String): UserReturnType
 
     suspend fun isTokenValid(userToken: String?): Boolean
 }
