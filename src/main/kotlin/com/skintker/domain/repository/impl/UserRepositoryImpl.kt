@@ -29,20 +29,24 @@ class UserRepositoryImpl(private val userDatasource: UserDatasource, private val
         return if (userDatasource.userExists(userId)) {
             UserReturnType.UserExist
         } else {
-            try {
-                val fbUser = firebaseAuth.getUser(userId)
-                if (!fbUser.isDisabled) {
-                    val inserted = userDatasource.addUser(userId)
-                    if (inserted)UserReturnType.UserInserted else UserReturnType.UserNotInserted
-                } else {
-                    getLogger().error("FIREBASE Error user disabled $userId")
-                    UserReturnType.FirebaseDisabled
-                }
+            addUserFirebase(userId)
+        }
+    }
 
-            } catch (ex: FirebaseAuthException) {
-                getLogger().error("FIREBASE Exception with user $userId: ${ex.message}")
-                UserReturnType.FirebaseError
+    private suspend fun addUserFirebase(userId:String):UserReturnType{
+        return try {
+            val fbUser = firebaseAuth.getUser(userId)
+            if (!fbUser.isDisabled) {
+                val inserted = userDatasource.addUser(userId)
+                if (inserted)UserReturnType.UserInserted else UserReturnType.UserNotInserted
+            } else {
+                getLogger().error("FIREBASE Error user disabled $userId")
+                UserReturnType.FirebaseDisabled
             }
+
+        } catch (ex: FirebaseAuthException) {
+            getLogger().error("FIREBASE Exception with user $userId: ${ex.message}")
+            UserReturnType.FirebaseError
         }
     }
 

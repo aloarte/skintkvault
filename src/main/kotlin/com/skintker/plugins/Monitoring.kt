@@ -18,8 +18,8 @@ fun Application.configureMonitoring() {
                     && call.request.path().contains("/fonts").not()
         }
         format { call ->
-            val suspicious  = isSuspiciousPath(call.request.path())
-            level = if(suspicious) Level.WARN else Level.INFO
+            val suspicious = isSuspiciousPath(call.request.path())
+            level = if (suspicious) Level.WARN else Level.INFO
 
             val httpMethod = call.request.httpMethod.value
             val path = call.request.path()
@@ -27,23 +27,26 @@ fun Application.configureMonitoring() {
             val queryString = call.request.queryString()
             val userAgent = call.request.headers["User-Agent"]
 
-            if(suspicious){
-                val ip = call.request.origin.remoteHost
-                val address = call.request.origin.remoteAddress
-                val uri = call.request.origin.uri
-                val host = call.request.origin.serverHost
-                "<SUSPICIOUS> [$httpMethod] $path$queryString : $status ($userAgent). Came from $ip, $address, $host. Executed: $uri"
-            }
-            else{
+            if (suspicious) {
+                "<SUSPICIOUS> [$httpMethod] $path$queryString : $status ($userAgent)."
+            } else {
                 "[API CALL] [$httpMethod] $path$queryString : $status ($userAgent)"
             }
 
         }
     }
-
 }
 
 fun isSuspiciousPath(path: String): Boolean {
-    val suspiciousPaths = setOf("/skt","/privacypolicy","/remove","/report", "/reports", "/stats", "/user/fb", "/user/wipe")
+    val suspiciousPaths = setOf(
+        "/skt",
+        "/privacypolicy",
+        "/remove",
+        "/report",
+        "/reports",
+        "/stats",
+        "/user/fb",
+        "/user/wipe"
+    )
     return suspiciousPaths.any { path.contains(it) }.not()
 }
