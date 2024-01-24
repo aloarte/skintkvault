@@ -23,7 +23,7 @@ fun Route.createUser(userManager: UserManager) {
     /**
      * Create a new user into the database validating the token previously
      */
-    put("/user") {
+    put("/user/fb") {
         val logger = LoggerFactory.getLogger("Route.createReport")
         try {
             val token = call.request.headers["Authorization"]?.removePrefix("Bearer ")
@@ -31,10 +31,7 @@ fun Route.createUser(userManager: UserManager) {
                 val userDto = call.receive<UserDto>()
                 call.respond(
                     status = HttpStatusCode.OK,
-                    message = ServiceResponse(
-                        statusCode = ResponseCodes.NO_ERROR,
-                        content = UserResponse(userManager.addUser(userToken = token, userId = userDto.userId))
-                    )
+                    message = UserResponse(userManager.addUser(userToken = token, userId = userDto.userId))
                 )
             } else {
                 logger.error("Invalid user input data $INVALID_USER_ID_OR_TOKEN_RESPONSE")

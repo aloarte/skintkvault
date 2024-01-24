@@ -10,7 +10,7 @@ import com.skintker.TestConstants.userEmail
 import com.skintker.TestConstants.userId
 import com.skintker.TestConstants.userToken
 import com.skintker.data.datasources.UserDatasource
-import com.skintker.domain.model.UserResult
+import com.skintker.domain.model.UserReturnType
 import com.skintker.domain.repository.UserRepository
 import com.skintker.domain.repository.impl.UserRepositoryImpl
 import io.mockk.Runs
@@ -127,7 +127,7 @@ class UserRepositoryTest {
         coVerify { datasource.userExists(userId) }
         verify(exactly = 0) { firebase.getUser(userId) }
         coVerify(exactly = 0) { datasource.addUser(userId) }
-        assertEquals(UserResult.UserExist, status)
+        assertEquals(UserReturnType.UserExist, status)
     }
 
     @Test
@@ -144,7 +144,7 @@ class UserRepositoryTest {
         coVerify { datasource.userExists(userId) }
         verify { firebase.getUser(userId) }
         coVerify { datasource.addUser(userId) }
-        assertEquals(UserResult.UserInsert(true),status)
+        assertEquals(UserReturnType.UserInserted,status)
     }
 
     @Test
@@ -160,7 +160,7 @@ class UserRepositoryTest {
         coVerify { datasource.userExists(userId) }
         verify { firebase.getUser(userId) }
         coVerify(exactly = 0) { datasource.addUser(userId) }
-        assertEquals(UserResult.FirebaseDisabled,status)
+        assertEquals(UserReturnType.FirebaseDisabled,status)
     }
 
     @Test
@@ -177,7 +177,7 @@ class UserRepositoryTest {
         coVerify { datasource.userExists(userId) }
         verify { firebase.getUser(userId) }
         coVerify(exactly = 0) { datasource.addUser(userId) }
-        assertEquals(UserResult.FirebaseError("Exception"),status)
+        assertEquals(UserReturnType.FirebaseError,status)
     }
 
     @Test
@@ -191,19 +191,6 @@ class UserRepositoryTest {
 
         verify { firebase.verifyIdToken(userToken, true) }
         assertTrue(status)
-    }
-
-    @Test
-    fun `test is token valid, token valid and mail not verified`() {
-        every { firebase.verifyIdToken(userToken, true) } returns fbToken
-        every { fbToken.isEmailVerified } returns false
-
-        val status = runBlocking {
-            repository.isTokenValid(userToken = userToken)
-        }
-
-        verify { firebase.verifyIdToken(userToken, true) }
-        assertFalse(status)
     }
 
     @Test

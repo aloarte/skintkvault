@@ -2,7 +2,7 @@ package com.skintker.domain
 
 import com.skintker.domain.constants.ResponseConstants.INVALID_USER_ID_RESPONSE
 import com.skintker.domain.constants.ResponseConstants.INVALID_USER_TOKEN_RESPONSE
-import com.skintker.domain.model.UserResult
+import com.skintker.domain.model.UserReturnType
 import com.skintker.domain.repository.UserRepository
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respondText
@@ -17,7 +17,7 @@ class UserManager(private val userRepository: UserRepository) {
         if (userRepository.isTokenValid(userToken)) {
             userRepository.addUser(userId)
         } else {
-            UserResult.InvalidToken
+            UserReturnType.InvalidToken
         }
 
     suspend fun verifyUser(

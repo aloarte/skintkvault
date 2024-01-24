@@ -1,6 +1,6 @@
 package com.skintker.domain.repository
 
-import com.skintker.domain.model.UserResult
+import com.skintker.domain.model.UserReturnType
 
 interface UserRepository {
 
@@ -10,7 +10,7 @@ interface UserRepository {
 
     suspend fun removeUser(userId: String)
 
-    suspend fun addUser(userId: String): UserResult
+    suspend fun addUser(userId: String): UserReturnType
 
     suspend fun isTokenValid(userToken: String?): Boolean
 }

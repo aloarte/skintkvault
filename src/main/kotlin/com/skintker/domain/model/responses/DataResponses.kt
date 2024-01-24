@@ -2,7 +2,7 @@ package com.skintker.domain.model.responses
 
 import com.skintker.data.dto.logs.DailyLog
 import com.skintker.data.dto.stats.StatsDto
-import com.skintker.domain.model.UserResult
+import com.skintker.domain.model.UserReturnType
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -18,6 +18,6 @@ class LogListResponse(
 class StatsResponse(var stats: StatsDto?) : DataResponses()
 
 @Serializable
-class UserResponse(var result: UserResult?) : DataResponses()
+class UserResponse(var result: UserReturnType) : DataResponses()
 
 

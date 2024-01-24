@@ -5,10 +5,8 @@ import com.skintker.TestConstants.jsonBodyAddUser
 import com.skintker.TestConstants.jsonBodyAddUserMalformed
 import com.skintker.TestConstants.userId
 import com.skintker.TestConstants.userToken
-import com.skintker.domain.constants.ResponseCodes.NO_ERROR
 import com.skintker.domain.constants.ResponseConstants
-import com.skintker.domain.model.UserResult
-import com.skintker.domain.model.responses.ServiceResponse
+import com.skintker.domain.model.UserReturnType
 import com.skintker.domain.model.responses.UserResponse
 import io.ktor.client.call.body
 import io.ktor.client.request.header
@@ -25,46 +23,41 @@ import io.mockk.coVerify
 import kotlinx.serialization.json.Json
 import org.junit.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 class CreateUserTest : RoutesKoinTest() {
 
     @Test
     fun `test put new user success`() = testApplication {
         val client = configureClient()
-        coEvery { mockedUserManager.addUser(userToken, userId) } returns UserResult.UserInsert(true)
+        coEvery { mockedUserManager.addUser(userToken, userId) } returns UserReturnType.UserInserted
 
-        val response = client.put("/user") {
+        val response = client.put("/user/fb") {
             header(HttpHeaders.Authorization, "Bearer $userToken")
             contentType(ContentType.Application.Json)
             setBody(jsonBodyAddUser)
         }
 
         coVerify { mockedUserManager.addUser(userToken, userId) }
-        val serviceResponse = Json.decodeFromString<ServiceResponse>(response.body())
+        val serviceResponse = Json.decodeFromString<UserResponse>(response.body())
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(NO_ERROR, serviceResponse.statusCode)
-        assertNull(serviceResponse.statusMessage)
-        assertEquals(UserResult.UserInsert(true), (serviceResponse.content as UserResponse).result)
+        assertEquals(UserReturnType.UserInserted,  serviceResponse.result)
     }
 
     @Test
     fun `test put new user error not inserted`() = testApplication {
         val client = configureClient()
-        coEvery { mockedUserManager.addUser(userToken, userId) } returns UserResult.InvalidToken
+        coEvery { mockedUserManager.addUser(userToken, userId) } returns UserReturnType.InvalidToken
 
-        val response = client.put("/user") {
+        val response = client.put("/user/fb") {
             header(HttpHeaders.Authorization, "Bearer $userToken")
             contentType(ContentType.Application.Json)
             setBody(jsonBodyAddUser)
         }
 
-        coVerify{ mockedUserManager.addUser(userToken, userId) }
+        coVerify { mockedUserManager.addUser(userToken, userId) }
         assertEquals(HttpStatusCode.OK, response.status)
-        val serviceResponse = Json.decodeFromString<ServiceResponse>(response.body())
-        assertEquals(NO_ERROR, serviceResponse.statusCode)
-        assertNull(serviceResponse.statusMessage)
-        assertEquals(UserResult.InvalidToken, (serviceResponse.content as UserResponse).result)
+        val serviceResponse = Json.decodeFromString<UserResponse>(response.body())
+        assertEquals(UserReturnType.InvalidToken, serviceResponse.result)
 
     }
 
@@ -72,7 +65,7 @@ class CreateUserTest : RoutesKoinTest() {
     fun `test put new user error not inserted bad params`() = testApplication {
         val client = configureClient()
 
-        val response = client.put("/user")
+        val response = client.put("/user/fb")
 
         coVerify(exactly = 0) { mockedUserManager.addUser(userToken, userId) }
         assertEquals(ResponseConstants.INVALID_USER_ID_OR_TOKEN_RESPONSE, response.bodyAsText())
@@ -84,7 +77,7 @@ class CreateUserTest : RoutesKoinTest() {
         val client = configureClient()
         mockVerifyUser(userId, userToken, true)
 
-        val response = client.put("/user") {
+        val response = client.put("/user/fb") {
             header(HttpHeaders.Authorization, "Bearer $userToken")
             contentType(ContentType.Application.Json)
             setBody(jsonBodyAddUserMalformed)

@@ -5,7 +5,6 @@ import com.skintker.data.components.InputValidator
 import com.skintker.data.components.PaginationManager
 import com.skintker.domain.repository.StatsRepository
 import com.skintker.domain.UserManager
-import com.skintker.routes.redirectHome
 import com.skintker.routes.report.createReport
 import com.skintker.routes.report.deleteReport
 import com.skintker.routes.reports.deleteReports
@@ -32,7 +31,6 @@ fun Application.configureRouting(
         getHome()
         removeSteps()
         privacyPolicy()
-        redirectHome()
         staticContent()
     }
 

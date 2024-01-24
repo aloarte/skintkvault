@@ -7,7 +7,6 @@ import io.ktor.server.http.content.resources
 import io.ktor.server.http.content.static
 import io.ktor.server.http.content.staticBasePackage
 import io.ktor.server.response.respond
-import io.ktor.server.response.respondRedirect
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 
@@ -33,7 +32,7 @@ fun Route.staticContent() {
 }
 
 fun Route.getHome() {
-    get("/home") {
+    get("/skt") {
         call.respond(FreeMarkerContent("home.html", mapOf<Unit, Unit>()))
     }
 }
@@ -50,10 +49,3 @@ fun Route.removeSteps() {
         call.respond(FreeMarkerContent("remove.html", mapOf<Unit, Unit>()))
     }
 }
-
-fun Route.redirectHome() {
-    get("/") {
-        call.respondRedirect("/home")
-    }
-}
-
