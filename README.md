@@ -1,3 +1,5 @@
+[![Tests](https://github.com/aloarte/skintkvault/actions/workflows/ci.yml/badge.svg)](https://github.com/aloarte/skintkvault/actions/workflows/ci.yml)
+[![Coverage Status](https://codecov.io/github/aloarte/skintkvault/coverage.svg?branch=master)](https://app.codecov.io/gh/aloarte/skintkvault)
 # Skintkvault
 
 Backend developed in Ktor, using Kotlin and Koin to provide services for the Skintker app.
