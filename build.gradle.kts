@@ -11,6 +11,7 @@ val ktorVersion: String by project
 val spekVersion: String by project
 
 plugins {
+    jacoco
     kotlin("jvm") version "1.9.0"
     id("io.ktor.plugin") version "2.3.4"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0"
@@ -91,6 +92,11 @@ dependencies {
     testImplementation("io.ktor:ktor-client-core:$ktorVersion")
     testImplementation("io.ktor:ktor-client-cio:$ktorVersion")
 
+    //JaCoCo
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2")
+    implementation("org.jacoco:org.jacoco.core:0.8.7")
+
 }
 
 tasks.shadowJar {
@@ -101,4 +107,19 @@ tasks.shadowJar {
 
 tasks.create("stage") {
     dependsOn(tasks.getByName("build"),tasks.getByName("clean"))
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
+}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.isEnabled = true
+        csv.isEnabled = true
+        html.isEnabled = true
+    }
 }

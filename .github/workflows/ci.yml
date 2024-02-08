@@ -60,14 +60,15 @@ jobs:
       - name: Unit Tests
         run: ./gradlew test
 
-      - name: Unit Tests Report
-        uses: asadmansr/android-test-report-action@v1.2.0
-        if: ${{ always() }}
-
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Unit Tests Report
+        uses: asadmansr/android-test-report-action@v1.2.0
+        if: ${{ always() }}
+
 
 #  e2e-test:
 #    needs: [build]
