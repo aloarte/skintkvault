@@ -115,3 +115,11 @@ tasks.test {
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
 }
+
+tasks.jacocoTestReport {
+    reports {
+        xml.isEnabled = true
+        csv.isEnabled = true
+        html.isEnabled = true
+    }
+}
